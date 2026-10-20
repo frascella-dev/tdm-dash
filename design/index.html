@@ -89,7 +89,7 @@ body {
 .unit[data-scale="fit"] { width: 100%; max-width: 844px; }
 .unit[data-scale="px"] .screen { width: 800px; }
 .unit[data-scale="real"] { width: auto; }
-.unit[data-scale="real"] .screen { width: 359px; }
+.unit[data-scale="real"] .screen { width: 583px; }
 .unit .keys { display: flex; justify-content: center; gap: 26px; margin-top: 14px; }
 .hwkey {
   appearance: none; border: 0; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation;
@@ -180,7 +180,7 @@ footer a { color: var(--ink); }
       <p class="lead">Il quadro digitale per la Yamaha TDM 850 del '92, simulato a 800×480 reali con le stesse misure, gli stessi filtri e gli stessi avvisi che userà il software in Rust. Usa MODE e SET come sulla moto.</p>
     </div>
     <ul class="specline" aria-label="Specifiche del display">
-      <li>4,3″ IPS</li><li>800×480 · 217 ppi</li><li>1000 cd/m²</li><li>Pi Zero 2 W + Pico</li>
+      <li>7″ IPS</li><li>800×480 · 133 ppi</li><li>1000 cd/m²</li><li>Pi Zero 2 W + Pico</li>
     </ul>
   </header>
 
@@ -262,7 +262,7 @@ footer a { color: var(--ink); }
           <button type="button" data-v="px" aria-pressed="false">1:1 pixel</button>
           <button type="button" data-v="real" aria-pressed="false">Reale</button>
         </div>
-        <p class="hint">"Reale" mostra i 95 × 54 mm dell'area attiva su uno schermo a 96 dpi.</p>
+        <p class="hint">"Reale" mostra i 154 × 86 mm dell'area attiva su uno schermo a 96 dpi.</p>
       </div>
 
       <p class="kbd"><kbd>M</kbd> MODE · <kbd>S</kbd> SET (tieni premuto ≥ 1 s per il lungo) · <kbd>←</kbd> <kbd>→</kbd> frecce · <kbd>H</kbd> abbaglianti · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> layout · <kbd>Spazio</kbd> pausa</p>
@@ -285,13 +285,14 @@ footer a { color: var(--ink); }
     <section>
       <h2>Display</h2>
       <dl class="spec">
-        <dt>Modello</dt><dd>Crystalfontz CFAF800480H0-043SN</dd>
-        <dt>Diagonale</dt><dd>4,3″ · 217 ppi</dd>
-        <dt>Area attiva</dt><dd>95,0 × 53,9 mm</dd>
+        <dt>Modello</dt><dd>Newhaven NHD-7.0-800480AF-ASXP</dd>
+        <dt>Diagonale</dt><dd>7″ · 133 ppi</dd>
+        <dt>Area attiva</dt><dd>154,2 × 85,6 mm</dd>
+        <dt>Ingombro</dt><dd>165 × 104 mm</dd>
         <dt>Risoluzione</dt><dd>800 × 480, RGB 18 bit via DPI</dd>
         <dt>Luminosità</dt><dd>1000 cd/m², IPS</dd>
         <dt>Temperatura</dt><dd>−20 … +70 °C</dd>
-        <dt>Retroilluminazione</dt><dd>TPS61169, PWM dal Pico</dd>
+        <dt>Retroilluminazione</dt><dd>180 mA a 9,3 V · TPS61169, PWM dal Pico</dd>
         <dt>Avvio</dt><dd>&lt; 4 s dalla chiave al primo frame</dd>
       </dl>
     </section>
@@ -302,7 +303,7 @@ footer a { color: var(--ink); }
         <li>Quadranti, bagliori e gradienti pre-renderizzati all'avvio (tiny-skia) come immagini opache.</li>
         <li>Barre dei giri: immagine pre-renderizzata scoperta da un rettangolo di clip.</li>
         <li>Cifre in celle a larghezza fissa: i numeri non "ballano" quando cambiano.</li>
-        <li>Velocità sport ≥ 140 px di altezza; contrasto di giorno ≥ 7:1.</li>
+        <li>Velocità sport ≥ 140 px di altezza (≈ 27 mm sul 7″); contrasto di giorno ≥ 7:1.</li>
         <li>Spie nei colori ECE: verde frecce e folle, blu abbaglianti, ambra attenzione, rosso critico.</li>
         <li>Niente animazioni durante la guida, tranne avvisi e luce di cambiata.</li>
       </ul>
