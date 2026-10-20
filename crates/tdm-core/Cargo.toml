@@ -1,0 +1,14 @@
+[package]
+name = "tdm-core"
+description = "no_std measurement and odometer logic shared by firmware and simulator"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+
+[lints]
+workspace = true
