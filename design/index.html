@@ -1,0 +1,1506 @@
+<title>Quadro tdm-dash</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Proposta di design interattiva del quadro digitale tdm-dash per Yamaha TDM 850 (3VD), a 800×480 reali.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Saira+Semi+Condensed:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a workbench — the cluster sits in its enclosure on the left, the
+   simulator's controls on the right, implementation notes underneath. */
+:root {
+  --bg: #e7e9e5;
+  --surface: #f4f5f2;
+  --ink: #15181a;
+  --muted: #586064;
+  --line: #c9cdc8;
+  --chip: #dadeda;
+  --accent: #c8410b;
+  --accent-ink: #ffffff;
+  --focus: #1f5bff;
+  --font-display: "Saira Semi Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1214; --surface: #171b1e; --ink: #e6e8e4; --muted: #98a1a4;
+    --line: #2a3135; --chip: #20272b; --accent: #ff7a33; --accent-ink: #160a03; --focus: #7aa2ff;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1214; --surface: #171b1e; --ink: #e6e8e4; --muted: #98a1a4;
+  --line: #2a3135; --chip: #20272b; --accent: #ff7a33; --accent-ink: #160a03; --focus: #7aa2ff;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--ink); }
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 48px;
+}
+.wrap { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px; }
+
+/* ---------- masthead */
+.masthead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; }
+.masthead h1 {
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(30px, 4.4vw, 46px);
+  line-height: 1.02; margin: 0; letter-spacing: -0.01em; text-wrap: balance;
+}
+.eyebrow {
+  font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); margin: 0 0 6px;
+}
+.lead { margin: 10px 0 0; max-width: 62ch; color: var(--muted); }
+.specline { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.specline li {
+  font-family: var(--font-mono); font-size: 12px; padding: 4px 9px; border-radius: 999px;
+  background: var(--chip); color: var(--ink);
+}
+
+/* ---------- bench */
+.bench { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 28px; align-items: start; }
+@media (max-width: 1020px) { .bench { grid-template-columns: minmax(0, 1fr); } }
+.stage { min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.scroller { overflow-x: auto; padding: 12px 0 4px; }
+.unit {
+  position: relative; margin: 0 auto; width: fit-content; max-width: 100%;
+  padding: 26px 22px 18px; border-radius: 30px 30px 22px 22px;
+  background: linear-gradient(180deg, #2b2e30 0%, #1a1c1e 55%, #141617 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 18px 40px -18px rgba(0,0,0,0.55);
+}
+.unit::before { /* sun hood */
+  content: ""; position: absolute; left: 7%; right: 7%; top: -9px; height: 18px;
+  border-radius: 14px 14px 4px 4px; background: #222527;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
+}
+.screen {
+  position: relative; border-radius: 6px; overflow: hidden; background: #000;
+  box-shadow: 0 0 0 2px #0a0b0c, 0 0 0 3px #303437;
+}
+.screen canvas { display: block; width: 100%; height: auto; }
+.screen .bl { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
+.unit[data-scale="fit"] { width: 100%; max-width: 844px; }
+.unit[data-scale="px"] .screen { width: 800px; }
+.unit[data-scale="real"] { width: auto; }
+.unit[data-scale="real"] .screen { width: 359px; }
+.unit .keys { display: flex; justify-content: center; gap: 26px; margin-top: 14px; }
+.hwkey {
+  appearance: none; border: 0; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation;
+  width: 64px; height: 40px; border-radius: 20px;
+  background: radial-gradient(ellipse at 50% 30%, #4a4e51 0%, #2e3133 70%);
+  box-shadow: 0 3px 0 #0b0c0d, 0 0 0 1px #0b0c0d;
+  color: #c9c6bf; font-family: var(--font-display); font-weight: 600; font-size: 13px; letter-spacing: 0.12em;
+  transition: transform 60ms, box-shadow 60ms;
+}
+.hwkey.down { transform: translateY(3px); box-shadow: 0 0 0 #0b0c0d, 0 0 0 1px #0b0c0d; }
+.hwkey:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.status {
+  margin: 0; font-family: var(--font-mono); font-size: 12.5px; color: var(--muted);
+  display: flex; flex-wrap: wrap; gap: 4px 14px; justify-content: center; min-height: 1.5em;
+}
+.status b { color: var(--ink); font-weight: 500; }
+.status .alert { color: var(--accent); }
+
+/* ---------- controls */
+.controls { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.group { display: flex; flex-direction: column; gap: 8px; }
+.group > h2, .panel h2 {
+  margin: 0; font-family: var(--font-mono); font-weight: 500; font-size: 11.5px;
+  text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted);
+}
+.hint { margin: 0; font-size: 13px; color: var(--muted); }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--chip); border-radius: 8px; padding: 3px; gap: 3px; }
+.seg button {
+  appearance: none; border: 0; background: transparent; color: var(--ink); cursor: pointer;
+  font: 500 13px/1 var(--font-body); padding: 8px 6px; border-radius: 6px; min-width: 0;
+}
+.seg button[aria-pressed="true"] { background: var(--surface); box-shadow: 0 1px 2px rgba(0,0,0,0.18); }
+.seg button:focus-visible, .btn:focus-visible, select:focus-visible, input:focus-visible {
+  outline: 2px solid var(--focus); outline-offset: 2px;
+}
+select, .btn {
+  font: 500 13.5px/1.2 var(--font-body); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; cursor: pointer; min-width: 0;
+}
+select { width: 100%; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.row > * { flex: 1 1 auto; }
+.scenario-note { font-size: 13px; color: var(--muted); margin: 0; min-height: 2.6em; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.scale-labels { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+.readout { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink); }
+.kbd { font-family: var(--font-mono); font-size: 12px; color: var(--muted); line-height: 1.7; margin: 0; }
+.kbd kbd {
+  font-family: var(--font-mono); font-size: 11px; border: 1px solid var(--line); border-bottom-width: 2px;
+  border-radius: 4px; padding: 0 5px; background: var(--surface); color: var(--ink);
+}
+.check { display: flex; gap: 8px; align-items: center; font-size: 13.5px; }
+.check input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+/* ---------- signal chart */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; align-items: baseline; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--muted); }
+.legend i { display: inline-block; width: 18px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+#chart { width: 100%; height: 150px; display: block; }
+
+/* ---------- notes */
+.notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 980px) { .notes { grid-template-columns: minmax(0, 1fr); } }
+.notes h2 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin: 0 0 8px; }
+.notes p, .notes li { font-size: 14px; }
+.notes ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.notes section { min-width: 0; }
+dl.spec { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; font-size: 14px; }
+dl.spec dt { color: var(--muted); }
+dl.spec dd { margin: 0; font-family: var(--font-mono); font-size: 13px; }
+.swatches { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.swatches h3 { margin: 0 0 6px; font-size: 13px; font-weight: 600; }
+.swatch-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.swatch-list li { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; }
+.swatch-list span.c { width: 22px; height: 16px; border-radius: 4px; box-shadow: 0 0 0 1px var(--line); flex: none; }
+footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+footer a { color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .hwkey { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">Proposta di design · milestone M1</p>
+      <h1>Quadro tdm-dash</h1>
+      <p class="lead">Il quadro digitale per la Yamaha TDM 850 del '92, simulato a 800×480 reali con le stesse misure, gli stessi filtri e gli stessi avvisi che userà il software in Rust. Usa MODE e SET come sulla moto.</p>
+    </div>
+    <ul class="specline" aria-label="Specifiche del display">
+      <li>4,3″ IPS</li><li>800×480 · 217 ppi</li><li>1000 cd/m²</li><li>Pi Zero 2 W + Pico</li>
+    </ul>
+  </header>
+
+  <main class="bench">
+    <div class="stage">
+      <div class="scroller">
+        <div class="unit" id="unit" data-scale="fit">
+          <div class="screen"><canvas id="dash" width="800" height="480" aria-label="Quadro strumenti simulato" role="img"></canvas><div class="bl" id="bl"></div></div>
+          <div class="keys">
+            <button class="hwkey" id="kMode" type="button" aria-label="Tasto MODE (tieni premuto per la pressione lunga)">MODE</button>
+            <button class="hwkey" id="kSet" type="button" aria-label="Tasto SET (tieni premuto per la pressione lunga)">SET</button>
+          </div>
+        </div>
+      </div>
+      <p class="status" id="status" aria-live="polite"></p>
+    </div>
+
+    <aside class="controls" aria-label="Controlli del simulatore">
+      <div class="group">
+        <h2>Layout di guida</h2>
+        <div class="seg" id="segLayout">
+          <button type="button" data-v="classic" aria-pressed="true">Classic</button>
+          <button type="button" data-v="sport" aria-pressed="false">Sport</button>
+          <button type="button" data-v="touring" aria-pressed="false">Touring</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>Schermata</h2>
+        <select id="selScreen" aria-label="Vai alla schermata">
+          <option value="main">Guida</option>
+          <option value="trip">Viaggio</option>
+          <option value="diag">Diagnostica</option>
+          <option value="settings">Impostazioni (da fermi)</option>
+        </select>
+        <p class="hint">Sulla moto: MODE breve cambia schermata, SET lungo da fermi apre le impostazioni.</p>
+      </div>
+
+      <div class="group">
+        <h2>Scenario</h2>
+        <select id="selScenario" aria-label="Scenario di guida"></select>
+        <p class="scenario-note" id="scenarioNote"></p>
+        <div class="row">
+          <button class="btn" id="btnPlay" type="button">Pausa</button>
+          <div class="seg" id="segSpeed" style="flex: 1 1 140px">
+            <button type="button" data-v="1" aria-pressed="true">×1</button>
+            <button type="button" data-v="2" aria-pressed="false">×2</button>
+            <button type="button" data-v="4" aria-pressed="false">×4</button>
+          </div>
+        </div>
+        <button class="btn" id="btnBoot" type="button">Gira la chiave (riavvio completo)</button>
+      </div>
+
+      <div class="group">
+        <h2>Luce ambiente</h2>
+        <input type="range" id="rngLight" min="0" max="100" value="72" aria-label="Luce ambiente">
+        <div class="scale-labels"><span>notte</span><span>galleria</span><span>nuvoloso</span><span>sole</span></div>
+        <div class="seg" id="segTheme">
+          <button type="button" data-v="auto" aria-pressed="true">Auto</button>
+          <button type="button" data-v="day" aria-pressed="false">Giorno</button>
+          <button type="button" data-v="night" aria-pressed="false">Notte</button>
+        </div>
+        <p class="readout" id="lightReadout"></p>
+      </div>
+
+      <div class="group">
+        <h2>Guasti da provare</h2>
+        <div class="row">
+          <button class="btn" id="btnLink" type="button">Scollega l'USB</button>
+          <button class="btn" id="btnHang" type="button">Blocca l'app</button>
+        </div>
+        <p class="hint">Mostrano il comportamento "fail-dark": meglio uno schermo nero che dati vecchi.</p>
+      </div>
+
+      <div class="group">
+        <h2>Scala</h2>
+        <div class="seg" id="segScale">
+          <button type="button" data-v="fit" aria-pressed="true">Adatta</button>
+          <button type="button" data-v="px" aria-pressed="false">1:1 pixel</button>
+          <button type="button" data-v="real" aria-pressed="false">Reale</button>
+        </div>
+        <p class="hint">"Reale" mostra i 95 × 54 mm dell'area attiva su uno schermo a 96 dpi.</p>
+      </div>
+
+      <p class="kbd"><kbd>M</kbd> MODE · <kbd>S</kbd> SET (tieni premuto ≥ 1 s per il lungo) · <kbd>←</kbd> <kbd>→</kbd> frecce · <kbd>H</kbd> abbaglianti · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> layout · <kbd>Spazio</kbd> pausa</p>
+    </aside>
+  </main>
+
+  <section class="panel" aria-labelledby="chartTitle">
+    <div class="panel-head">
+      <h2 id="chartTitle">Velocità: reale, misurata e mostrata · ultimi 12 s</h2>
+      <ul class="legend">
+        <li><i id="lgTrue"></i>reale</li>
+        <li><i id="lgRaw"></i>misurata dal Pico (finestre su giri interi di ruota)</li>
+        <li><i id="lgShown"></i>mostrata (filtro, +3 % +1 km/h, isteresi)</li>
+      </ul>
+    </div>
+    <canvas id="chart" aria-label="Grafico della velocità" role="img"></canvas>
+  </section>
+
+  <div class="notes">
+    <section>
+      <h2>Display</h2>
+      <dl class="spec">
+        <dt>Modello</dt><dd>Crystalfontz CFAF800480H0-043SN</dd>
+        <dt>Diagonale</dt><dd>4,3″ · 217 ppi</dd>
+        <dt>Area attiva</dt><dd>95,0 × 53,9 mm</dd>
+        <dt>Risoluzione</dt><dd>800 × 480, RGB 18 bit via DPI</dd>
+        <dt>Luminosità</dt><dd>1000 cd/m², IPS</dd>
+        <dt>Temperatura</dt><dd>−20 … +70 °C</dd>
+        <dt>Retroilluminazione</dt><dd>TPS61169, PWM dal Pico</dd>
+        <dt>Avvio</dt><dd>&lt; 4 s dalla chiave al primo frame</dd>
+      </dl>
+    </section>
+    <section>
+      <h2>Regole per Slint</h2>
+      <ul>
+        <li>Nessuna rotazione tranne le lancette, disegnate come <code>Path</code> con i punti calcolati in Rust.</li>
+        <li>Quadranti, bagliori e gradienti pre-renderizzati all'avvio (tiny-skia) come immagini opache.</li>
+        <li>Barre dei giri: immagine pre-renderizzata scoperta da un rettangolo di clip.</li>
+        <li>Cifre in celle a larghezza fissa: i numeri non "ballano" quando cambiano.</li>
+        <li>Velocità sport ≥ 140 px di altezza; contrasto di giorno ≥ 7:1.</li>
+        <li>Spie nei colori ECE: verde frecce e folle, blu abbaglianti, ambra attenzione, rosso critico.</li>
+        <li>Niente animazioni durante la guida, tranne avvisi e luce di cambiata.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Palette</h2>
+      <div class="swatches" id="swatches"></div>
+      <p class="hint" style="margin-top:10px">Tipografia: Saira Semi Condensed (OFL) per cifre e scritte del quadro.</p>
+    </section>
+  </div>
+
+  <footer>
+    Progetto open-source <a href="https://github.com/frascella-dev/tdm-dash">frascella-dev/tdm-dash</a> · proposta di design per la milestone M1 · i valori della moto sono una bozza fino ai rilievi.
+  </footer>
+</div>
+
+<script>
+"use strict";
+// ======================================================================
+// Profile (mirrors profiles/yamaha-tdm850-3vd.toml)
+// ======================================================================
+const P = {
+  wheelCircMm: 1975, wheelPpr: 6, gain: 1.03, offsetKmh: 1.0, zeroBelow: 2.5, speedTimeoutMs: 1500,
+  maxKmh: 240, dialMaxKmh: 220,
+  tachPpr: 1, maxRpm: 10000, redline: 8000, shiftRpm: 7500, tachTimeoutMs: 500,
+  coolCurve: [[1000, 20], [450, 40], [200, 60], [50, 80], [27.5, 100], [16, 120]],
+  warnC: 105, critC: 112, hystC: 3, gaugeMinC: 40, gaugeMaxC: 120, coolPullup: 100,
+  lowV: 11.8, notChgV: 12.8, notChgRpm: 3000, highV: 15.0, critHighV: 15.5,
+  tankL: 18, reserveL: 3.5, lPer100: 6.0,
+  lightDark: 300, lightBright: 3500, nightBelow: 0.25, dayAbove: 0.40, brMin: 4, brMax: 100,
+};
+const MM_PER_PULSE = P.wheelCircMm / P.wheelPpr;
+
+// Dash themes. Night keeps whites warm and telltales desaturated so they do not dazzle.
+const TH = {
+  day: {
+    name: "Giorno", bg: "#eceae4", panel: "#dcd9d1", ink: "#0f1113", dim: "#575b5d", faint: "#bdb9b0",
+    ghost: "rgba(15,17,19,0.11)", needle: "#d9410b", red: "#cc1f1a", redDim: "rgba(204,31,26,0.30)",
+    amber: "#b86e00", amberBg: "#f2a516", green: "#0b9a3b", blue: "#1849e6", critBg: "#c41c17", critInk: "#ffffff", cautionInk: "#1b1300",
+  },
+  night: {
+    name: "Notte", bg: "#050607", panel: "#0e1113", ink: "#e8e2d6", dim: "#8b877e", faint: "#2f3234",
+    ghost: "rgba(232,226,214,0.09)", needle: "#ff6a1a", red: "#c3332b", redDim: "rgba(195,51,43,0.32)",
+    amber: "#d9951c", amberBg: "#c98a14", green: "#2bb655", blue: "#3b6ff0", critBg: "#9e211b", critInk: "#fff4ec", cautionInk: "#140d00",
+  },
+};
+const FONT = '"Saira Semi Condensed", "Arial Narrow", "Roboto Condensed", sans-serif';
+const MONO = '"IBM Plex Mono", ui-monospace, Menlo, monospace';
+
+// ======================================================================
+// Small helpers
+// ======================================================================
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const TS = " "; // thin space as thousands separator
+function fmtInt(n) { return String(Math.floor(Math.abs(n))).replace(/\B(?=(\d{3})+(?!\d))/g, TS); }
+function fmtDec(x, d) {
+  const s = Math.abs(x).toFixed(d).split(".");
+  return (x < 0 ? "−" : "") + s[0].replace(/\B(?=(\d{3})+(?!\d))/g, TS) + (d ? "," + s[1] : "");
+}
+function fmtDur(sec) {
+  sec = Math.floor(sec); const h = Math.floor(sec / 3600), m = Math.floor(sec / 60) % 60, s = sec % 60;
+  return h ? `${h}:${String(m).padStart(2, "0")}` : `${m}:${String(s).padStart(2, "0")}`;
+}
+function rand(a, b) { return a + Math.random() * (b - a); }
+function gauss() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+
+// Coolant NTC curve: interpolate in ln(R). Points are (ohm, °C) with R decreasing.
+function tempFromR(R) {
+  const c = P.coolCurve; if (R >= c[0][0]) return null; // below curve = "LO"
+  if (R <= c[c.length - 1][0]) return c[c.length - 1][1];
+  for (let i = 0; i < c.length - 1; i++) {
+    const [r0, t0] = c[i], [r1, t1] = c[i + 1];
+    if (R <= r0 && R >= r1) return lerp(t0, t1, (Math.log(r0) - Math.log(R)) / (Math.log(r0) - Math.log(r1)));
+  }
+  return null;
+}
+function rFromTemp(T) {
+  const c = P.coolCurve;
+  if (T <= c[0][1]) return c[0][0] * Math.exp((c[0][1] - T) * 0.04);
+  for (let i = 0; i < c.length - 1; i++) {
+    const [r0, t0] = c[i], [r1, t1] = c[i + 1];
+    if (T >= t0 && T <= t1) return Math.exp(lerp(Math.log(r0), Math.log(r1), (T - t0) / (t1 - t0)));
+  }
+  return c[c.length - 1][0] * Math.exp(-(T - c[c.length - 1][1]) * 0.02);
+}
+
+// ======================================================================
+// MCU side: pulse meter (mirrors tdm-core::PulseMeter)
+// ======================================================================
+class PulseMeter {
+  constructor({ group, minWindowMs, maxGroups, minGapMs, blankPct, resetMs }) {
+    Object.assign(this, { group, minWindowMs, maxGroups, minGapMs, blankPct, resetMs });
+    this.edges = []; this.total = 0; this.lastPeriod = 0; this.rejected = 0;
+  }
+  onEdge(t) {
+    const n = this.edges.length;
+    if (n) {
+      const gap = t - this.edges[n - 1];
+      if (gap < Math.max(this.minGapMs, this.blankPct * this.lastPeriod)) { this.rejected++; return false; }
+      if (gap > this.resetMs) this.edges = [];
+      this.lastPeriod = gap > 200 ? 0 : gap;
+    }
+    this.edges.push(t); this.total++;
+    if (this.edges.length > this.group * this.maxGroups + 1) this.edges.shift();
+    return true;
+  }
+  stats(now) {
+    const e = this.edges, n = e.length;
+    const age = n ? now - e[n - 1] : 1e9;
+    if (n < this.group + 1) return { spanEdges: 0, spanMs: 0, ageMs: age, total: this.total };
+    let m = 1;
+    while (m < this.maxGroups && n - 1 - this.group * (m + 1) >= 0 && e[n - 1] - e[n - 1 - this.group * m] < this.minWindowMs) m++;
+    const k = this.group * m;
+    return { spanEdges: k, spanMs: e[n - 1] - e[n - 1 - k], ageMs: age, total: this.total };
+  }
+}
+
+// ======================================================================
+// Vehicle and scenarios
+// ======================================================================
+const GEARS = [2.571, 1.778, 1.381, 1.125, 0.962];      // approximate 3VD ratios
+const RPM_PER_MS = (60 / 1.98) * 1.708 * 2.8125;          // primary × final, rear tyre 150/70-17
+
+const SCENARIOS = {
+  city: {
+    name: "Città", note: "Semafori, folle da fermi, frecce alle svolte, cambiate sotto i 4500 giri.",
+    shift: 4300, down: 2300, cool: 88, coolStop: 97, vbat: "ok",
+    legs: [
+      { v: 0, hold: 5 }, { v: 48, a: 2.2, hold: 7 }, { v: 26, d: 3, turn: "R", hold: 2 }, { v: 46, a: 2, hold: 6 },
+      { v: 0, d: 3.2, hold: 6 }, { v: 38, a: 2.4, turn: "L", hold: 3 }, { v: 52, a: 1.8, hold: 8 }, { v: 0, d: 3, hold: 4 },
+    ],
+  },
+  mountain: {
+    name: "Passo di montagna", note: "Allunghi fino alla zona rossa: la barra dei giri lampeggia sopra i 7500.",
+    shift: 7900, down: 4800, cool: 92, coolStop: 98, vbat: "ok",
+    legs: [
+      { v: 0, hold: 2 }, { v: 95, a: 4.2, hold: 2 }, { v: 42, d: 6, hold: 2 }, { v: 105, a: 4.4, hold: 1.5 },
+      { v: 38, d: 6.5, turn: "L", hold: 2 }, { v: 88, a: 4.2, hold: 2 }, { v: 50, d: 5.5, hold: 1.5 }, { v: 112, a: 4.2, hold: 2 }, { v: 0, d: 5, hold: 3 },
+    ],
+  },
+  motorway: {
+    name: "Autostrada", note: "Crociera a 130 con sorpassi. L'autonomia stimata scende sotto la riserva: compare l'avviso informativo.",
+    shift: 5500, down: 3000, cool: 84, coolStop: 92, vbat: "ok", tripB: 240.5,
+    legs: [
+      { v: 0, hold: 2 }, { v: 130, a: 2.8, hold: 14 }, { v: 148, a: 1.6, turn: "L", hold: 5 }, { v: 130, d: 1.2, turn: "R", hold: 16 },
+    ],
+  },
+  warmup: {
+    name: "Riscaldamento a freddo", note: "Moto ferma al minimo dopo una notte all'aperto: la temperatura parte da 14 °C (LO).",
+    shift: 4000, down: 2200, cool: 82, coolStop: 82, coolStart: 14, coolRate: 0.9, vbat: "ok", legs: [{ v: 0, hold: 9999 }],
+  },
+  nocharge: {
+    name: "Ricarica guasta", note: "Lo statore non carica: la tensione cala con il motore oltre i 3000 giri. Prima \"non in carica\", poi \"batteria bassa\".",
+    shift: 5200, down: 3100, cool: 86, coolStop: 94, vbat: "fail",
+    legs: [{ v: 0, hold: 2 }, { v: 80, a: 2.5, hold: 20 }, { v: 60, d: 2, hold: 10 }, { v: 85, a: 2, hold: 20 }],
+  },
+  regulator: {
+    name: "Regolatore guasto", note: "Il regolatore SH629A non limita più: la tensione sale oltre 15 V e poi 15,5 V.",
+    shift: 5200, down: 3000, cool: 86, coolStop: 94, vbat: "over",
+    legs: [{ v: 0, hold: 2 }, { v: 90, a: 2.5, hold: 30 }, { v: 70, d: 2, hold: 15 }],
+  },
+  overheat: {
+    name: "Coda d'estate", note: "Incolonnati sotto il sole: l'acqua supera 105 °C (attenzione) e poi 112 °C (critico).",
+    shift: 3800, down: 2100, cool: 99, coolStop: 117, coolRate: 0.45, vbat: "ok",
+    legs: [{ v: 0, hold: 8 }, { v: 12, a: 1.2, hold: 3 }, { v: 0, d: 2, hold: 9 }, { v: 9, a: 1, hold: 2 }, { v: 0, d: 2, hold: 10 }],
+  },
+  linkdrop: {
+    name: "Collegamento instabile", note: "Ogni 20 s il cavo USB si interrompe per 4 s: cifre attenuate, poi \"---\" e avviso critico, poi riconnessione.",
+    shift: 4500, down: 2400, cool: 88, coolStop: 96, vbat: "ok", linkEvery: 20, linkFor: 4,
+    legs: [{ v: 0, hold: 3 }, { v: 60, a: 2.4, hold: 12 }, { v: 30, d: 3, hold: 4 }, { v: 70, a: 2.2, hold: 10 }, { v: 0, d: 3, hold: 4 }],
+  },
+};
+
+const veh = {
+  scn: null, leg: 0, legHold: 0, v: 0, gear: 0, stopT: 0, rpm: 1200, rpmTarget: 1200, shiftT: 0,
+  cool: 86, vbat: 12.7, vbatDrift: 0, turn: null, highBeam: false, distFront: 0, nextEdgeAt: 0, ignPhase: 0,
+};
+
+function loadScenario(key) {
+  const s = SCENARIOS[key];
+  veh.scn = s; veh.key = key; veh.leg = 0; veh.legHold = 0; veh.v = 0; veh.gear = 0; veh.stopT = 2; veh.rpm = 1200;
+  veh.cool = s.coolStart ?? s.cool; veh.vbat = 12.7; veh.vbatDrift = 0; veh.turn = null; veh.scnT = 0;
+  if (s.tripB != null) mcu.odo.tripUm[1] = s.tripB * 1e9;
+  else if (mcu.odo.tripUm[1] / 1e9 > 230) mcu.odo.tripUm[1] = 214.0 * 1e9;
+  noteEl.textContent = s.note;
+}
+
+function stepVehicle(dt) {
+  const s = veh.scn; veh.scnT += dt;
+  const leg = s.legs[veh.leg];
+  const target = leg.v / 3.6;
+  const accel = (leg.a ?? 2) * (1 - veh.v / 80);
+  if (veh.v < target - 0.05) veh.v = Math.min(target, veh.v + accel * dt);
+  else if (veh.v > target + 0.05) veh.v = Math.max(target, veh.v - (leg.d ?? 3) * dt);
+  if (Math.abs(veh.v - target) < 0.15) {
+    veh.legHold += dt;
+    if (veh.legHold >= leg.hold) { veh.leg = (veh.leg + 1) % s.legs.length; veh.legHold = 0; }
+  }
+  veh.turn = leg.turn ?? null;
+
+  // Gearbox and engine speed
+  const kmh = veh.v * 3.6;
+  if (veh.v < 0.3) { veh.stopT += dt; if (veh.stopT > 1.5) veh.gear = 0; }
+  else { veh.stopT = 0; if (veh.gear === 0) veh.gear = 1; }
+  if (veh.gear > 0) {
+    const r = veh.v * RPM_PER_MS * GEARS[veh.gear - 1];
+    if (r > s.shift && veh.gear < 5) { veh.gear++; veh.shiftT = 0.25; }
+    else if (r < s.down && veh.gear > 1 && kmh > 8) { veh.gear--; veh.shiftT = 0.2; }
+  }
+  let rpm;
+  if (veh.gear === 0) rpm = 1200 + 40 * Math.sin(veh.scnT * 2.1);
+  else {
+    rpm = veh.v * RPM_PER_MS * GEARS[veh.gear - 1];
+    const accelerating = veh.v < target - 0.2;
+    if (veh.gear === 1 && kmh < 14) rpm = Math.max(rpm, accelerating ? 2600 : 1250); // clutch slip
+    rpm = Math.max(rpm, 1150);
+  }
+  veh.shiftT = Math.max(0, veh.shiftT - dt);
+  veh.rpm += (rpm - veh.rpm) * (1 - Math.exp(-dt / (veh.shiftT > 0 ? 0.09 : 0.05)));
+
+  // Coolant: slower to cool when stopped, simple first-order model
+  const coolTarget = kmh < 5 ? s.coolStop : s.cool;
+  const rate = s.coolRate ?? 0.08;
+  veh.cool += clamp(coolTarget - veh.cool, -rate * 2, rate) * dt;
+
+  // Battery
+  let vt = veh.rpm > 1800 ? 14.2 - (veh.highBeam ? 0.1 : 0) : 12.85;
+  if (s.vbat === "fail") { if (veh.rpm > 2200) veh.vbatDrift += 0.022 * dt; vt = 12.7 - veh.vbatDrift; }
+  if (s.vbat === "over") { veh.vbatDrift = Math.min(veh.vbatDrift + 0.05 * dt, 2.2); vt = (veh.rpm > 1800 ? 14.2 : 12.9) + veh.vbatDrift; }
+  veh.vbat += (vt - veh.vbat) * (1 - Math.exp(-dt / 1.2));
+}
+
+// ======================================================================
+// MCU simulation: edges, debounced inputs, odometer, telemetry, backlight
+// ======================================================================
+const mcu = {
+  wheel: new PulseMeter({ group: P.wheelPpr, minWindowMs: 100, maxGroups: 4, minGapMs: 2.5, blankPct: 0.3, resetMs: P.speedTimeoutMs }),
+  ign: new PulseMeter({ group: 1, minWindowMs: 40, maxGroups: 8, minGapMs: 2.4, blankPct: 0.4, resetMs: 600 }),
+  odo: { odoUm: 48213.4 * 1e9, tripUm: [212.4 * 1e9, 214.0 * 1e9] },
+  boltErr: Array.from({ length: P.wheelPpr }, () => rand(-0.02, 0.02)),
+  boltIdx: 0, nextTelemetry: 0, seq: 0, uptime: 0, linkUp: true, backlight: 0, blTarget: 0, lastHeartbeat: 0,
+  framSeq: 18234, flashPhase: 0,
+};
+
+function stepMcu(t, dt) {
+  mcu.uptime += dt;
+  // Wheel edges: one per disc bolt, with ±2 % spacing error and ±50 µs jitter
+  const d0 = veh.distFront, d1 = d0 + veh.v * dt * 1000; // mm
+  while (veh.nextEdgeAt <= d1) {
+    const frac = veh.v > 0 ? (veh.nextEdgeAt - d0) / (d1 - d0) : 1;
+    const te = (t - dt + frac * dt) * 1000 + gauss() * 0.05;
+    if (mcu.wheel.onEdge(te)) {
+      mcu.odo.odoUm += MM_PER_PULSE * 1000;
+      mcu.odo.tripUm[0] += MM_PER_PULSE * 1000; mcu.odo.tripUm[1] += MM_PER_PULSE * 1000;
+    }
+    mcu.boltIdx = (mcu.boltIdx + 1) % P.wheelPpr;
+    veh.nextEdgeAt += MM_PER_PULSE * (1 + mcu.boltErr[mcu.boltIdx]);
+  }
+  veh.distFront = d1;
+  // Ignition: one spark per crank revolution, sometimes with a ringing edge right after
+  const ph0 = veh.ignPhase, ph1 = ph0 + (veh.rpm / 60) * P.tachPpr * dt;
+  for (let k = Math.ceil(ph0); k <= ph1; k++) {
+    const te = (t - dt + ((k - ph0) / (ph1 - ph0)) * dt) * 1000;
+    mcu.ign.onEdge(te + gauss() * 0.03);
+    if (Math.random() < 0.3) mcu.ign.onEdge(te + 0.4); // coil ringing, rejected by blanking
+  }
+  veh.ignPhase = ph1;
+
+  // Backlight PWM: off if the UI heartbeat is missing for > 2 s
+  if (t - mcu.lastHeartbeat > 2) mcu.blTarget = 0;
+  const k = 1 - Math.exp(-dt / 0.1);
+  mcu.backlight += (mcu.blTarget - mcu.backlight) * k;
+}
+
+function makeTelemetry(t) {
+  const now = t * 1000;
+  const flash = (t % 0.7) < 0.36; // ≈ 85 flashes per minute
+  const turnL = (veh.turn === "L" || ui.manualTurn.L > t) && flash;
+  const turnR = (veh.turn === "R" || ui.manualTurn.R > t) && flash;
+  const neutral = veh.gear === 0;
+  const hb = veh.highBeam || ui.manualHB;
+  const R = rFromTemp(veh.cool);
+  const coolRaw = Math.round(clamp(4095 * R / (R + P.coolPullup) + gauss() * 3, 0, 4095));
+  const vbatRaw = Math.round(clamp((veh.vbat + gauss() * 0.02) * (22 / 122) / 3.3 * 4095, 0, 4095));
+  const lux = Math.pow(10, ui.light / 20) - 1;
+  const lightRaw = Math.round(clamp(lux * 0.8 + 6, 0, 4095));
+  return {
+    seq: mcu.seq++, t,
+    wheel: mcu.wheel.stats(now), ign: mcu.ign.stats(now),
+    vbatRaw, coolRaw, lightRaw,
+    inputs: (neutral << 0) | (hb << 1) | (turnL << 2) | (turnR << 3) | (1 << 4),
+    odo: { odoM: mcu.odo.odoUm / 1e6, tripM: [mcu.odo.tripUm[0] / 1e6, mcu.odo.tripUm[1] / 1e6] },
+    wheelHz: mcu.wheel.stats(now).spanMs ? mcu.wheel.stats(now).spanEdges / mcu.wheel.stats(now).spanMs * 1000 : 0,
+  };
+}
+
+// ======================================================================
+// Host (Pi) logic: filters, warnings, state machine (mirrors tdm-logic)
+// ======================================================================
+const host = {
+  lastTel: null, lastTelT: -1, linkState: "ok", rawSpeedHist: [], rawRpmHist: [],
+  speedRaw: 0, rpmRaw: 0, speedEma: 0, speedDisp: 0, digits: 0,
+  needleSpeed: { x: 0, v: 0 }, needleRpm: { x: 0, v: 0 },
+  cool: null, coolEma: null, coolR: 0, vbat: 12.7, inputs: 0,
+  bright: 60, lightN: 0.8, theme: "day", themePendingT: 0,
+  rideT: 0, maxKmh: 0, distStartM: null, framesRx: 0, reconnects: 0, crcErr: 0, bootMs: 2860,
+};
+
+function median3(arr, v) { arr.push(v); if (arr.length > 3) arr.shift(); const s = [...arr].sort((a, b) => a - b); return s[Math.floor(s.length / 2)]; }
+
+function speedFromStats(s) {
+  if (s.spanEdges === 0 || s.ageMs > P.speedTimeoutMs) return 0;
+  let v = s.spanEdges * MM_PER_PULSE / s.spanMs; // mm/ms = m/s
+  const avg = s.spanMs / s.spanEdges;
+  if (s.ageMs > avg) v = Math.min(v, MM_PER_PULSE / s.ageMs);
+  const kmh = v * 3.6;
+  return kmh > P.maxKmh ? null : kmh;
+}
+function rpmFromStats(s) {
+  if (s.spanEdges === 0 || s.ageMs > P.tachTimeoutMs) return 0;
+  let hz = s.spanEdges / s.spanMs * 1000;
+  const avg = s.spanMs / s.spanEdges;
+  if (s.ageMs > avg) hz = Math.min(hz, 1000 / s.ageMs);
+  const rpm = hz * 60 / P.tachPpr;
+  return rpm > P.maxRpm * 1.1 ? null : rpm;
+}
+
+function onTelemetry(tel, t) {
+  if (host.lastTelT >= 0 && t - host.lastTelT > 1.0) host.reconnects++;
+  host.lastTel = tel; host.lastTelT = t; host.framesRx++;
+  const v = speedFromStats(tel.wheel); if (v != null) host.speedRaw = median3(host.rawSpeedHist, v);
+  const r = rpmFromStats(tel.ign); if (r != null) host.rpmRaw = median3(host.rawRpmHist, r);
+  const ratio = tel.coolRaw / 4095;
+  if (ratio > 0.98 || ratio < 0.02) host.coolR = null;
+  else host.coolR = P.coolPullup * ratio / (1 - ratio);
+  host.vbatInst = tel.vbatRaw / 4095 * 3.3 / (22 / 122);
+  host.inputs = tel.inputs;
+  host.lightRaw = tel.lightRaw;
+}
+
+function spring(n, target, omega, dt) {
+  let left = dt;
+  while (left > 0) {
+    const h = Math.min(left, 0.016);
+    n.v += (omega * omega * (target - n.x) - 2 * omega * n.v) * h;
+    n.x += n.v * h; left -= h;
+  }
+}
+
+function stepHost(t, dt) {
+  const age = host.lastTelT < 0 ? 99 : t - host.lastTelT;
+  host.linkState = age < 0.3 ? "ok" : age < 1.0 ? "stale" : "lost";
+  const live = host.linkState === "ok";
+  const a = (tau) => 1 - Math.exp(-dt / tau);
+
+  if (live) {
+    host.speedEma += (host.speedRaw - host.speedEma) * a(0.3);
+    host.speedDisp = host.speedEma < P.zeroBelow ? 0 : host.speedEma * P.gain + P.offsetKmh;
+    if (host.speedDisp > host.digits + 0.6 || host.speedDisp < host.digits - 0.6) host.digits = Math.round(host.speedDisp);
+    if (host.speedDisp === 0) host.digits = 0;
+    if (host.coolR != null) {
+      const T = tempFromR(host.coolR);
+      host.coolLo = T == null;
+      const Tv = T ?? P.coolCurve[0][1];
+      host.coolEma = host.coolEma == null ? Tv : host.coolEma + (Tv - host.coolEma) * a(3);
+      host.coolFault = false;
+    } else host.coolFault = true;
+    host.vbat += (host.vbatInst - host.vbat) * a(1);
+  }
+  const showSpeed = host.linkState === "lost" ? 0 : host.speedDisp;
+  const showRpm = host.linkState === "lost" ? 0 : host.rpmRaw;
+  if (host.linkState !== "stale") {
+    spring(host.needleSpeed, showSpeed, 10, dt);
+    spring(host.needleRpm, showRpm, 25, dt);
+  }
+  // Trip statistics for this power-on
+  if (live && host.lastTel) {
+    if (host.speedDisp > 2) host.rideT += dt;
+    host.maxKmh = Math.max(host.maxKmh, host.digits);
+    if (host.distStartM == null) host.distStartM = host.lastTel.odo.tripM[0];
+  }
+  stepBrightness(t, dt);
+}
+
+// Ambient light → backlight and day/night theme
+function stepBrightness(t, dt) {
+  const raw = host.lightRaw ?? 2000;
+  const n = clamp(Math.log(Math.max(raw, 1) / P.lightDark) / Math.log(P.lightBright / P.lightDark), 0, 1);
+  host.lightN = n;
+  let theme = host.theme;
+  if (ui.themeMode === "auto") {
+    const want = n < P.nightBelow ? "night" : n > P.dayAbove ? "day" : theme;
+    if (want !== theme) {
+      host.themePendingT += dt;
+      const need = want === "night" ? 10 : 5;
+      host.themeCountdown = need - host.themePendingT;
+      if (host.themePendingT >= need) { theme = want; host.themePendingT = 0; }
+    } else { host.themePendingT = 0; host.themeCountdown = null; }
+  } else { theme = ui.themeMode; host.themeCountdown = null; }
+  host.theme = theme;
+  const target = clamp(P.brMin + (P.brMax - P.brMin) * n + ui.settings.brOffset, P.brMin, 100);
+  host.bright += (target - host.bright) * (1 - Math.exp(-dt / (target > host.bright ? 0.7 : 1.5)));
+}
+
+// ---------------------------------------------------------------- warnings
+const WARN = {
+  link: { sev: 3, text: "Collegamento con il modulo sensori perso", sub: "Velocità e giri non disponibili", icon: "link" },
+  coolCrit: { sev: 3, text: "Temperatura acqua critica", sub: "Fermati appena puoi e spegni il motore", icon: "cool" },
+  overCrit: { sev: 3, text: "Sovratensione", sub: "Regolatore di tensione guasto: rischio per batteria e luci", icon: "bat" },
+  coolHigh: { sev: 2, text: "Temperatura acqua alta", sub: "SET: silenzia per 5 minuti", icon: "cool" },
+  over: { sev: 2, text: "Tensione alta", sub: "SET: silenzia per 5 minuti", icon: "bat" },
+  noChg: { sev: 2, text: "Batteria non in carica", sub: "Controlla statore e regolatore · SET: silenzia", icon: "bat" },
+  lowBat: { sev: 2, text: "Batteria bassa", sub: "SET: silenzia per 5 minuti", icon: "bat" },
+  coolFault: { sev: 2, text: "Sensore temperatura scollegato", sub: "SET: silenzia per 5 minuti", icon: "cool" },
+  turn: { sev: 1, text: "Freccia accesa", icon: "turn" },
+  fuel: { sev: 1, text: "Riserva stimata", icon: "fuel" },
+};
+const warnState = Object.fromEntries(Object.keys(WARN).map((k) => [k, { on: false, t: 0, clearT: 0, since: 0, snooze: 0 }]));
+
+function rangeKm() {
+  if (!host.lastTel) return null;
+  const used = host.lastTel.odo.tripM[1] / 1000 * P.lPer100 / 100;
+  return Math.max(0, (P.tankL - used) / P.lPer100 * 100);
+}
+
+function stepWarnings(t, dt) {
+  const live = host.linkState !== "lost";
+  const T = host.coolEma, V = host.vbat, rpm = host.rpmRaw;
+  const turnOn = (host.inputs & 0b1100) !== 0 || (veh.turn != null);
+  ui.turnRideT = turnOn && host.speedDisp > 20 ? (ui.turnRideT ?? 0) + dt : 0;
+  const defs = {
+    link: [host.linkState === "lost", 0, host.linkState === "ok", 0],
+    coolCrit: [live && T != null && T >= P.critC, 2, T != null && T < P.critC - P.hystC, 0],
+    coolHigh: [live && T != null && T >= P.warnC, 3, T != null && T < P.warnC - P.hystC, 0],
+    overCrit: [live && V > P.critHighV, 1, V < P.highV - 0.3, 0],
+    over: [live && V > P.highV, 2, V < P.highV - 0.3, 0],
+    noChg: [live && V < P.notChgV && rpm > P.notChgRpm, 30, V > P.notChgV + 0.3, 10],
+    lowBat: [live && V < P.lowV, 10, V > P.lowV + 0.4, 0],
+    coolFault: [live && host.coolFault, 5, !host.coolFault, 5],
+    turn: [ui.turnRideT > 30, 0, !turnOn, 0],
+    fuel: [live && (rangeKm() ?? 99) < P.reserveL / P.lPer100 * 100, 0, (rangeKm() ?? 99) > P.reserveL / P.lPer100 * 100 + 5, 0],
+  };
+  for (const [k, [raise, onDelay, clear, offDelay]] of Object.entries(defs)) {
+    const s = warnState[k];
+    if (!s.on) {
+      s.t = raise ? s.t + dt : 0;
+      if (raise && s.t >= onDelay) { s.on = true; s.since = t; s.clearT = 0; }
+    } else {
+      s.clearT = clear ? s.clearT + dt : 0;
+      if (clear && s.clearT >= offDelay) { s.on = false; s.t = 0; }
+    }
+  }
+  // A critical warning hides its own caution twin
+  if (warnState.coolCrit.on) warnState.coolHigh.on = false;
+  if (warnState.overCrit.on) warnState.over.on = false;
+}
+function activeWarnings(t) {
+  return Object.entries(warnState)
+    .filter(([k, s]) => s.on && !(WARN[k].sev === 2 && s.snooze > t))
+    .map(([k, s]) => ({ id: k, ...WARN[k], since: s.since }))
+    .sort((a, b) => b.sev - a.sev || b.since - a.since);
+}
+
+// ======================================================================
+// UI state machine
+// ======================================================================
+const ui = {
+  state: "ride", screen: "main", layout: "classic", themeMode: "auto", light: 72,
+  t: 0, stateT: 0, paused: false, timeScale: 1,
+  manualTurn: { L: 0, R: 0 }, manualHB: false,
+  settings: { brOffset: 0, diag: true }, setIdx: 0, tripSel: 0, toast: null,
+  hang: false, hangT: 0, linkCut: 0, bootPhase: null,
+};
+const SETTINGS_ITEMS = [
+  { id: "layout", label: "Layout di guida" },
+  { id: "theme", label: "Tema" },
+  { id: "bright", label: "Luminosità" },
+  { id: "diag", label: "Schermata diagnostica" },
+  { id: "calib", label: "Calibrazione velocità" },
+  { id: "tach", label: "Calibrazione contagiri" },
+  { id: "exit", label: "Esci" },
+];
+function settingValue(id) {
+  switch (id) {
+    case "layout": return { classic: "Classic", sport: "Sport", touring: "Touring" }[ui.layout];
+    case "theme": return { auto: "Automatico", day: "Giorno", night: "Notte" }[ui.themeMode];
+    case "bright": return (ui.settings.brOffset > 0 ? "+" : "") + ui.settings.brOffset + " %";
+    case "diag": return ui.settings.diag ? "Attiva" : "Nascosta";
+    case "calib": return `${fmtInt(P.wheelCircMm)} mm · ${P.wheelPpr} impulsi/giro`;
+    case "tach": return `${P.tachPpr} impulso/giro · rosso ${fmtInt(P.redline)}`;
+    default: return "";
+  }
+}
+function toast(msg) { ui.toast = { msg, until: ui.t + 2.2 }; }
+
+function setState(s) { ui.state = s; ui.stateT = 0; }
+
+function button(btn, long) {
+  if (ui.hang) return;
+  if (ui.state === "settings") {
+    ui.settingsIdle = 0;
+    const item = SETTINGS_ITEMS[ui.setIdx];
+    if (btn === "MODE" && !long) ui.setIdx = (ui.setIdx + 1) % SETTINGS_ITEMS.length;
+    else if (btn === "SET" && long) { setState("ride"); }
+    else if (btn === "SET") {
+      if (item.id === "layout") setLayout({ classic: "sport", sport: "touring", touring: "classic" }[ui.layout]);
+      else if (item.id === "theme") setThemeMode({ auto: "day", day: "night", night: "auto" }[ui.themeMode]);
+      else if (item.id === "bright") ui.settings.brOffset = ui.settings.brOffset >= 20 ? -20 : ui.settings.brOffset + 10;
+      else if (item.id === "diag") ui.settings.diag = !ui.settings.diag;
+      else if (item.id === "calib" || item.id === "tach") toast("Si modifica nel profilo /boot/tdm-dash.toml");
+      else if (item.id === "exit") setState("ride");
+    }
+    syncControls(); return;
+  }
+  if (ui.state !== "ride") return;
+  const w = activeWarnings(ui.t)[0];
+  if (btn === "SET" && !long && w && w.sev === 2) {
+    warnState[w.id].snooze = ui.t + 300; toast("Avviso silenziato per 5 minuti"); return;
+  }
+  if (btn === "MODE" && !long) {
+    const order = ["main", "trip", ...(ui.settings.diag ? ["diag"] : [])];
+    ui.screen = order[(order.indexOf(ui.screen) + 1) % order.length];
+  } else if (btn === "SET" && long) {
+    if (ui.screen === "trip") {
+      const i = ui.tripSel; mcu.odo.tripUm[i] = 0; if (i === 0) { host.rideT = 0; host.maxKmh = 0; host.distStartM = 0; }
+      toast(i === 0 ? "Parziale A azzerato" : "Pieno registrato: parziale B azzerato");
+    } else if (host.digits < 3) { setState("settings"); ui.setIdx = 0; ui.settingsIdle = 0; }
+    else toast("Impostazioni disponibili solo da fermi");
+  } else if (btn === "SET" && !long && ui.screen === "trip") ui.tripSel = 1 - ui.tripSel;
+  syncControls();
+}
+
+function stepUi(t, dt) {
+  ui.stateT += dt;
+  if (ui.state === "settings") {
+    ui.settingsIdle = (ui.settingsIdle ?? 0) + dt;
+    if (ui.settingsIdle > 20 || host.digits >= 5) setState("ride");
+  }
+  // Boot sequence: dark Linux boot → splash → hello → self-test → ride
+  if (ui.state === "boot" && ui.stateT >= host.bootMs / 1000) { setState("splash"); mcu.blTarget = 1; }
+  if (ui.state === "splash" && ui.stateT >= 0.9) setState(host.digits >= 5 ? "ride" : "selftest");
+  if (ui.state === "selftest" && (ui.stateT >= 1.4 || host.digits >= 5)) setState("ride");
+}
+
+// ======================================================================
+// Rendering
+// ======================================================================
+const cv = document.getElementById("dash");
+const ctx = cv.getContext("2d");
+const W = 800, H = 480;
+let DPR = 1;
+function sizeCanvas() {
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = W * DPR; cv.height = H * DPR;
+  dialCache.clear();
+}
+const dialCache = new Map();
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+function th() { return TH[host.theme]; }
+
+function polar(cx, cy, r, deg) { const a = deg * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+// Dial sweep: value fraction f ∈ [0,1] → canvas angle (deg), 270° clockwise through the top.
+const dialAngle = (f) => 135 + 270 * f;
+
+function textCells(c, str, x, base, cellW, font, color, align = "center") {
+  c.font = font; c.fillStyle = color; c.textAlign = "center"; c.textBaseline = "alphabetic";
+  const narrow = (ch) => ch === TS || ch === "," || ch === "." || ch === " " || ch === ":";
+  const widths = [...str].map((ch) => (narrow(ch) ? cellW * 0.42 : cellW));
+  const total = widths.reduce((a, b) => a + b, 0);
+  let x0 = align === "center" ? x - total / 2 : align === "right" ? x - total : x;
+  [...str].forEach((ch, i) => { c.fillText(ch, x0 + widths[i] / 2, base); x0 += widths[i]; });
+  return total;
+}
+function label(c, str, x, y, size, color, align = "center", weight = 500, font = FONT) {
+  c.font = `${weight} ${size}px ${font}`; c.fillStyle = color; c.textAlign = align; c.textBaseline = "alphabetic"; c.fillText(str, x, y);
+}
+
+// ---------------------------------------------------------------- dial faces (pre-rendered, like the tiny-skia bitmaps)
+function dialFace(kind, theme) {
+  const key = kind + theme + DPR;
+  if (dialCache.has(key)) return dialCache.get(key);
+  const T = TH[theme], R = 160, S = 2 * R + 20;
+  const oc = document.createElement("canvas"); oc.width = S * DPR; oc.height = S * DPR;
+  const c = oc.getContext("2d"); c.scale(DPR, DPR);
+  const cx = S / 2, cy = S / 2;
+  c.lineCap = "butt";
+  // outer ring
+  c.strokeStyle = T.faint; c.lineWidth = 2;
+  c.beginPath(); c.arc(cx, cy, R, dialAngle(0) * Math.PI / 180, dialAngle(1) * Math.PI / 180); c.stroke();
+  const max = kind === "speed" ? P.dialMaxKmh : P.maxRpm;
+  if (kind === "rpm") { // red zone band
+    c.strokeStyle = T.red; c.lineWidth = 9;
+    c.beginPath(); c.arc(cx, cy, R - 6, dialAngle(P.redline / max) * Math.PI / 180, dialAngle(1) * Math.PI / 180); c.stroke();
+  }
+  const minor = kind === "speed" ? 10 : 250, major = kind === "speed" ? 20 : 1000;
+  for (let v = 0; v <= max + 1e-6; v += minor) {
+    const f = v / max, a = dialAngle(f);
+    const isMaj = Math.abs(v % major) < 1e-6, isHalf = kind === "rpm" && Math.abs(v % 500) < 1e-6;
+    const len = isMaj ? 18 : isHalf ? 11 : 6;
+    const [x0, y0] = polar(cx, cy, R - 2, a), [x1, y1] = polar(cx, cy, R - 2 - len, a);
+    c.strokeStyle = kind === "rpm" && v >= P.redline ? T.red : isMaj ? T.ink : T.dim;
+    c.lineWidth = isMaj ? 3.2 : 1.6;
+    c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.stroke();
+    if (isMaj) {
+      const [tx, ty] = polar(cx, cy, R - 40, a);
+      const txt = kind === "speed" ? String(v) : String(v / 1000);
+      c.font = `600 ${kind === "speed" ? 21 : 24}px ${FONT}`; c.fillStyle = kind === "rpm" && v >= P.redline ? T.red : T.ink;
+      c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(txt, tx, ty + 1);
+    }
+  }
+  if (kind === "speed") { // Italian limits: urban, extra-urban, expressway, motorway
+    for (const v of [50, 90, 110, 130]) {
+      const a = dialAngle(v / max) * Math.PI / 180;
+      const [x, y] = polar(cx, cy, R + 6, dialAngle(v / max));
+      c.save(); c.translate(x, y); c.rotate(a + Math.PI / 2);
+      c.fillStyle = T.needle; c.beginPath(); c.moveTo(0, 3); c.lineTo(-4, -4); c.lineTo(4, -4); c.closePath(); c.fill();
+      c.restore();
+    }
+  }
+  c.font = `500 13px ${FONT}`; c.fillStyle = T.dim; c.textAlign = "center"; c.textBaseline = "alphabetic";
+  c.fillText(kind === "speed" ? "km/h" : "×1000 giri/min", cx, cy - 52);
+  dialCache.set(key, oc);
+  return oc;
+}
+
+function needle(c, cx, cy, r, f, T) {
+  const a = dialAngle(clamp(f, -0.01, 1.01)) * Math.PI / 180;
+  const ca = Math.cos(a), sa = Math.sin(a), nx = -sa, ny = ca;
+  const tip = r - 8, tail = 22, wb = 5.5, wt = 1.6;
+  c.fillStyle = T.needle; c.beginPath();
+  c.moveTo(cx + ca * tip + nx * wt, cy + sa * tip + ny * wt);
+  c.lineTo(cx + ca * tip - nx * wt, cy + sa * tip - ny * wt);
+  c.lineTo(cx - ca * tail - nx * wb, cy - sa * tail - ny * wb);
+  c.lineTo(cx - ca * tail + nx * wb, cy - sa * tail + ny * wb);
+  c.closePath(); c.fill();
+  c.fillStyle = T.panel; c.beginPath(); c.arc(cx, cy, 15, 0, Math.PI * 2); c.fill();
+  c.strokeStyle = T.needle; c.lineWidth = 2.5; c.beginPath(); c.arc(cx, cy, 15, 0, Math.PI * 2); c.stroke();
+}
+
+// ---------------------------------------------------------------- telltale icons (self-drawn, ECE colours)
+function icoTurn(c, x, y, dir, on, T) {
+  c.save(); c.translate(x, y); if (dir === "R") c.scale(-1, 1);
+  c.beginPath(); c.moveTo(-19, 0); c.lineTo(-2, -15); c.lineTo(-2, -6); c.lineTo(18, -6); c.lineTo(18, 6); c.lineTo(-2, 6); c.lineTo(-2, 15); c.closePath();
+  if (on) { c.fillStyle = T.green; c.fill(); } else { c.fillStyle = T.ghost; c.fill(); }
+  c.restore();
+}
+function icoNeutral(c, x, y, on, T) {
+  label(c, "N", x, y + 12, 34, on ? T.green : T.ghost, "center", 700);
+}
+function icoHighBeam(c, x, y, on, T) {
+  c.save(); c.translate(x + 5, y);
+  const col = on ? T.blue : T.ghost; c.fillStyle = col; c.strokeStyle = col; c.lineWidth = 3; c.lineCap = "round";
+  c.beginPath(); c.moveTo(0, -12); c.bezierCurveTo(19, -12, 19, 12, 0, 12); c.closePath(); c.fill();
+  for (let i = -2; i <= 2; i++) { c.beginPath(); c.moveTo(-20, i * 5.4); c.lineTo(-6, i * 5.4); c.stroke(); }
+  c.restore();
+}
+function icoCool(c, x, y, col, s = 1) {
+  c.save(); c.translate(x, y); c.scale(s, s); c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 2.6; c.lineCap = "round";
+  c.beginPath(); c.moveTo(0, -14); c.lineTo(0, 4); c.stroke();
+  c.beginPath(); c.arc(0, 7, 4.5, 0, Math.PI * 2); c.fill();
+  for (const yy of [-10, -4]) { c.beginPath(); c.moveTo(3, yy); c.lineTo(9, yy); c.stroke(); }
+  c.lineWidth = 2.2;
+  for (const yy of [14]) { c.beginPath(); for (let i = 0; i <= 24; i++) { const xx = -12 + i; c.lineTo(xx, yy + Math.sin(i / 2.2) * 1.8); } c.stroke(); }
+  c.restore();
+}
+function icoBat(c, x, y, col, s = 1) {
+  c.save(); c.translate(x, y); c.scale(s, s); c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 2.4;
+  c.strokeRect(-13, -8, 26, 17); c.fillRect(-10, -12, 5, 4); c.fillRect(5, -12, 5, 4);
+  c.lineWidth = 2; c.beginPath(); c.moveTo(-9, 0); c.lineTo(-3, 0); c.moveTo(-6, -3); c.lineTo(-6, 3); c.moveTo(3, 0); c.lineTo(9, 0); c.stroke();
+  c.restore();
+}
+function icoFuel(c, x, y, col, s = 1) {
+  c.save(); c.translate(x, y); c.scale(s, s); c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 2.2;
+  c.strokeRect(-10, -11, 13, 22); c.fillRect(-7, -8, 7, 6);
+  c.beginPath(); c.moveTo(3, -6); c.lineTo(8, -2); c.lineTo(8, 7); c.lineTo(11, 7); c.lineTo(11, -4); c.stroke();
+  c.restore();
+}
+function icoLink(c, x, y, col, s = 1) {
+  c.save(); c.translate(x, y); c.scale(s, s); c.strokeStyle = col; c.lineWidth = 2.6; c.lineCap = "round";
+  c.beginPath(); c.moveTo(-12, -4); c.lineTo(10, -4); c.moveTo(5, -9); c.lineTo(10, -4); c.lineTo(5, 1); c.stroke();
+  c.beginPath(); c.moveTo(12, 6); c.lineTo(-10, 6); c.moveTo(-5, 1); c.lineTo(-10, 6); c.lineTo(-5, 11); c.stroke();
+  c.beginPath(); c.moveTo(-12, 13); c.lineTo(12, -13); c.stroke();
+  c.restore();
+}
+function drawIcon(c, kind, x, y, col, s) {
+  ({ cool: icoCool, bat: icoBat, fuel: icoFuel, link: icoLink, turn: (c, x, y, col, s) => icoTurnSmall(c, x, y, col, s) })[kind](c, x, y, col, s);
+}
+function icoTurnSmall(c, x, y, col, s = 1) {
+  c.save(); c.translate(x, y); c.scale(s * 0.7, s * 0.7); c.fillStyle = col;
+  c.beginPath(); c.moveTo(-19, 0); c.lineTo(-2, -15); c.lineTo(-2, -6); c.lineTo(18, -6); c.lineTo(18, 6); c.lineTo(-2, 6); c.lineTo(-2, 15); c.closePath(); c.fill();
+  c.restore();
+}
+
+// ---------------------------------------------------------------- view model
+function viewModel() {
+  const tel = host.lastTel, inp = host.inputs, T = th();
+  const st = ui.state === "selftest";
+  let sweep = 0;
+  if (st) sweep = Math.sin(clamp(ui.stateT / 1.2, 0, 1) * Math.PI);
+  const lost = host.linkState === "lost", stale = host.linkState === "stale";
+  return {
+    T, st, sweep, lost, stale,
+    speedF: st ? sweep : host.needleSpeed.x / P.dialMaxKmh,
+    rpmF: st ? sweep : host.needleRpm.x / P.maxRpm,
+    rpm: st ? Math.round(sweep * P.maxRpm / 50) * 50 : Math.round(host.rpmRaw / 50) * 50,
+    digits: lost ? null : st ? Math.round(sweep * P.dialMaxKmh) : host.digits,
+    tl: st ? { L: 1, R: 1, N: 1, HB: 1 } : { L: inp & 4, R: inp & 8, N: inp & 1, HB: inp & 2 },
+    cool: st ? P.gaugeMaxC : host.coolEma, coolLo: host.coolLo, coolFault: host.coolFault,
+    vbat: host.vbat, odo: tel ? tel.odo.odoM / 1000 : null, tripA: tel ? tel.odo.tripM[0] / 1000 : null, tripB: tel ? tel.odo.tripM[1] / 1000 : null,
+    range: rangeKm(), shift: !st && host.rpmRaw >= P.shiftRpm && (ui.t * 4 % 1) < 0.5,
+    warn: st ? null : activeWarnings(ui.t)[0] ?? null, infos: st ? [] : activeWarnings(ui.t).filter((w) => w.sev === 1),
+  };
+}
+
+// ---------------------------------------------------------------- common chrome
+function drawTelltales(c, vm) {
+  const T = vm.T;
+  icoTurn(c, 44, 30, "L", vm.tl.L, T);
+  icoTurn(c, 756, 30, "R", vm.tl.R, T);
+  icoNeutral(c, 352, 30, vm.tl.N, T);
+  icoHighBeam(c, 440, 30, vm.tl.HB, T);
+  // Warning icons appear only when active, in fixed slots
+  const ws = activeWarnings(ui.t);
+  const has = (ic, sev) => ws.some((w) => w.icon === ic && w.sev >= sev);
+  if (has("cool", 2) || vm.st) icoCool(c, 538, 30, has("cool", 3) ? T.red : T.amber);
+  if (has("bat", 2) || vm.st) icoBat(c, 596, 30, has("bat", 3) ? T.red : T.amber);
+  if (vm.lost) icoLink(c, 262, 30, T.red);
+  if (vm.st) { icoFuel(c, 204, 30, T.amber); }
+}
+
+function drawBottomStrip(c, vm, opts = {}) {
+  const T = vm.T, y = 432;
+  c.fillStyle = T.panel; c.fillRect(0, y, W, H - y);
+  const base = 466;
+  label(c, "ODO", 22, base - 1, 13, T.dim, "left", 600);
+  textCells(c, vm.odo == null ? "-----" : fmtInt(vm.odo), 60, base, 15, `600 24px ${FONT}`, T.ink, "left");
+  label(c, "A", 166, base - 1, 13, T.dim, "left", 600);
+  textCells(c, vm.tripA == null ? "---,-" : fmtDec(vm.tripA, 1), 182, base, 14, `600 24px ${FONT}`, T.ink, "left");
+  if (!opts.noTripB) {
+    label(c, "PIENO", 282, base - 1, 13, T.dim, "left", 600);
+    textCells(c, vm.tripB == null ? "---,-" : fmtDec(vm.tripB, 1), 330, base, 14, `600 24px ${FONT}`, T.ink, "left");
+  }
+  // battery
+  const vOk = vm.vbat >= P.lowV && vm.vbat <= P.highV;
+  icoBat(c, 676, 455, vOk ? T.dim : (vm.vbat > P.critHighV ? T.red : T.amber), 0.8);
+  textCells(c, vm.lost ? "--,-" : fmtDec(vm.vbat, 1), 744, base, 14, `600 24px ${FONT}`, vOk ? T.ink : (vm.vbat > P.critHighV ? T.red : T.amber), "right");
+  label(c, "V", 776, base, 16, T.dim, "right", 600);
+  // info pills
+  if (vm.infos.length) {
+    const w = vm.infos[0];
+    drawIcon(c, w.icon, 520, 455, T.amber, 0.8);
+    label(c, w.id === "fuel" ? `~${fmtInt(vm.range)} km` : "Freccia", 538, base - 2, 16, T.amber, "left", 600);
+  }
+}
+
+function drawCoolantColumn(c, vm, x, y0, y1) {
+  const T = vm.T, n = 12, gap = 4, h = (y1 - y0 - gap * (n - 1)) / n;
+  const f = vm.cool == null || vm.coolLo ? 0 : clamp((vm.cool - P.gaugeMinC) / (P.gaugeMaxC - P.gaugeMinC), 0, 1);
+  const lit = Math.round(f * n);
+  for (let i = 0; i < n; i++) {
+    const yy = y1 - (i + 1) * h - i * gap;
+    const segT = P.gaugeMinC + (i + 1) / n * (P.gaugeMaxC - P.gaugeMinC);
+    const hot = segT > P.warnC;
+    c.fillStyle = i < lit ? (hot ? T.red : T.ink) : (hot ? T.redDim : T.faint);
+    c.fillRect(x - 13, yy, 26, h);
+  }
+  const hi = vm.cool != null && vm.cool >= P.warnC;
+  icoCool(c, x, y1 + 30, hi ? T.red : T.dim, 0.85);
+  const txt = vm.coolFault ? "---" : vm.coolLo ? "LO" : vm.cool == null ? "--" : String(Math.round(vm.cool));
+  label(c, txt, x, y0 - 14, 24, hi ? T.red : T.ink, "center", 600);
+  label(c, "°C", x, y0 - 0, 12, T.dim, "center", 600);
+}
+
+function drawHBar(c, x, y, w, h, n, f, colorAt, T) {
+  const gap = 3, sw = (w - gap * (n - 1)) / n;
+  for (let i = 0; i < n; i++) {
+    const segF = (i + 1) / n, litSeg = segF <= f + 1e-6 || (i / n < f && f - i / n > 0.5 / n);
+    c.fillStyle = colorAt(segF, litSeg);
+    c.fillRect(x + i * (sw + gap), y, sw, h);
+  }
+}
+
+// ---------------------------------------------------------------- layouts
+function drawClassic(c, vm) {
+  const T = vm.T, cy = 228;
+  const sp = dialFace("speed", host.theme), rp = dialFace("rpm", host.theme);
+  const S = 340;
+  c.drawImage(sp, 200 - S / 2, cy - S / 2, S, S);
+  c.drawImage(rp, 600 - S / 2, cy - S / 2, S, S);
+  // digital speed inside the speedometer
+  const dcol = vm.stale ? T.dim : T.ink;
+  textCells(c, vm.digits == null ? "---" : String(vm.digits), 200, cy + 92, 36, `600 64px ${FONT}`, dcol);
+  label(c, "km/h", 200, cy + 114, 14, T.dim, "center", 500);
+  // rpm digits
+  textCells(c, vm.lost ? "----" : fmtInt(vm.rpm), 600, cy + 88, 19, `600 34px ${FONT}`, vm.stale ? T.dim : T.ink);
+  label(c, "giri/min", 600, cy + 110, 14, T.dim, "center", 500);
+  if (vm.shift) { c.fillStyle = T.needle; c.beginPath(); c.arc(600, cy - 108, 7, 0, Math.PI * 2); c.fill(); }
+  needle(c, 200, cy, 160, vm.speedF, T);
+  needle(c, 600, cy, 160, vm.rpmF, T);
+  drawCoolantColumn(c, vm, 400, 150, 352);
+  drawBottomStrip(c, vm);
+}
+
+function drawSport(c, vm) {
+  const T = vm.T, cx = 400, cy = 532, r0 = 430, r1 = 470, a0 = 220, a1 = 320, n = 50;
+  const rad = (d) => d * Math.PI / 180;
+  const f = clamp(vm.rpmF, 0, 1);
+  for (let i = 0; i < n; i++) {
+    const s0 = a0 + (a1 - a0) * i / n + 0.35, s1 = a0 + (a1 - a0) * (i + 1) / n - 0.35;
+    const segRpm = (i + 1) / n * P.maxRpm, red = segRpm > P.redline;
+    const lit = (i + 0.5) / n <= f;
+    let col = lit ? (red ? T.red : T.ink) : (red ? T.redDim : T.faint);
+    if (lit && vm.shift) col = T.needle;
+    const grow = lit ? 6 * Math.min(1, i / n * 1.6) : 0;
+    c.fillStyle = col; c.beginPath();
+    c.arc(cx, cy, r1 + grow, rad(s0), rad(s1)); c.arc(cx, cy, r0, rad(s1), rad(s0), true); c.closePath(); c.fill();
+  }
+  for (let k = 0; k <= 10; k++) {
+    const a = a0 + (a1 - a0) * k / 10, [x, y] = polar(cx, cy, r0 - 18, a);
+    label(c, String(k), x, y + 7, 20, k * 1000 >= P.redline ? T.red : T.dim, "center", 600);
+  }
+  textCells(c, vm.lost ? "----" : fmtInt(vm.rpm), 400, 182, 18, `600 30px ${FONT}`, vm.stale ? T.dim : T.ink);
+  label(c, "giri/min", 400, 202, 13, T.dim, "center", 500);
+  // giant speed
+  textCells(c, vm.digits == null ? "---" : String(vm.digits), 396, 398, 112, `700 200px ${FONT}`, vm.stale ? T.dim : T.ink);
+  label(c, "km/h", 400, 424, 16, T.dim, "center", 600);
+  // coolant (left) and battery (right) bars
+  const cf = vm.cool == null || vm.coolLo ? 0 : clamp((vm.cool - P.gaugeMinC) / (P.gaugeMaxC - P.gaugeMinC), 0, 1);
+  const hot = vm.cool != null && vm.cool >= P.warnC;
+  icoCool(c, 44, 300, hot ? T.red : T.dim, 0.8);
+  label(c, vm.coolFault ? "---" : vm.coolLo ? "LO" : vm.cool == null ? "--" : Math.round(vm.cool) + "°", 70, 310, 28, hot ? T.red : T.ink, "left", 600);
+  drawHBar(c, 30, 330, 130, 12, 8, cf, (sf, lit) => (sf > (P.warnC - P.gaugeMinC) / (P.gaugeMaxC - P.gaugeMinC) ? (lit ? T.red : T.redDim) : lit ? T.ink : T.faint), T);
+  label(c, "40", 30, 360, 12, T.dim, "left", 500); label(c, "120", 160, 360, 12, T.dim, "right", 500);
+  const range = vm.range;
+  icoFuel(c, 660, 300, T.dim, 0.8);
+  label(c, range == null ? "--" : "~" + fmtInt(range), 742, 310, 28, vm.infos.some((w) => w.id === "fuel") ? T.amber : T.ink, "right", 600);
+  label(c, "km", 770, 310, 14, T.dim, "right", 600);
+  label(c, "autonomia stimata", 770, 334, 12, T.dim, "right", 500);
+  drawBottomStrip(c, vm);
+}
+
+function drawTouring(c, vm) {
+  const T = vm.T;
+  textCells(c, vm.digits == null ? "---" : String(vm.digits), 236, 236, 80, `700 152px ${FONT}`, vm.stale ? T.dim : T.ink);
+  label(c, "km/h", 236, 266, 16, T.dim, "center", 600);
+  // rpm bar
+  const f = clamp(vm.rpmF, 0, 1);
+  drawHBar(c, 34, 300, 404, 26, 40, f, (sf, lit) => {
+    const red = sf * P.maxRpm > P.redline;
+    if (lit && vm.shift) return T.needle;
+    return lit ? (red ? T.red : T.ink) : red ? T.redDim : T.faint;
+  }, T);
+  for (let k = 0; k <= 10; k += 2) label(c, String(k), 34 + 404 * k / 10, 350, 15, k * 1000 >= P.redline ? T.red : T.dim, k === 0 ? "left" : k === 10 ? "right" : "center", 600);
+  label(c, "×1000", 236, 350, 13, T.dim, "center", 500);
+  textCells(c, vm.lost ? "----" : fmtInt(vm.rpm), 438, 388, 15, `600 26px ${FONT}`, vm.stale ? T.dim : T.ink, "right");
+  label(c, "giri/min", 34, 386, 14, T.dim, "left", 500);
+  // right column: trip data with hairlines
+  c.fillStyle = T.faint; c.fillRect(478, 70, 2, 340);
+  const rows = [
+    ["Parziale A", vm.tripA == null ? "---" : fmtDec(vm.tripA, 1), "km"],
+    ["Media", host.rideT > 5 ? fmtInt(((vm.tripA ?? 0) - (host.distStartM ?? 0) / 1000 + 0) / (host.rideT / 3600) || 0) : "--", "km/h"],
+    ["In sella", fmtDur(host.rideT), host.rideT >= 3600 ? "h" : "min"],
+    ["Autonomia", vm.range == null ? "--" : "~" + fmtInt(vm.range), "km"],
+  ];
+  rows.forEach(([k, v, u], i) => {
+    const y = 104 + i * 66;
+    label(c, k.toUpperCase(), 506, y - 22, 13, T.dim, "left", 600);
+    const warnFuel = k === "Autonomia" && vm.infos.some((w) => w.id === "fuel");
+    label(c, v, 700, y + 14, 34, warnFuel ? T.amber : T.ink, "right", 600);
+    label(c, u, 708, y + 14, 15, T.dim, "left", 600);
+  });
+  // coolant bar at the bottom of the column
+  const cf = vm.cool == null || vm.coolLo ? 0 : clamp((vm.cool - P.gaugeMinC) / (P.gaugeMaxC - P.gaugeMinC), 0, 1);
+  const hot = vm.cool != null && vm.cool >= P.warnC;
+  icoCool(c, 516, 384, hot ? T.red : T.dim, 0.75);
+  drawHBar(c, 540, 376, 160, 14, 10, cf, (sf, lit) => (sf > (P.warnC - P.gaugeMinC) / (P.gaugeMaxC - P.gaugeMinC) ? (lit ? T.red : T.redDim) : lit ? T.ink : T.faint), T);
+  label(c, vm.coolFault ? "---" : vm.coolLo ? "LO" : vm.cool == null ? "--" : Math.round(vm.cool) + "°C", 774, 392, 22, hot ? T.red : T.ink, "right", 600);
+  drawBottomStrip(c, vm, { noTripB: false });
+}
+
+// ---------------------------------------------------------------- other screens
+function drawTrip(c, vm) {
+  const T = vm.T;
+  label(c, "VIAGGIO", 40, 92, 15, T.dim, "left", 600);
+  const cols = [
+    { k: "Parziale A", d: vm.tripA, extra: [["In sella", fmtDur(host.rideT)], ["Media", host.rideT > 5 ? fmtInt(((vm.tripA ?? 0) - (host.distStartM ?? 0) / 1000) / (host.rideT / 3600) || 0) + " km/h" : "--"], ["Massima", fmtInt(host.maxKmh) + " km/h"]] },
+    { k: "Dal pieno", d: vm.tripB, extra: [["Consumo stimato", fmtDec(P.lPer100, 1) + " l/100 km"], ["Benzina usata", "~" + fmtDec((vm.tripB ?? 0) * P.lPer100 / 100, 1) + " l"], ["Autonomia", vm.range == null ? "--" : "~" + fmtInt(vm.range) + " km"]] },
+  ];
+  cols.forEach((col, i) => {
+    const x = 40 + i * 380, sel = ui.tripSel === i;
+    c.fillStyle = sel ? T.panel : "transparent";
+    if (sel) { c.fillRect(x - 16, 110, 352, 300); c.fillStyle = T.needle; c.fillRect(x - 16, 110, 4, 300); }
+    label(c, col.k.toUpperCase(), x, 146, 16, sel ? T.ink : T.dim, "left", 600);
+    textCells(c, col.d == null ? "---,-" : fmtDec(col.d, 1), x, 222, 36, `600 72px ${FONT}`, T.ink, "left");
+    label(c, "km", x + 300, 222, 18, T.dim, "right", 600);
+    col.extra.forEach(([k, v], j) => {
+      label(c, k, x, 274 + j * 40, 17, T.dim, "left", 500);
+      label(c, v, x + 316, 274 + j * 40, 21, T.ink, "right", 600);
+    });
+  });
+  label(c, "SET: scegli · SET lungo: azzera · MODE: schermata successiva", 400, 452, 15, T.dim, "center", 500);
+}
+
+function drawDiag(c, vm) {
+  const T = vm.T, tel = host.lastTel;
+  label(c, "DIAGNOSTICA", 40, 92, 15, T.dim, "left", 600);
+  const ws = tel ? tel.wheel : null, is = tel ? tel.ign : null;
+  const lines = [
+    ["Ruota", tel ? `${fmtDec(tel.wheelHz, 1)} Hz · ${ws.spanEdges} impulsi in ${fmtDec(ws.spanMs, 1)} ms` : "--"],
+    ["Accensione", tel ? `${fmtDec(is.spanMs ? is.spanEdges / is.spanMs * 1000 : 0, 1)} Hz · ${fmtInt(mcu.ign.rejected)} picchi scartati` : "--"],
+    ["Batteria", tel ? `${fmtDec(host.vbat, 2)} V · ADC ${tel.vbatRaw}` : "--"],
+    ["Acqua", host.coolR != null ? `${fmtDec(host.coolR, 1)} Ω → ${host.coolLo ? "sotto curva" : fmtDec(host.coolEma, 1) + " °C"}` : "sensore aperto"],
+    ["Luce", tel ? `ADC ${tel.lightRaw} · ${fmtInt(Math.round(host.lightN * 100))} % · retroill. ${fmtInt(Math.round(host.bright))} %` : "--"],
+    ["Ingressi", tel ? "N " + (tel.inputs & 1) + " · ABB " + ((tel.inputs >> 1) & 1) + " · SX " + ((tel.inputs >> 2) & 1) + " · DX " + ((tel.inputs >> 3) & 1) + " · LUCI " + ((tel.inputs >> 4) & 1) : "--"],
+    ["Collegamento", `${host.linkState === "ok" ? "attivo" : host.linkState === "stale" ? "in ritardo" : "perso"} · 50 Hz · CRC errati ${host.crcErr} · riconnessioni ${host.reconnects}`],
+    ["Avvio", `${fmtDec(host.bootMs / 1000, 2)} s dalla chiave al primo frame`],
+    ["Firmware", `Pico 0.1.0 · protocollo 1 · FRAM ok, seq ${fmtInt(mcu.framSeq)}`],
+  ];
+  lines.forEach(([k, v], i) => {
+    const y = 132 + i * 32;
+    label(c, k, 40, y, 17, T.dim, "left", 500);
+    label(c, v, 210, y, 16, T.ink, "left", 500, MONO);
+  });
+  label(c, "Gomma anteriore cambiata? Ricalibra la velocità (manuale, cap. 10)", 400, 452, 15, T.amber, "center", 500);
+}
+
+function drawSettings(c, vm) {
+  const T = vm.T;
+  label(c, "IMPOSTAZIONI", 40, 92, 15, T.dim, "left", 600);
+  label(c, "solo da fermi", 760, 92, 13, T.dim, "right", 500);
+  SETTINGS_ITEMS.forEach((it, i) => {
+    const y = 120 + i * 42, sel = i === ui.setIdx;
+    if (sel) { c.fillStyle = T.panel; c.fillRect(24, y, 752, 38); c.fillStyle = T.needle; c.fillRect(24, y, 4, 38); }
+    label(c, it.label, 44, y + 26, 20, sel ? T.ink : T.dim, "left", sel ? 600 : 500);
+    label(c, settingValue(it.id), 756, y + 26, 19, sel ? T.ink : T.dim, "right", 500);
+  });
+  label(c, "MODE: voce successiva · SET: cambia · SET lungo: esci", 400, 452, 15, T.dim, "center", 500);
+}
+
+function drawSplash(c) {
+  const T = TH.night, p = clamp(ui.stateT / 0.9, 0, 1);
+  c.fillStyle = T.bg; c.fillRect(0, 0, W, H);
+  c.strokeStyle = T.needle; c.lineWidth = 3;
+  const w = 520 * Math.min(1, p * 1.6);
+  c.beginPath(); c.moveTo(400 - w / 2, 268); c.lineTo(400 + w / 2, 268); c.stroke();
+  label(c, "tdm·dash", 400, 248, 64, T.ink, "center", 600);
+  label(c, "profilo Yamaha TDM 850 (3VD) · v0.1", 400, 302, 16, T.dim, "center", 500);
+}
+
+// ---------------------------------------------------------------- overlays
+function drawWarning(c, vm) {
+  const w = vm.warn; if (!w || w.sev < 2) return;
+  const T = vm.T;
+  if (w.sev === 3) {
+    const pulse = reduceMotion.matches ? 1 : 0.85 + 0.15 * Math.sin(ui.t * 6);
+    c.globalAlpha = pulse; c.fillStyle = T.critBg; c.fillRect(0, 58, W, 70); c.globalAlpha = 1;
+    drawIcon(c, w.icon, 52, 93, T.critInk, 1.1);
+    label(c, w.text.toUpperCase(), 92, 92, 26, T.critInk, "left", 700);
+    label(c, w.sub, 92, 116, 16, T.critInk, "left", 500);
+  } else {
+    c.fillStyle = T.amberBg; c.fillRect(0, 58, W, 48);
+    drawIcon(c, w.icon, 40, 82, T.cautionInk, 0.9);
+    label(c, w.text, 70, 90, 22, T.cautionInk, "left", 700);
+    label(c, w.sub, 772, 89, 15, T.cautionInk, "right", 500);
+  }
+}
+function drawToast(c, vm) {
+  if (!ui.toast || ui.toast.until < ui.t) return;
+  const T = vm.T; c.font = `600 18px ${FONT}`;
+  const w = c.measureText(ui.toast.msg).width + 36;
+  c.fillStyle = T.ink; c.fillRect(400 - w / 2, 372, w, 40);
+  label(c, ui.toast.msg, 400, 398, 18, T.bg, "center", 600);
+}
+
+function render() {
+  const c = ctx; c.setTransform(DPR, 0, 0, DPR, 0, 0);
+  if (ui.state === "boot") { c.fillStyle = "#000"; c.fillRect(0, 0, W, H); return; }
+  if (ui.state === "splash") { drawSplash(c); return; }
+  const vm = viewModel();
+  c.fillStyle = vm.T.bg; c.fillRect(0, 0, W, H);
+  if (ui.state === "settings") { drawTelltales(c, vm); drawSettings(c, vm); }
+  else if (ui.state === "ride" && ui.screen === "trip") { drawTelltales(c, vm); drawTrip(c, vm); drawWarning(c, vm); }
+  else if (ui.state === "ride" && ui.screen === "diag") { drawTelltales(c, vm); drawDiag(c, vm); drawWarning(c, vm); }
+  else {
+    ({ classic: drawClassic, sport: drawSport, touring: drawTouring })[ui.layout](c, vm);
+    drawTelltales(c, vm); drawWarning(c, vm);
+  }
+  drawToast(c, vm);
+}
+// Backlight: driven by the Pico, so it is a layer above the frame, not part of it.
+const blEl = document.getElementById("bl");
+function updateBacklight() {
+  const lit = mcu.backlight * (0.45 + 0.55 * host.bright / 100);
+  const o = (1 - lit).toFixed(3);
+  if (blEl.style.opacity !== o) blEl.style.opacity = o;
+}
+
+// ======================================================================
+// Signal chart
+// ======================================================================
+const chart = document.getElementById("chart"), cctx = chart.getContext("2d");
+const hist = [];
+function pushHist(t) {
+  if (!hist.length || t - hist[hist.length - 1].t >= 0.05) {
+    hist.push({ t, tru: veh.v * 3.6, raw: host.linkState === "lost" ? null : host.speedRaw, shown: host.linkState === "lost" ? null : host.digits });
+    while (hist.length && t - hist[0].t > 12) hist.shift();
+  }
+}
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+let chartColors = null;
+function refreshChartColors() {
+  chartColors = { ink: cssVar("--ink"), muted: cssVar("--muted"), line: cssVar("--line"), accent: cssVar("--accent") };
+  document.getElementById("lgTrue").style.background = chartColors.muted;
+  document.getElementById("lgRaw").style.background = chartColors.accent;
+  document.getElementById("lgShown").style.background = chartColors.ink;
+}
+function drawChart() {
+  const r = chart.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (chart.width !== Math.round(r.width * dpr)) { chart.width = Math.round(r.width * dpr); chart.height = Math.round(r.height * dpr); }
+  const c = cctx, w = r.width, h = r.height; c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h);
+  if (hist.length < 2) return;
+  const t1 = hist[hist.length - 1].t, t0 = t1 - 12;
+  const vmax = Math.max(60, Math.ceil(Math.max(...hist.map((p) => Math.max(p.tru, p.shown ?? 0))) / 20) * 20 + 10);
+  const padL = 34, padB = 18, X = (t) => padL + (t - t0) / 12 * (w - padL - 6), Y = (v) => (h - padB) - v / vmax * (h - padB - 8);
+  c.font = `11px ${MONO}`; c.fillStyle = chartColors.muted; c.textAlign = "right"; c.textBaseline = "middle";
+  c.strokeStyle = chartColors.line; c.lineWidth = 1;
+  for (let v = 0; v <= vmax; v += vmax > 120 ? 40 : 20) { c.beginPath(); c.moveTo(padL, Y(v)); c.lineTo(w - 6, Y(v)); c.stroke(); c.fillText(String(v), padL - 6, Y(v)); }
+  c.textAlign = "center"; c.textBaseline = "alphabetic";
+  for (let s = 0; s <= 12; s += 3) c.fillText(s === 12 ? "ora" : `−${12 - s} s`, X(t0 + s), h - 3);
+  const line = (key, col, wdt, dash) => {
+    c.strokeStyle = col; c.lineWidth = wdt; c.setLineDash(dash || []); c.beginPath(); let pen = false;
+    for (const p of hist) { const v = p[key]; if (v == null) { pen = false; continue; } const x = X(p.t), y = Y(v); pen ? c.lineTo(x, y) : c.moveTo(x, y); pen = true; }
+    c.stroke(); c.setLineDash([]);
+  };
+  line("tru", chartColors.muted, 1.5, [4, 3]);
+  line("raw", chartColors.accent, 1.5);
+  line("shown", chartColors.ink, 2);
+}
+
+// ======================================================================
+// Main loop
+// ======================================================================
+let prev = performance.now(), simT = 0, fpsAcc = 0, fpsN = 0, fps = 60;
+const statusEl = document.getElementById("status");
+function frame(now) {
+  let dt = Math.min(0.05, (now - prev) / 1000); prev = now;
+  fpsAcc += dt; fpsN++; if (fpsAcc > 0.5) { fps = fpsN / fpsAcc; fpsAcc = 0; fpsN = 0; }
+  if (!ui.paused) {
+    const sdt = dt * ui.timeScale;
+    // fixed sub-steps keep the edge simulation and filters stable at ×4
+    const steps = Math.ceil(sdt / 0.01);
+    for (let i = 0; i < steps; i++) {
+      const h = sdt / steps; simT += h; ui.t = simT;
+      stepVehicle(h); stepMcu(simT, h);
+      const scn = veh.scn;
+      const cutByScenario = scn.linkEvery && (veh.scnT % scn.linkEvery) > scn.linkEvery - scn.linkFor;
+      const linkDown = cutByScenario || ui.linkCut > simT || ui.state === "boot";
+      if (simT >= mcu.nextTelemetry) { mcu.nextTelemetry = simT + 0.02; if (!linkDown) onTelemetry(makeTelemetry(simT), simT); }
+      if (!ui.hang) { stepHost(simT, h); stepWarnings(simT, h); stepUi(simT, h); if (ui.state !== "boot") mcu.lastHeartbeat = simT; }
+      else { ui.hangT += h; if (ui.hangT > 10) { ui.hang = false; reboot(); } }
+      pushHist(simT);
+    }
+  }
+  if (!ui.hang) render(); // a hung app draws nothing: the last frame stays on screen
+  updateBacklight();
+  drawChart();
+  updateStatus();
+  requestAnimationFrame(frame);
+}
+
+function reboot() {
+  ui.hang = false;
+  setState("boot"); mcu.blTarget = 0; mcu.backlight = 0; ui.screen = "main";
+  host.bootMs = Math.round(2700 + Math.random() * 400);
+  host.needleSpeed = { x: 0, v: 0 }; host.needleRpm = { x: 0, v: 0 }; host.lastTelT = -1; host.coolEma = null;
+  host.rideT = 0; host.maxKmh = 0; host.distStartM = null;
+}
+
+function updateStatus() {
+  const parts = [];
+  const stName = { boot: "Avvio di Linux (schermo spento)", splash: "Splash", selftest: "Auto-test", ride: { main: "Guida", trip: "Viaggio", diag: "Diagnostica" }[ui.screen], settings: "Impostazioni" }[ui.state];
+  if (ui.hang) {
+    const off = ui.hangT > 2;
+    parts.push(`<b class="alert">App bloccata da ${fmtDec(ui.hangT, 1)} s</b>`);
+    parts.push(off ? "heartbeat assente: il Pico ha spento la retroilluminazione" : "il Pico attende l'heartbeat (2 s)");
+    parts.push(`riavvio dal watchdog tra ${fmtDec(Math.max(0, 10 - ui.hangT), 1)} s`);
+  } else {
+    parts.push(`<b>${stName}</b>`);
+    if (ui.state === "ride" && ui.screen === "main") parts.push({ classic: "Classic", sport: "Sport", touring: "Touring" }[ui.layout]);
+    parts.push(`tema ${TH[host.theme].name.toLowerCase()}${ui.themeMode === "auto" ? " (auto)" : ""}`);
+    parts.push(`retroilluminazione ${Math.round(host.bright * mcu.backlight)} %`);
+    if (host.linkState !== "ok" && ui.state !== "boot") parts.push(`<span class="alert">USB ${host.linkState === "stale" ? "in ritardo" : "perso"}</span>`);
+    parts.push(`${Math.round(fps)} fps`);
+  }
+  const html = parts.join("<span aria-hidden=\"true\">·</span>");
+  if (statusEl.innerHTML !== html) statusEl.innerHTML = html;
+  const cd = host.themeCountdown;
+  const lux = Math.pow(10, ui.light / 20) - 1;
+  const lr = `${lux < 10 ? fmtDec(lux, 1) : fmtInt(lux)} lux · ${cd != null && cd > 0 ? `passaggio a ${host.theme === "day" ? "notte" : "giorno"} tra ${Math.ceil(cd)} s` : `tema ${TH[host.theme].name.toLowerCase()}`}`;
+  if (lightReadout.textContent !== lr) lightReadout.textContent = lr;
+}
+
+// ======================================================================
+// Controls
+// ======================================================================
+const noteEl = document.getElementById("scenarioNote");
+const lightReadout = document.getElementById("lightReadout");
+const selScenario = document.getElementById("selScenario");
+for (const [k, s] of Object.entries(SCENARIOS)) { const o = document.createElement("option"); o.value = k; o.textContent = s.name; selScenario.append(o); }
+selScenario.addEventListener("change", () => loadScenario(selScenario.value));
+
+function segBind(id, fn) {
+  const el = document.getElementById(id);
+  el.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) fn(b.dataset.v); });
+}
+function segSet(id, v) { for (const b of document.getElementById(id).querySelectorAll("button")) b.setAttribute("aria-pressed", String(b.dataset.v === v)); }
+function setLayout(v) { ui.layout = v; segSet("segLayout", v); }
+function setThemeMode(v) { ui.themeMode = v; segSet("segTheme", v); if (v !== "auto") host.theme = v; }
+segBind("segLayout", (v) => { setLayout(v); if (ui.state === "ride") ui.screen = "main"; syncControls(); });
+segBind("segTheme", setThemeMode);
+segBind("segSpeed", (v) => { ui.timeScale = +v; segSet("segSpeed", v); });
+segBind("segScale", (v) => { document.getElementById("unit").dataset.scale = v; segSet("segScale", v); });
+document.getElementById("rngLight").addEventListener("input", (e) => { ui.light = +e.target.value; });
+const selScreen = document.getElementById("selScreen");
+selScreen.addEventListener("change", () => {
+  const v = selScreen.value;
+  if (v === "settings") {
+    if (host.digits >= 3) { toast("Impostazioni disponibili solo da fermi"); syncControls(); return; }
+    setState("settings"); ui.setIdx = 0; ui.settingsIdle = 0;
+  } else { if (ui.state === "settings") setState("ride"); ui.screen = v; }
+});
+function syncControls() {
+  selScreen.value = ui.state === "settings" ? "settings" : ui.screen;
+}
+const btnPlay = document.getElementById("btnPlay");
+function togglePause() { ui.paused = !ui.paused; btnPlay.textContent = ui.paused ? "Riprendi" : "Pausa"; }
+btnPlay.addEventListener("click", togglePause);
+document.getElementById("btnBoot").addEventListener("click", reboot);
+document.getElementById("btnLink").addEventListener("click", () => { ui.linkCut = simT + 4; });
+document.getElementById("btnHang").addEventListener("click", () => { if (!ui.hang && ui.state !== "boot") { ui.hang = true; ui.hangT = 0; } });
+
+// Hardware keys: short < 600 ms, long ≥ 1 s (fired while held)
+function bindKey(el, name) {
+  let t0 = 0, longFired = false, timer = null;
+  const down = (e) => { e.preventDefault(); if (t0) return; t0 = performance.now(); longFired = false; el.classList.add("down"); timer = setTimeout(() => { longFired = true; button(name, true); }, 1000); };
+  const up = () => { if (!t0) return; clearTimeout(timer); el.classList.remove("down"); const d = performance.now() - t0; t0 = 0; if (!longFired && d < 600) button(name, false); };
+  el.addEventListener("pointerdown", down); el.addEventListener("pointerup", up); el.addEventListener("pointerleave", up); el.addEventListener("pointercancel", up);
+  el.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && !e.repeat) down(e); });
+  el.addEventListener("keyup", (e) => { if (e.key === "Enter" || e.key === " ") up(); });
+  return { down, up };
+}
+const kMode = bindKey(document.getElementById("kMode"), "MODE");
+const kSet = bindKey(document.getElementById("kSet"), "SET");
+window.addEventListener("keydown", (e) => {
+  const tgt = e.target instanceof Element ? e.target : null;
+  if (tgt?.closest("input, select, textarea") || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if ((k === " " || k === "enter") && tgt?.closest("button")) return;
+  if (k === "m") kMode.down(e); else if (k === "s") kSet.down(e);
+  else if (k === "arrowleft") { ui.manualTurn.L = simT + 5; ui.manualTurn.R = 0; }
+  else if (k === "arrowright") { ui.manualTurn.R = simT + 5; ui.manualTurn.L = 0; }
+  else if (k === "h") ui.manualHB = !ui.manualHB;
+  else if (k === "1" || k === "2" || k === "3") setLayout(["classic", "sport", "touring"][+k - 1]);
+  else if (k === " ") { e.preventDefault(); togglePause(); }
+});
+window.addEventListener("keyup", (e) => { const k = e.key.toLowerCase(); if (k === "m") kMode.up(); else if (k === "s") kSet.up(); });
+
+// Palette swatches for the implementation notes
+function buildSwatches() {
+  const box = document.getElementById("swatches"); box.innerHTML = "";
+  const names = { bg: "fondo", ink: "testo", dim: "secondario", needle: "lancette", red: "zona rossa", green: "frecce, folle", blue: "abbaglianti", amberBg: "attenzione", critBg: "critico" };
+  for (const [tk, T] of Object.entries(TH)) {
+    const col = document.createElement("div");
+    col.innerHTML = `<h3>${T.name}</h3>`;
+    const ul = document.createElement("ul"); ul.className = "swatch-list";
+    for (const [k, n] of Object.entries(names)) {
+      const li = document.createElement("li");
+      li.innerHTML = `<span class="c" style="background:${T[k]}"></span>${T[k]} <span style="color:var(--muted)">${n}</span>`;
+      ul.append(li);
+    }
+    col.append(ul); box.append(col);
+  }
+}
+
+// ======================================================================
+// Start: open in a realistic working state (city ride, running)
+// ======================================================================
+sizeCanvas(); refreshChartColors(); buildSwatches();
+loadScenario("city");
+mcu.backlight = 1; mcu.blTarget = 1; host.theme = "day"; host.coolEma = 88; host.vbat = 13.9;
+// Pre-roll a few seconds so the first frame already shows a moving bike
+for (let i = 0; i < 1100; i++) { const h = 0.01; simT += h; ui.t = simT; stepVehicle(h); stepMcu(simT, h); if (simT >= mcu.nextTelemetry) { mcu.nextTelemetry = simT + 0.02; onTelemetry(makeTelemetry(simT), simT); } stepHost(simT, h); stepWarnings(simT, h); mcu.lastHeartbeat = simT; pushHist(simT); }
+window.addEventListener("resize", () => { if (Math.min(2, window.devicePixelRatio || 1) !== DPR) sizeCanvas(); });
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", refreshChartColors);
+new MutationObserver(refreshChartColors).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+Promise.all(["500", "600", "700"].map((w) => document.fonts?.load(`${w} 24px "Saira Semi Condensed"`)).concat(document.fonts?.load(`500 16px "IBM Plex Mono"`)))
+  .catch(() => {}).finally(() => dialCache.clear());
+requestAnimationFrame((t) => { prev = t; requestAnimationFrame(frame); });
+</script>
