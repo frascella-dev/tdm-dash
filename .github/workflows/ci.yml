@@ -35,10 +35,12 @@ jobs:
           node-version: 22
       - name: Render every Mermaid block
         run: |
-          npm install --no-save @mermaid-js/mermaid-cli@11.16.0
-          python3 tools/check_mermaid.py --mmdc node_modules/.bin/mmdc
+          # Installed outside the checkout so the link check below does not
+          # scan the Markdown files shipped inside node_modules.
+          npm install --prefix "$RUNNER_TEMP/mmdc" @mermaid-js/mermaid-cli@11.16.0
+          python3 tools/check_mermaid.py --mmdc "$RUNNER_TEMP/mmdc/node_modules/.bin/mmdc"
       - name: Check relative links
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --offline --no-progress --include-fragments '**/*.md'
+          args: --offline --no-progress --include-fragments --exclude-path node_modules --exclude-path target '**/*.md'
           fail: true

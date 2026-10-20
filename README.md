@@ -5,13 +5,13 @@
 
 > **Stato:** progetto in sviluppo (milestone M0: documentazione e scheletro). **Non** ancora utilizzabile su strada.
 
-tdm-dash sostituisce il quadro originale con un display da 4,3" leggibile al sole e mostra:
+tdm-dash sostituisce il quadro originale con un display da 7" leggibile al sole (1000 nit) e mostra:
 - velocità e giri
 - contachilometri totale e due parziali
 - temperatura dell'acqua e tensione della batteria, con avvisi
 - spie: folle, abbaglianti, frecce sinistra e destra separate
 
-È economico (≈ 150–190 €), **reversibile** (l'impianto della moto non si taglia) ed **estensibile** ad altre moto tramite profili TOML.
+È economico (≈ 190–240 €), **reversibile** (l'impianto della moto non si taglia) ed **estensibile** ad altre moto tramite profili TOML.
 
 ## Come è fatto
 
@@ -21,7 +21,7 @@ flowchart LR
   RUOTA["Sensore induttivo<br/>sui bulloni del disco"] --> IO
   IO --> MCU["Raspberry Pi Pico<br/>Rust · km in FRAM"]
   MCU -- USB --> PI["Raspberry Pi Zero 2 W<br/>Linux Buildroot · UI Rust/Slint"]
-  PI -- DPI --> LCD["Display 4,3 pollici<br/>800×480 · 1000 nit"]
+  PI -- DPI --> LCD["Display 7 pollici<br/>800×480 · 1000 nit"]
 ```
 
 | Parte | Tecnologia |
