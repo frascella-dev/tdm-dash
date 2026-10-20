@@ -12,3 +12,4 @@ Ogni file registra una decisione di progetto: il contesto, la scelta e le conseg
 | [0006](0006-retroilluminazione-fail-dark.md) | Retroilluminazione comandata dal microcontrollore, "fail-dark" | Accettata |
 | [0007](0007-licenze.md) | Licenze del codice, dell'immagine, dell'hardware e dei documenti | Accettata |
 | [0008](0008-profili-toml.md) | Profili moto in TOML a strati | Accettata |
+| [0009](0009-display-7-pollici.md) | Display Newhaven 7" 800×480 da 1000 nit in DPI | Accettata |

@@ -1,19 +1,19 @@
 # 03 · Distinta componenti
 
-Prezzi indicativi di **ottobre 2026**, IVA inclusa dove il negozio la mostra. I prezzi dei negozi esteri (Crystalfontz, Adafruit, Pololu) non includono spedizione, IVA all'importazione e dogana: per un ordine dagli USA conta circa il 30–40% in più. Le voci "stima" non sono state verificate su un negozio.
+Prezzi indicativi di **ottobre 2026**, IVA inclusa dove il negozio la mostra. I prezzi dei negozi extra-UE (Adafruit, Pololu, Newhaven diretto) non includono spedizione, IVA all'importazione e dogana: per un ordine dagli USA conta circa il 30–40% in più. Le voci "stima" non sono state verificate su un negozio.
 
 ## Riepilogo
 
 | Gruppo | Costo stimato |
 |---|---|
-| Elettronica principale (Pi, Pico, display, memoria) | 70–95 € |
+| Elettronica principale (Pi, Pico, display, memoria) | 130–150 € |
 | Ingressi, protezioni, alimentazione | 20–40 € |
 | Sensore, cablaggi, connettori | 15–25 € |
-| Contenitore e minuteria | 15–25 € |
-| **Totale** | **≈ 150–190 €** compresa la spedizione del display |
+| Contenitore e minuteria | 20–30 € |
+| **Totale** | **≈ 190–240 €** |
 | Attrezzi consigliati (non inclusi) | oscilloscopio ≈ 40 €, Debug Probe ≈ 12 € |
 
-Il costo più grande è il display da 1000 nit. Un display non leggibile al sole (HyperPixel 4.0, ≈ 45 €) costerebbe uguale e funzionerebbe peggio: non è consigliato.
+Il costo più grande è il display da 7" e 1000 nit (≈ 78 €). Un 7" non leggibile al sole (Waveshare, ≈ 300 nit, ≈ 35 €) costa meno ma al sole si spegne: non è consigliato. Le barre allungate da 7–9" non superano i 600 nit (vedi [ADR 0009](../adr/0009-display-7-pollici.md)).
 
 ## 1. Elettronica principale
 
@@ -21,9 +21,9 @@ Il costo più grande è il display da 1000 nit. Un display non leggibile al sole
 |---|---|---|---|---|---|---|---|
 | 1 | Computer | **Raspberry Pi Zero 2 W** | 1 | 17–20 € | [Kubii](https://www.kubii.com/en/raspberry-pi-zero/3455-raspberry-pi-zero-2-w-5056561800004.html), [The Pi Hut](https://thepihut.com/products/raspberry-pi-zero-2) | — | Temperatura −20…+70 °C. **Spesso esaurito**: mettere un avviso di disponibilità. Senza header saldato |
 | 2 | Scheda microSD | Industriale pSLC 8–16 GB (es. SanDisk Industrial) | 1 | 10–15 € (stima) | Mouser, Farnell, Amazon | Una buona microSD normale per lo sviluppo | Resiste meglio a vibrazioni e cadute di tensione |
-| 3 | Display | **Crystalfontz CFAF800480H0-043SN**, 4,3" 800×480, IPS, 1000 cd/m², RGB 40 pin | 1 | ≈ 20 € (21–24 $) + spedizione 15–25 € | [Crystalfontz](https://www.crystalfontz.com/product/cfaf800480h0043sn-800x480-4-point-3-inch-tft-display) | Waveshare 5DP-CAPLCD-H (HDMI, 800 nit) | −20…+70 °C. Retroilluminazione ≈ 16–19 V 40 mA. **Verificare la piedinatura** con l'adattatore prima di ordinare |
-| 4 | Adattatore DPI | **Adafruit DPI TFT Kippah** | 1 | ≈ 17 € (19,95 $) | [Adafruit](https://www.adafruit.com/product/2453) | Adattatore FPC proprio + TPS61169 | Ha già il driver della retroilluminazione, ma senza dimmerazione PWM: per la luminosità automatica si usa il TPS61169 (riga 5) |
-| 5 | Driver retroilluminazione | **TPS61169** su breakout Adafruit | 1 | ≈ 4 € (4,50 $) | [Adafruit](https://www.adafruit.com/product/6354) | — | Boost fino a 40 V, ingresso PWM dal Pico |
+| 3 | Display | **Newhaven NHD-7.0-800480AF-ASXP**, 7" 800×480, IPS, 1000 cd/m² (min. 800), antiriflesso, RGB 24 bit su FFC 40 poli | 1 | ≈ 78 € (64,09 € + IVA) | [RS Components](https://ie.rs-online.com/web/p/lcd-colour-displays/0218681), [Newhaven](https://newhavendisplay.com/content/specs/NHD-7.0-800480AF-ASXP.pdf) (74,53 $) | Newhaven NHD-7.0-HDMI-N-RSXN: 7" 800×480 1000 nit con scheda HDMI e driver inclusi, ≈ 95 € | −20…+70 °C. Area attiva 154,2 × 85,6 mm, ingombro 165 × 104 mm, 133 ppi. Retroilluminazione **180 mA a 9,3 V** (≈ 1,7 W), senza driver a bordo. Pixel clock 23–27 MHz. Datasheet verificato (vedi [ADR 0009](../adr/0009-display-7-pollici.md)) |
+| 4 | Adattatore DPI | **Adafruit DPI TFT Kippah** | 1 | ≈ 17 € (19,95 $) | [Adafruit](https://www.adafruit.com/product/2453) | Adattatore FPC proprio (connettore Molex 54104-4031) | La piedinatura a 40 poli del Newhaven è quella standard supportata dal Kippah (RGB a 18 bit dal Pi). Il driver di retroilluminazione del Kippah non è dimmerabile in PWM e la sua corrente massima per 180 mA è **[DA VERIFICARE]**: si usa il TPS61169 (riga 5) |
+| 5 | Driver retroilluminazione | **TPS61169** su breakout Adafruit | 1 | ≈ 4 € (4,50 $) | [Adafruit](https://www.adafruit.com/product/6354) | — | Boost fino a 40 V, ingresso PWM dal Pico. Per 180 mA la resistenza di regolazione è ≈ 1,1–1,2 Ω (riferimento 204 mV); sostituibilità sulla breakout **[DA VERIFICARE]** |
 | 6 | Microcontrollore | **Raspberry Pi Pico** (RP2040) | 1 | ≈ 4 € | The Pi Hut, Kubii (Pico 2: [The Pi Hut](https://thepihut.com/products/raspberry-pi-pico-2)) | Pico 2 (RP2350), stesso firmware | Pico 2: −20…+85 °C |
 | 7 | Memoria contachilometri | **FRAM MB85RC256V** (32 KB, I²C) su breakout | 1 | 5–9 € | [Adafruit](https://www.adafruit.com/product/1895), [eBay](https://www.ebay.de/itm/294830793064) | — | 10¹² scritture, 10 anni a 85 °C |
 | 8 | Sensore luce | **TEMT6000** su breakout | 1 | ≈ 2 € (stima) | AliExpress, Amazon | — | Per luminosità automatica e tema giorno/notte |

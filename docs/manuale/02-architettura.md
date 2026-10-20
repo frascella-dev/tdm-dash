@@ -43,7 +43,7 @@ flowchart LR
   MCU["RP2040 Pico · Rust embassy · FRAM km"] -- "USB CDC (postcard+COBS+CRC)" --> PI["Pi Zero 2 W · Buildroot · Rust/Slint"]
   BUCK --> MCU
   BUCK --> PI
-  PI -- DPI --> LCD["LCD 4,3 pollici 800×480 1000 nit"]
+  PI -- DPI --> LCD["LCD 7 pollici 800×480 1000 nit"]
   MCU -- "PWM retroilluminazione" --> BL["Boost TPS61169"] --> LCD
   SIG --> LED["LED passivi di backup"]
 ```

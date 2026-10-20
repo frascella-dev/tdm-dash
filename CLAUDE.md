@@ -32,7 +32,7 @@ python3 tools/check_mermaid.py --mmdc <path-to-mmdc> [--chrome <chromium>]
 In the cloud container, Chromium is at `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`. Install mermaid-cli with:
 
 ```sh
-PUPPETEER_SKIP_DOWNLOAD=1 npm i --no-save @mermaid-js/mermaid-cli@11.16.0
+PUPPETEER_SKIP_DOWNLOAD=1 npm i --prefix "$SCRATCH/mmdc" @mermaid-js/mermaid-cli@11.16.0   # outside the repo
 ```
 
 ## Invariants
