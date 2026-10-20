@@ -1,0 +1,22 @@
+# Rust
+/target/
+/firmware/target/
+**/*.rs.bk
+
+# Buildroot output (the buildroot/ submodule itself is tracked)
+/os/output/
+/os/dl/
+/os/ccache/
+
+# Generated hardware exports are rebuilt in CI
+/hardware/exports/**/*.tmp
+*.kicad_prl
+*-backups/
+fp-info-cache
+\#auto_saved_files\#
+
+# Editors / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
