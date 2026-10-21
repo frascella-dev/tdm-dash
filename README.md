@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/assets/banner.svg" alt="tdm-dash: quadro strumenti digitale open-source" width="100%"></p>
+
 # tdm-dash
 
 **Quadro strumenti digitale open-source per Yamaha TDM 850 prima serie (3VD, 1991–1995).**
