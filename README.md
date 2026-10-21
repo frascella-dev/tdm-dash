@@ -5,7 +5,12 @@
 **Quadro strumenti digitale open-source per Yamaha TDM 850 prima serie (3VD, 1991–1995).**
 *Open-source digital instrument cluster for the first-generation Yamaha TDM 850. Documentation is in Italian; code and comments are in English.*
 
-> **Stato:** progetto in sviluppo. Il software del quadro e il simulatore funzionano sul PC. Firmware del Pico, schemi elettrici e immagine Linux sono pronti ma non ancora provati sull'hardware, che non è ancora costruito. **Non** utilizzabile su strada.
+> **Stato:** progettazione completa, hardware non ancora costruito.
+> - Il software del quadro e il simulatore funzionano sul PC.
+> - Pronti ma non ancora provati sull'hardware: firmware del Pico, immagine Linux, schemi elettrici, cablaggi, contenitore, strumenti di calibrazione e manuale.
+> - Mancano i rilievi sulla moto e il collaudo al banco e su strada.
+>
+> **Non** utilizzabile su strada.
 
 tdm-dash sostituisce il quadro originale con un display da 7" leggibile al sole (1000 nit) e mostra:
 - velocità e giri
@@ -35,22 +40,23 @@ flowchart LR
 
 ## Documentazione
 
-- **[Manuale](docs/manuale/README.md)**: progettazione, costruzione, installazione, uso
+- **[Manuale](docs/manuale/README.md)**: progettazione, costruzione, installazione, calibrazione, uso, diagnostica
 - **[Ricerca sull'impianto originale](docs/ricerca/impianto-originale.md)**, con le fonti
 - **[Scheda dei rilievi sulla moto](docs/ricerca/rilievi-sulla-moto.md)**
 - **[Decisioni di architettura](docs/adr/README.md)**
 
 ## Struttura del repository
 
-```
-crates/      tdm-proto (protocollo) · tdm-core (misure, km) · tdm-logic · tdm-link · tdm-dash (UI)
-firmware/    firmware del Pico
-profiles/    profili moto (TOML)
-design/      proposta di design dell'interfaccia (HTML interattivo)
-os/          albero Buildroot (BR2_EXTERNAL)
-hardware/    KiCad, cablaggi WireViz, contenitore e staffa
-docs/        manuale, ricerca, ADR
-```
+| Cartella | Contenuto |
+|---|---|
+| [`crates/`](crates/) | tdm-proto (protocollo), tdm-core (misure, km), tdm-logic, tdm-link (`tdmctl`), tdm-dash (interfaccia) |
+| [`firmware/`](firmware/) | Firmware del Pico |
+| [`profiles/`](profiles/) | Profili moto (TOML) |
+| [`design/`](design/) | Proposta di design dell'interfaccia (HTML interattivo) |
+| [`os/`](os/) | Immagine Linux: Buildroot e albero esterno |
+| [`hardware/`](hardware/) | Schema KiCad, cablaggi WireViz, millefori, contenitore e staffa (OpenSCAD) |
+| [`docs/`](docs/) | Manuale, ricerca, ADR |
+| [`tools/`](tools/) | Controlli della documentazione e degli schemi, conversione UF2 |
 
 ## Sviluppo
 
@@ -65,21 +71,35 @@ cargo test --workspace                                  # test sul PC
 cargo run --release -p tdm-dash --no-default-features -- --screenshot out   # schermate di riferimento
 cargo run --release -p tdm-dash --no-default-features -- --bench 600         # tempo di disegno
 cargo build --release --target aarch64-unknown-linux-gnu -p tdm-dash --no-default-features --features kms   # binario per il Pi
+make -C os release                                      # immagine per la scheda SD (Buildroot, circa un'ora)
 ```
+
+Nella CI (GitHub Actions) girano:
+- test Rust, firmware per RP2040 e RP2350, binario per il Pi
+- ERC dello schema e controllo incrociato con i pin del firmware
+- cablaggi, parti stampabili e controlli della documentazione
+- immagine completa, sui tag e una volta alla settimana
 
 La toolchain Rust (1.97.1, la stessa di Buildroot 2026.08) e i target vengono installati automaticamente da `rust-toolchain.toml`.
 
 ## Roadmap
 
-| Milestone | Contenuto |
-|---|---|
-| M0 | Scheletro del repo, ricerca, manuale (cap. 00–03) |
-| M1 | Proposta di design interattiva a 800×480 |
-| **M2** | Workspace Rust, simulatore desktop |
-| M3 / M3b | Firmware del Pico · schemi elettrici e dei collegamenti |
-| M4 | Sistema operativo Buildroot |
-| M5 | Costruzione dell'hardware, contenitore, staffa |
-| M6 | Montaggio, calibrazione, 500 km di prova |
+| Milestone | Contenuto | Stato |
+|---|---|---|
+| M0 | Scheletro del repo, ricerca, manuale (cap. 00–03) | Fatto |
+| M1 | Proposta di design interattiva a 800×480 | Fatto |
+| M2 | Workspace Rust, simulatore desktop | Fatto |
+| M3 / M3b | Firmware del Pico · schemi elettrici e dei collegamenti | Fatto, da provare sull'hardware |
+| M4 | Sistema operativo Buildroot | Fatto, da provare sull'hardware |
+| M5 | Contenitore, staffa, millefori, manuale di costruzione (cap. 06–08) | Progetto fatto; costruzione a cura del proprietario |
+| M6 | Calibrazione (`tdmctl calibrate`), manuale (cap. 10, 12, 13) | Strumenti fatti; rilievi, montaggio e 500 km di prova da fare |
+
+Prossimi passi sulla moto:
+1. [rilievi](docs/ricerca/rilievi-sulla-moto.md)
+2. prova del display al banco con Raspberry Pi OS: tempi DPI e benchmark
+3. costruzione (capitoli 06–07)
+4. prova in parallelo (capitolo 08)
+5. calibrazione (capitolo 10)
 
 ## Licenze
 

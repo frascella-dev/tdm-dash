@@ -6,7 +6,7 @@ use std::process::ExitCode;
 use std::time::{Duration, Instant};
 
 use tdm_link::{SerialSource, Source, find_ports, scenario, scenarios, sim::SimMcu};
-use tdm_logic::{Dash, LinkEvent, Profile, conv, fmt};
+use tdm_logic::{Dash, LinkEvent, Profile, calib, conv, fmt};
 use tdm_proto::{HostMsg, McuMsg};
 
 const USAGE: &str = "\
@@ -21,6 +21,12 @@ USO:
   tdmctl bootsel [--port DEV]         riavvia il Pico nel bootloader USB
   tdmctl sim [SCENARIO] [-n S]        simula senza hardware e stampa velocità e giri
   tdmctl scenarios                    elenca gli scenari del simulatore
+
+CALIBRAZIONE (capitolo 10 del manuale; --profile FILE = profilo in uso):
+  tdmctl calibrate wheel KM_GPS KM_PARZIALE      circonferenza della ruota
+  tdmctl calibrate tach GIRI_VERI GIRI_MOSTRATI  impulsi per giro del contagiri
+  tdmctl calibrate battery V_TESTER V_MOSTRATI   rapporto del partitore della batteria
+  tdmctl calibrate coolant FILE                  curva del sensore acqua (\"°C ohm\" per riga)
 ";
 
 struct Args {
@@ -127,6 +133,7 @@ fn main() -> ExitCode {
             Ok(())
         }
         "sim" => simulate(&a, profile),
+        "calibrate" => calibrate(&a, &profile),
         other => Err(format!("comando sconosciuto '{other}'")),
     };
     match r {
@@ -246,6 +253,63 @@ fn monitor(a: &Args, p: &Profile, record: Option<PathBuf>) -> Result<(), String>
         src.send(HostMsg::Heartbeat { ui_frame: 0 });
         std::thread::sleep(Duration::from_millis(20));
     }
+}
+
+fn number(s: Option<&String>, what: &str) -> Result<f64, String> {
+    s.and_then(|v| v.replace(',', ".").parse().ok())
+        .ok_or_else(|| format!("manca {what}"))
+}
+
+/// Prints the corrected value as a TOML fragment for the profile.
+fn calibrate(a: &Args, p: &Profile) -> Result<(), String> {
+    let arg = |i: usize| a.pos.get(i);
+    match a.pos.first().map(String::as_str) {
+        Some("wheel") => {
+            let gps = number(arg(1), "la distanza misurata col GPS, in km")?;
+            let trip = number(arg(2), "il parziale segnato dal quadro, in km")?;
+            let old = p.speed.wheel_circumference_mm;
+            let new = calib::wheel_circumference(old, gps, trip)?;
+            println!(
+                "circonferenza: {old:.1} → {new:.1} mm ({:+.2} %)\n\n[speed]\nwheel_circumference_mm = {new:.1}",
+                (new / old - 1.0) * 100.0
+            );
+        }
+        Some("tach") => {
+            let reference = number(arg(1), "i giri veri (contagiri di riferimento)")?;
+            let shown = number(arg(2), "i giri mostrati dal quadro")?;
+            let old = p.tach.pulses_per_rev;
+            let (exact, snapped) = calib::tach_pulses_per_rev(old, reference, shown)?;
+            println!("impulsi per giro: {old} → {exact:.3}, arrotondato a {snapped}");
+            if (exact - snapped).abs() > 0.05 * snapped {
+                println!(
+                    "attenzione: lontano da un multiplo di 0,5, ripeti la misura a regime stabile"
+                );
+            }
+            println!("\n[tach]\npulses_per_rev = {snapped}");
+        }
+        Some("battery") => {
+            let actual = number(arg(1), "la tensione misurata col tester")?;
+            let shown = number(arg(2), "la tensione mostrata dal quadro")?;
+            let old = p.board.vbat_divider;
+            let new = calib::vbat_divider(old, actual, shown)?;
+            println!(
+                "partitore: {old:.4} → {new:.4} ({:+.2} %)\n\n[board]\nvbat_divider = {new:.4}",
+                (new / old - 1.0) * 100.0
+            );
+        }
+        Some("coolant") => {
+            let file = arg(1).ok_or("manca il file con le misure")?;
+            let text = std::fs::read_to_string(file).map_err(|e| format!("{file}: {e}"))?;
+            let curve = calib::coolant_curve(&calib::parse_measurements(&text)?)?;
+            println!(
+                "{} punti\n\n[coolant]\n{}",
+                curve.len(),
+                calib::curve_toml(&curve)
+            );
+        }
+        _ => return Err("calibrate vuole wheel, tach, battery oppure coolant".into()),
+    }
+    Ok(())
 }
 
 fn simulate(a: &Args, p: Profile) -> Result<(), String> {

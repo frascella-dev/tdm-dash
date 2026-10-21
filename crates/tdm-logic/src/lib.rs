@@ -2,6 +2,7 @@
 //! state machine. No I/O: link events and time go in, a view model and the
 //! co-processor commands come out.
 
+pub mod calib;
 pub mod conv;
 pub mod dash;
 pub mod filters;

@@ -44,7 +44,7 @@ PUPPETEER_SKIP_DOWNLOAD=1 npm i --prefix "$SCRATCH/mmdc" @mermaid-js/mermaid-cli
 
 - `tdm-proto` (no_std): messages and COBS/CRC framing.
 - `tdm-core` (no_std): `PulseMeter`, `Debouncer`, FRAM records, `McuCore` (the MCU application logic, shared by firmware and simulator).
-- `tdm-logic`: profile, conversions, filters, warnings, `Dash` state machine → `ViewModel`.
+- `tdm-logic`: profile, conversions, filters, warnings, calibration (`calib`, behind `tdmctl calibrate`), `Dash` state machine → `ViewModel`.
 - `tdm-link`: `SimMcu` vehicle simulator, serial/replay sources, `tdmctl`.
 - `tdm-dash`: Slint UI (`ui/dash.slint`), platforms `desktop`, `kms`, headless screenshots/bench.
 - All font sizes used in `ui/dash.slint` must be listed in `crates/tdm-dash/build.rs` (`FONT_SIZES`), and any non-ASCII character that only appears in Rust strings must be added to the hidden `Text` in `dash.slint`, or the software renderer cannot draw it.
