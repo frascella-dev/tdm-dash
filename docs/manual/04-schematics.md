@@ -1,24 +1,33 @@
 # 04 · Schematics
 
-The schematic of the sensor module (the board with the Pico) is a **KiCad 9** project in [`hardware/kicad/`](../../hardware/kicad/), split into eight sheets. This chapter explains each sheet and how the components were chosen.
+The schematic of the sensor module (the board with the Pico) is a **KiCad 9** project in [`hardware/kicad/`](../../hardware/kicad/): a block diagram and eight sheets. This chapter explains each sheet and how the components were chosen.
 
-The schematic is not drawn by hand: it is written by the [`generate.py`](../../hardware/kicad/generate.py) script, which describes every component and the net on each pin. On every pin there is a short wire stub with the net label: two pins with the same label are connected. It is less elegant than a schematic with drawn wires, but connections cannot be drawn wrong, and the script can be checked.
+The schematic is not drawn by hand. Each sheet is a Python module in [`hardware/kicad/sheets/`](../../hardware/kicad/sheets/): it places the components with the net of every pin, then draws the wires between them. [`generate.py`](../../hardware/kicad/generate.py) writes the KiCad files. Because the drawing is code, it is checked like code:
 
 ```mermaid
 flowchart LR
-  G["generate.py<br/>(circuit description)"] --> S["KiCad files<br/>.kicad_sch"]
-  S --> E["ERC<br/>electrical rules check"]
-  S --> N["Netlist"]
-  N --> C["check_pinmap.py<br/>comparison with firmware and profile"]
-  S --> X["PDF and SVG<br/>hardware/exports/kicad"]
+  S["sheets/*.py<br/>parts, nets, wires"] --> G["generate.py<br/>drawing and net checks"]
+  G --> K["KiCad files<br/>.kicad_sch"]
+  K --> E["ERC<br/>electrical rules check"]
+  K --> N["Netlist"]
+  N --> C1["check_netlist.py<br/>drawn wires = declared nets"]
+  N --> C2["check_pinmap.py<br/>Pico pins = firmware and profile"]
+  K --> X["PDF and SVG<br/>hardware/exports/kicad"]
+  X --> C3["check_svg_layout.py<br/>no overlapping text"]
 ```
 
 On every change the CI (`Hardware` workflow):
 
-1. regenerates the schematic and checks that it matches the saved one
-2. runs the KiCad **ERC**: zero errors and zero warnings
-3. compares the Pico pins with the firmware ([`tools/check_pinmap.py`](../../tools/check_pinmap.py)): every GPIO used by `firmware/src/main.rs` must carry the right net. The same script checks that the battery divider and the coolant sender pull-up are the ones used by the software
-4. exports PDF and SVG
+1. Regenerates the schematic and checks that it matches the saved one. The generator itself refuses a drawing that KiCad would read differently from what is meant, for example:
+   - a wire ending in the middle of another one
+   - a wire through a symbol
+   - two names on one net
+
+   It also checks that the drawn wires connect exactly the declared nets.
+2. Runs the KiCad **ERC**: zero errors and zero warnings.
+3. Compares the netlist that KiCad reads from the drawing with the declared one ([`tools/check_netlist.py`](../../tools/check_netlist.py)).
+4. Compares the Pico pins with the firmware ([`tools/check_pinmap.py`](../../tools/check_pinmap.py)): every GPIO used by `firmware/src/main.rs` must carry the right net. The same script checks that the battery divider and the coolant sender pull-up are the ones used by the software.
+5. Exports PDF and SVG, then checks that no text overlaps another text, a wire or the title block ([`tools/check_svg_layout.py`](../../tools/check_svg_layout.py)).
 
 To redo it on the PC with Docker, from the repository root:
 
@@ -27,9 +36,29 @@ docker run --rm -u 0 -v "$PWD":/w -w /w kicad/kicad:9.0.9 \
     sh -c 'python3 hardware/kicad/generate.py && hardware/kicad/export.sh'
 ```
 
-The complete PDF, to print for building, is [`hardware/exports/kicad/tdm-dash.pdf`](../../hardware/exports/kicad/tdm-dash.pdf).
+How to change a sheet, and the drawing rules, are in [`hardware/README.md`](../../hardware/README.md#editing-the-schematic). The complete PDF, to print for building, is [`hardware/exports/kicad/tdm-dash.pdf`](../../hardware/exports/kicad/tdm-dash.pdf).
 
 > **Caution:** the wire colors and the pinout of the bike's original connector are still **[TO VERIFY]** (see the [research](../research/original-wiring.md)). The schematic uses function names (`BIKE_TURN_L`, `BIKE_TACH`…), not colors. Before connecting anything to the bike you need the [bike measurements](../research/bike-measurements.md).
+
+## How to read the sheets
+
+| On the drawing | Meaning |
+|---|---|
+| Green line, dot where three wires meet | A wire. Wires that only cross are not connected |
+| Flag-shaped label on the sheet edge (`BIKE_TACH`, `IGN`) | Hierarchical label: the signal goes to another sheet, through the block diagram |
+| Plain label on a wire (`BL_CTRL`) | Local label: names a node worth measuring. Equal labels on one sheet are connected |
+| Arrow up (`+12V_P`, `+5V`, `+3V3`) or bars down (`GND`) | Power symbol: all symbols with the same name are the same supply |
+| Dashed box | Parts that are not on the perfboard: the buttons, the TPS61169 breakout |
+| Orange note | [TO VERIFY]: waits for the measurements on the bike |
+| Title block | Sheet number out of 8, revision and date. The block diagram is sheet 0 |
+
+Every sheet reads from left to right, from the bike to the Pico, and starts with a heading that explains what it does.
+
+## Block diagram
+
+![Block diagram](../../hardware/exports/kicad/0-index.svg)
+
+Each block is one sheet. The wires between the blocks are the signals that cross sheets: the bike wires leave sheet 1 (connectors J101 and J102) and go through the input stages to the Pico on sheet 6. The four backup LEDs (sheet 8) take the same bike wires, so they work even with the electronics off. The supplies are power symbols and are not drawn on this page.
 
 ## Net names
 
@@ -61,7 +90,7 @@ flowchart LR
 - the backlight 0.4 A (1.7 W at 85% efficiency)
 - the Pico and the rest less than 50 mA
 
-In total at most about 1.5 A, that is 7.5 W. From the 12 V, with 90% converter efficiency, that is about 0.7 A. The 2 A fuse leaves margin at power-on (capacitor charging) and protects the 0.5 mm² wire.
+In total at most about 1.5 A, that is 7.5 W. From the 12 V, with 90% converter efficiency, that is about 0.7 A. The 2 A fuse leaves margin at power-on (capacitor charging) and protects the 0.5 mm² wire. F101 is not on the board: it is the inline fuse holder of the adapter harness, close to where the +12 V is taken ([chapter 05](05-wiring-harnesses.md)).
 
 **Reverse polarity protection (Q101, R101, D101).** The P-MOSFET is mounted "backwards": the +12 V enters at the drain and the body diode already conducts before the MOSFET turns on.
 - Resistor R101 pulls the gate to ground, the MOSFET turns on and the drop becomes negligible: 20 mΩ × 0.7 A = 14 mV, that is 10 mW, against the 0.5 W of a diode.
@@ -231,6 +260,7 @@ The other pins stay free for future extensions, for example a fuel sender or a G
 - **Current:** it is set with the sense resistor, R = 204 mV / 180 mA ≈ 1.13 Ω. On the breakout it must be checked and, if needed, replaced [TO VERIFY].
 - **Control:** the Pico drives the CTRL pin with 25 kHz PWM (GP15) through 1 kΩ.
 - **Fail-dark:** the 100 kΩ resistor to ground keeps the driver off until the firmware starts. The display stays black instead of showing a stale image.
+- **Where it goes:** the breakout is not on the perfboard: it sits next to the Kippah, in the dashed box. J701 gives it +5 V, ground and CTRL, and its output drives the panel's LED pins (J704), whose position on the Kippah is still [TO VERIFY] ([chapter 05](05-wiring-harnesses.md#backlight)).
 
 **USB to the Pi.** Only D+, D− and ground are connected; the Pi's VBUS is **not** connected, because the Pico already takes its power from VSYS. The harness is described in [chapter 05](05-wiring-harnesses.md).
 

@@ -9,17 +9,24 @@ The enclosure and the bracket are designed in [OpenSCAD](https://openscad.org) w
 | Sun visor | same, `part="visor"` | `enclosure-visor.stl` |
 | Sensor bracket | [`sensor-bracket.scad`](../../hardware/bracket/sensor-bracket.scad) | `sensor-bracket.dxf` (aluminum), `sensor-bracket.stl` (trial) |
 
-To regenerate everything after changing a parameter (you need Docker, or OpenSCAD 2021.01 installed):
+The dimensioned drawings are in [`hardware/exports/drawings/`](../../hardware/exports/drawings/), as SVG and as PDF to print at 100 %: the [enclosure](../../hardware/exports/drawings/enclosure.pdf) at 1:2 and the [sensor bracket](../../hardware/exports/drawings/sensor-bracket.pdf) at 1:1. They read their values from the `.scad` files, and the values marked [TO VERIFY] are orange.
+
+To regenerate everything after changing a parameter (you need Docker, or OpenSCAD 2021.01 installed), first the models, then the drawings:
 
 ```sh
 docker run --rm -u 0 -v "$PWD":/w -w /w openscad/openscad:2021.01 hardware/cad-export.sh
+python3 hardware/drawings/generate.py
 ```
 
-![Assembled enclosure](../../hardware/exports/cad/enclosure-assembly.png)
+| Assembled | Exploded: bezel, window, display, rear shell and sun visor |
+|---|---|
+| ![Assembled enclosure](../../hardware/exports/cad/enclosure-assembly.png) | ![Exploded enclosure](../../hardware/exports/cad/enclosure-exploded.png) |
 
 ## The enclosure
 
 Outside dimensions: **181.8 × 120.8 mm**, depth 57 mm plus the sun visor.
+
+![Enclosure drawing](../../hardware/exports/drawings/enclosure.svg)
 
 ```mermaid
 flowchart LR
@@ -80,6 +87,10 @@ Orientation:
 
 ## Assembling the enclosure
 
+| Rear shell, open side: standoffs and screw columns | Back: the three M5 inserts for the bike mount |
+|---|---|
+| ![Rear shell inside](../../hardware/exports/cad/enclosure-rear-inside.png) | ![Back of the enclosure](../../hardware/exports/cad/enclosure-back.png) |
+
 1. **Heat-set inserts:**
    - **Bezel:** six M3 inserts (4 mm holes, 6 mm deep).
    - **Rear shell:** two M3 inserts on the top face for the sun visor and three M5 inserts on the back for mounting.
@@ -97,7 +108,7 @@ Orientation:
 
 ## The sensor bracket
 
-![Sensor bracket](../../hardware/exports/cad/sensor-bracket.png)
+![Sensor bracket drawing](../../hardware/exports/drawings/sensor-bracket.svg)
 
 The LJ12A3 sensor reads the bolt heads of the front disc. The bracket is a flat plate parallel to the disc:
 - **Mounting:** one of the bike's bolts.
@@ -122,8 +133,8 @@ The LJ12A3 sensor reads the bolt heads of the front disc. The bracket is a flat 
 > **Danger:** a printed bracket under a brake caliper bolt slowly gives way under load and the bolt loosens. The printed version (`sensor-bracket.stl`) is **only** for checking the measurements.
 
 **Making it in aluminum.**
-1. Print `sensor-bracket.svg` at 1:1 scale (check the scale by measuring a hole) and glue it onto a 3 mm sheet of 5754 or 6082.
-2. Drill (holes first, then the outline), cut with the hacksaw and file. The `.dxf` file also works for a laser-cutting service.
+1. Print the [drawing](../../hardware/exports/drawings/sensor-bracket.pdf) at 100 % (actual size, no "fit to page") and check the 50 mm bar with a ruler. Glue it onto a 3 mm sheet of 5754 or 6082.
+2. Center-punch where the center lines cross, drill the holes first, then cut the outline with the hacksaw and file. The `.dxf` file also works for a laser-cutting service.
 3. Deburr the edges and paint or anodize.
 
 **Adjustment.**
