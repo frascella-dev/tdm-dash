@@ -1,16 +1,25 @@
 // tdm-dash enclosure for the Newhaven NHD-7.0-800480AF-ASXP (7", 800x480).
 //
-// A thin display unit with a small pod behind it. Three printed parts, chosen
-// with -D part="...":
+// A thin display unit with a small pod behind it, and the plate that holds it
+// on the bike. Chosen with -D part="...":
 //   front    - bezel: face, window pocket, button wings (black ASA, face down)
 //   cover    - thin back of the display unit: holds the display, carries the
 //              Pi Zero 2 W + Kippah and the button cups (black ASA, face down)
 //   rear     - pod for the perfboard, screwed behind the cover (black ASA,
 //              open side up)
+//   mount    - bike mount plate, 3 mm aluminum (print it only to try the fit)
+//   mount_2d - its outline, for cutting the aluminum (DXF/SVG)
 //   all      - assembly preview with the display and the boards (not for printing)
 //   exploded - the same, pulled apart along the assembly order
 //
 //   openscad -D 'part="front"' -o front.stl enclosure.scad
+//
+// The bike mount: the original cluster sits on two M6 studs in rubber
+// grommets, on the fairing stay that is bolted to the frame (it does not turn
+// with the handlebar). The plate is screwed to the three lugs of the pod and
+// carries two M6 screws in place of those studs, so the dashboard goes where
+// the original cluster was, on its grommets. Only the plate depends on the
+// bike: the printed parts do not.
 //
 // Coordinates: X across the bike, Y up, Z towards the rider. The front face
 // of the bezel is at Z = 0, everything else extends to negative Z.
@@ -77,9 +86,21 @@ port_z = 12.0;        // gland and vent: distance behind the cover, above the pe
 light_d = 4.0;        // light pipe through the bottom of the bezel for the TEMT6000
 light_x = 20.0;
 wire_d = 6.0;         // cover hole that takes the button and sensor wires into the pod
-mount_insert_d = 6.4; // M5 heat-set inserts in the mount lugs, for the bike bracket
-mount_points = [[-62, -3.5], [62, -3.5], [0, 28]];  // [TO VERIFY] on the bike
+
+/* [Bike mount] */
+mount_insert_d = 6.4; // M5 heat-set inserts in the lugs of the pod
+mount_points = [[-62, -3.5], [62, -3.5], [0, 28]];  // the lugs; the plate adapts them to the bike
 lug_t = 10.0;
+plate_t = 3.0;        // aluminum 5754 or 6082, like the sensor bracket
+m5_hole = 5.5;        // M5 x 10 button head screws, plate into the lug inserts
+m6_hole = 6.4;        // M6 screws in place of the studs of the original cluster
+stud_pitch = 150.0;   // distance between the two studs of the original cluster [TO VERIFY]
+stud_x = 0.0;         // middle of the studs from the display center, seen from the rider [TO VERIFY]
+stud_y = -40.0;       // [TO VERIFY]
+grommet_d = 20.0;     // original rubber grommet, outer diameter: the plate rests on it [TO VERIFY]
+grommet_stack = 12.0; // original collar length, from the plate to the washer [TO VERIFY]
+m6_head = 6.5;        // M6 hex head with its washer, radius
+m5_head = 4.75;       // M5 button head (ISO 7380), radius
 
 $fn = 64;
 
@@ -116,6 +137,13 @@ perf_holes = [for (x = [-42, 42], y = [-32, 32]) [x, y]];            // 90 x 70 
 pi_holes = [for (x = [-29, 29], y = [-11.5, 11.5]) [x, y]];          // Pi Zero 2 W, 58 x 23
 pi_at = [0, pod_cy + 10];
 perf_at = [0, pod_cy];
+studs = [[stud_x - stud_pitch / 2, stud_y], [stud_x + stud_pitch / 2, stud_y]];
+lug_r = 7;                                         // lug of the pod around each insert
+lug_pad = 8.5;                                     // plate around an M5 hole (1.5 x the hole)
+stud_pad = max(grommet_d / 2, 1.5 * m6_hole);      // plate around an M6 hole
+// M6 screw: plate, collar, washer, nyloc nut and two threads
+m6_need = plate_t + grommet_stack + 1.6 + 6 + 2;
+m6_len = [for (l = [16, 20, 25, 30, 35, 40, 45, 50]) if (l >= m6_need) l][0];
 
 // ---------------------------------------------------------------- outline
 
@@ -205,8 +233,8 @@ module rear() {
             // lugs for the bike mount, outside the pod
             difference() {
                 for (m = mount_points) hull() {
-                    translate([m[0], m[1], z_back]) cylinder(d = 14, h = lug_t);
-                    translate([m[0] * 0.8, pod_cy + (m[1] - pod_cy) * 0.8, z_back]) cylinder(d = 14, h = lug_t);
+                    translate([m[0], m[1], z_back]) cylinder(r = lug_r, h = lug_t);
+                    translate([m[0] * 0.8, pod_cy + (m[1] - pod_cy) * 0.8, z_back]) cylinder(r = lug_r, h = lug_t);
                 }
                 translate([0, pod_cy, z_back + pod_floor]) linear_extrude(lug_t) rrect(pod_in_w, pod_in_h, pod_r - pod_wall);
             }
@@ -225,6 +253,41 @@ module rear() {
         for (g = [[gland_x, gland_d], [vent_x, vent_d]]) translate([g[0], pod_cy - pod_h / 2 - 1, z_top - port_z])
             rotate([-90, 0, 0]) cylinder(d = g[1], h = pod_wall + 2);
     }
+}
+
+// ---------------------------------------------------------------- bike mount
+
+function nearest_lug(p) = let(d = [for (m = mount_points) norm(m - p)]) mount_points[search(min(d), d)[0]];
+
+// Seen from the rider. The lugs make a triangle, each stud is tied to its
+// nearest lug and to the other stud; the inner corners are rounded. Where the
+// plate reaches a pod screw it leaves a notch, so the pod opens with the
+// plate on.
+module plate_2d() {
+    difference() {
+        offset(r = -6) offset(r = 6) union() {
+            hull() for (m = mount_points) translate(m) circle(r = lug_pad);
+            hull() for (p = studs) translate(p) circle(r = stud_pad);
+            for (p = studs) hull() { translate(p) circle(r = stud_pad); translate(nearest_lug(p)) circle(r = lug_pad); }
+        }
+        for (m = mount_points) translate(m) circle(d = m5_hole);
+        for (p = studs) translate(p) circle(d = m6_hole);
+        for (q = pod_screws) translate(q) circle(r = 4.5);
+    }
+}
+
+module plate() {
+    translate([0, 0, z_back - plate_t]) linear_extrude(plate_t) plate_2d();
+}
+
+// M6 screws with their heads between the plate and the display unit, and the
+// M5 button heads on the bike side of the plate
+module screws_ghost() {
+    for (p = studs) translate([p[0], p[1], z_back]) {
+        color("#8a8f96") cylinder(r = m6_head - 0.5, h = 4, $fn = 6);
+        color("#a0a5ab") translate([0, 0, -m6_len]) cylinder(d = 5.8, h = m6_len);
+    }
+    for (m = mount_points) color("#8a8f96") translate([m[0], m[1], z_back - plate_t - 2.75]) cylinder(r = m5_head, h = 2.75);
 }
 
 // ---------------------------------------------------------------- previews
@@ -262,6 +325,8 @@ module buttons_ghost() {
 if (part == "front") rotate([180, 0, 0]) front();                                // face down on the bed
 else if (part == "cover") rotate([180, 0, 0]) translate([0, 0, -z_cover]) cover();  // front face down
 else if (part == "rear") color("#3a3d42") translate([0, 0, -z_back]) rear();       // open side up
+else if (part == "mount") color("#b9bec4") translate([0, 0, plate_t - z_back]) plate();
+else if (part == "mount_2d") plate_2d();
 else if (part == "exploded") {
     color("#2c2f33") translate([0, 0, 90]) front();
     translate([0, 0, 60]) window_ghost();
@@ -270,11 +335,14 @@ else if (part == "exploded") {
     color("#3a3d42") cover();
     boards_ghost(perf = false);
     translate([0, 0, -45]) { color("#45494e") rear(); boards_ghost(pi = false); }
+    translate([0, 0, -75]) { color("#b9bec4") plate(); screws_ghost(); }
 }
 else {
     color("#2c2f33") front();
     color("#3a3d42") cover();
     color("#45494e") rear();
+    color("#b9bec4") plate();
+    screws_ghost();
     panel_ghost();
     buttons_ghost();
 }
@@ -297,5 +365,23 @@ assert(abs(ffc_y - pod_cy) + 2 <= pod_in_h / 2 && ffc_w / 2 <= pod_in_w / 2, "th
 assert(wire_y - wire_d / 2 >= pod_cy - pod_in_h / 2 && wire_y - wire_d / 2 >= bottom_y + wall_t, "the wire hole misses the pod or the bezel rim");
 assert(norm([pod_in_w / 2 - 3 - perf_w / 2, pod_in_h / 2 - 3 - perf_h / 2]) >= 3.5 + 0.5,
        "the pod screw columns touch the perfboard corners");
+
+function dist_to_segment(p, a, b) = let(t = max(0, min(1, (p - a) * (b - a) / ((b - a) * (b - a))))) norm(a + t * (b - a) - p);
+function inside_outline(p, r) = max([for (i = [0 : 5]) dist_to_line(p, outline_pts[i], outline_pts[(i + 1) % 6])]) <= -r;
+
+for (p = studs) {
+    assert(abs(p[0]) >= pod_w / 2 + m6_head + 0.5 || abs(p[1] - pod_cy) >= pod_h / 2 + m6_head + 0.5,
+           str("the M6 head at ", p, " lies under the pod: move the studs or put spacers between plate and pod"));
+    for (m = mount_points) {
+        assert(dist_to_segment(p, m, [m[0] * 0.8, pod_cy + (m[1] - pod_cy) * 0.8]) >= lug_r + m6_head + 0.5,
+               str("the M6 head at ", p, " touches the lug at ", m));
+        assert(norm(p - m) >= grommet_d / 2 + m5_head + 0.5,
+               str("the M5 head at ", m, " sits on the grommet at ", p));
+    }
+    assert(inside_outline(p, stud_pad), str("the plate shows beyond the display unit at the stud ", p));
+}
+for (m = mount_points) assert(inside_outline(m, lug_pad), str("the plate shows beyond the display unit at the lug ", m));
+assert(norm(studs[1] - studs[0]) >= 2 * stud_pad + 5, "the studs are too close together");
+
 echo(str("display unit ", outer_w, " x ", outer_h, " x ", unit_d, " mm; pod ", pod_w, " x ", pod_h, " x ", pod_d,
-         " mm; total depth ", unit_d + pod_d, " mm"));
+         " mm; total depth ", unit_d + pod_d, " mm; plate ", plate_t, " mm, screws 2x M6 x ", m6_len, ", 3x M5 x 10"));

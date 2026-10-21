@@ -7,9 +7,10 @@ The enclosure and the bracket are designed in [OpenSCAD](https://openscad.org) w
 | Bezel with window and button wings | [`enclosure.scad`](../../hardware/enclosure/enclosure.scad), `part="front"` | `enclosure-front.stl` |
 | Cover of the display unit | same, `part="cover"` | `enclosure-cover.stl` |
 | Rear pod | same, `part="rear"` | `enclosure-rear.stl` |
+| Mount plate (bike side of the pod) | same, `part="mount_2d"` and `part="mount"` | `dash-mount.dxf` (aluminum), `dash-mount.stl` (trial) |
 | Sensor bracket | [`sensor-bracket.scad`](../../hardware/bracket/sensor-bracket.scad) | `sensor-bracket.dxf` (aluminum), `sensor-bracket.stl` (trial) |
 
-The dimensioned drawings are in [`hardware/exports/drawings/`](../../hardware/exports/drawings/), as SVG and as PDF to print at 100 %: the [enclosure](../../hardware/exports/drawings/enclosure.pdf) at 1:2 and the [sensor bracket](../../hardware/exports/drawings/sensor-bracket.pdf) at 1:1. They read their values from the `.scad` files, and the values marked [TO VERIFY] are orange.
+The dimensioned drawings are in [`hardware/exports/drawings/`](../../hardware/exports/drawings/), as SVG and as PDF to print at 100 %: the [enclosure](../../hardware/exports/drawings/enclosure.pdf) at 1:2; the [mount plate](../../hardware/exports/drawings/dash-mount.pdf), the [fit template](../../hardware/exports/drawings/fit-template.pdf) and the [sensor bracket](../../hardware/exports/drawings/sensor-bracket.pdf) at 1:1. They read their values from the `.scad` files, and the values marked [TO VERIFY] are orange.
 
 To regenerate everything after changing a parameter (you need Docker, or OpenSCAD 2021.01 installed), first the models, then the drawings:
 
@@ -27,7 +28,8 @@ python3 hardware/drawings/generate.py
 A thin display unit with a small pod behind it, like the aftermarket TFT dashboards:
 - **Display unit:** 213.8 × 130.8 mm, 14.5 mm thick. It is made of the bezel and a thin cover.
 - **Pod:** 109 × 89 mm, 51 mm deep, behind the lower half of the display.
-- **Total depth:** 65.6 mm.
+- **Total depth:** 65.6 mm, 68.6 mm with the mount plate.
+- **On the bike:** in place of the original cluster, on its rubber grommets (see [the bike mount](#the-bike-mount)).
 
 The pod depth follows the heights of the boards inside it, which are still [TO VERIFY].
 
@@ -48,7 +50,8 @@ flowchart LR
   F --- W --- P --- C
   C -- "EPDM gasket<br/>9 M3 screws" --> F
   R -- "EPDM gasket<br/>4 M3 screws" --> C
-  R -- "3 M5 inserts" --> S["Original cluster<br/>mount"]
+  R -- "3 M5 screws" --> M["Mount plate<br/>3 mm aluminum"]
+  M -- "2 M6 screws<br/>original grommets" --> S["Fairing stay<br/>(frame)"]
 ```
 
 - **Bezel:**
@@ -62,7 +65,7 @@ flowchart LR
 - **Pod:**
   - **Contents:** the 90 × 70 mm perfboard on four standoffs.
   - **Bottom face:** the PG7 cable gland and the M12 breather vent, close to the cover, above the parts of the perfboard.
-  - **Mount:** three lugs with M5 inserts take the bike mount.
+  - **Mount:** three lugs with M5 inserts take the [mount plate](#the-bike-mount).
 - **Light sensor:** a 4 mm hole in the bottom of the bezel, closed by a glued-in clear acrylic rod. The TEMT6000 is glued behind it, inside the rim.
 - **Color:** black ASA, like the photo the shape comes from. The display and the Pi go up to 70 °C at most. If the bike stands in the sun for long, the pod can be printed in a light color.
 
@@ -70,6 +73,7 @@ The `.scad` file checks itself before exporting. Every `assert` at the end stops
 - a button touching the display
 - the pod reaching the button cups
 - the boards not fitting the pod depth
+- an M6 screw of the mount plate against the pod, or the plate showing beyond the display unit
 
 ### Measurements to check before printing
 
@@ -84,7 +88,6 @@ The measurements marked **[TO VERIFY]** in the file come from datasheets or are 
 | `perf_parts` (tallest part on the perfboard) | 20 mm | The Pololu in its socket, the Pico on its headers |
 | `perf_w`, `perf_h`, `perf_holes` (perfboard) | 90 × 70 mm, holes 84 × 64 mm | Calipers on the board |
 | `button_body` (button behind the face) | 22 mm | Body and terminals of the buttons you bought |
-| `mount_points` (mounting to the bike) | 3 lugs | Original cluster mount (chapter 08 and [measurements](../research/bike-measurements.md)) |
 
 ## Printing
 
@@ -105,7 +108,7 @@ Orientation:
 
 ## Assembling the enclosure
 
-| Pod, open side: standoffs, screw columns, gland and vent | Back: the pod with the three mount lugs |
+| Pod, open side: standoffs, screw columns, gland and vent | Back: the mount plate on the pod lugs |
 |---|---|
 | ![Pod inside](../../hardware/exports/cad/enclosure-rear-inside.png) | ![Back of the enclosure](../../hardware/exports/cad/enclosure-back.png) |
 
@@ -130,6 +133,35 @@ Orientation:
    - fit the cable gland and the breather vent
    - wire the perfboard to the Pi, the backlight and the buttons (chapter 05)
    - close it on the cover with a gasket cut to its edge and four M3 × 30 screws from the back
+
+## The bike mount
+
+**Where.** In place of the original cluster, on its two rubber grommets. They sit on the fairing stay, the tube frame that is bolted to the frame and also carries the headlight and the fairing, so the dashboard does not turn with the handlebar ([research](../research/original-wiring.md#2-original-cluster)). Behind the windscreen it is sheltered from rain and stays in the line of sight of the original instruments, and the bike keeps its own mounting parts. On the handlebar it would turn with the steering, shake more and take the room of the controls.
+
+![Mount plate drawing](../../hardware/exports/drawings/dash-mount.svg)
+
+**The plate.** A 3 mm aluminum plate between the pod and the fairing stay:
+- three M5 × 10 button head screws hold it to the inserts of the pod lugs;
+- two M6 screws take the place of the studs of the original cluster. Each goes through an original grommet with its collar inside, then the washer and the nut, as on the original cluster;
+- notches keep the four pod screws reachable, so the pod opens with the plate on.
+
+Only the plate depends on the bike, so the printed parts can be made before measuring it. The original studs stand at right angles to the dials, so the plate is parallel to the face and the display keeps the tilt of the original instruments ([HYPOTHESIS], to check when the cluster is off).
+
+![The mount plate on the pod, from below](../../hardware/exports/cad/enclosure-mount.png)
+
+| Parameter | Current value | Meaning |
+|---|---|---|
+| `stud_pitch` | 150 mm | Distance between the two grommets [TO VERIFY] |
+| `stud_x`, `stud_y` | 0, −40 mm | Middle of the grommets from the center of the display, seen from the rider [TO VERIFY] |
+| `grommet_d` | 20 mm | Outer diameter of the grommet, where the plate rests [TO VERIFY] |
+| `grommet_stack` | 12 mm | Length of the collar; it sets the length of the M6 screws, now M6 × 25 [TO VERIFY] |
+| `plate_t` | 3 mm | Thickness |
+
+The `.scad` file refuses grommet positions that put an M6 head against the pod or a lug, an M5 head on a grommet, or the plate beyond the outline of the display unit.
+
+**Trying the fit.** Before printing anything, print the [fit template](../../hardware/exports/drawings/fit-template.pdf) at 100 % and glue it on cardboard: it is the display unit at full size, with the pod, the plate and the two M6 screws behind it. With two M6 rods in the grommets of the bike, the template shows whether the dashboard fits under the windscreen and clears the ignition key, and gives the values of the table. The procedure is in the [measurements](../research/bike-measurements.md#8-mechanical-measurements-for-the-mount).
+
+**Making it in aluminum.** As for the [sensor bracket](#the-sensor-bracket): print the [drawing](../../hardware/exports/drawings/dash-mount.pdf) at 100 %, glue it on a 3 mm sheet of 5754 or 6082 (one sheet is enough for both parts), center-punch, drill, cut and file; or send `dash-mount.dxf` to a laser-cutting service. Paint it matte black. Fitting it on the bike is in chapter 08.
 
 ## The sensor bracket
 
