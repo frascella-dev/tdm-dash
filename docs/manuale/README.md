@@ -17,7 +17,7 @@ Il manuale cresce insieme al progetto: ogni milestone aggiunge o aggiorna i capi
 | 08 | Installazione sulla moto | Milestone M5/M6 |
 | 09 | Software: immagine, profilo, firmware | Milestone M4 |
 | 10 | Calibrazione | Milestone M6 |
-| 11 | Uso | Milestone M1/M2 |
+| 11 | Uso (anteprima: [design interattivo](../../design/README.md)) | Milestone M2 |
 | 12 | Diagnostica e risoluzione dei problemi | Milestone M6 |
 | 13 | Manutenzione | Milestone M6 |
 | A | [Appendici](A-appendici.md) | Codice colori, glossario, scheda rilievi |
