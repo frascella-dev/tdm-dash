@@ -1,5 +1,7 @@
-# SD card of the tdm-dash image. post-image.sh fills in @ROOTFS@ (EROFS for
-# the release image, ext4 for the development one) and @EXTRA_FILES@.
+# SD card of the tdm-dash image. post-image.sh fills in the root filesystem
+# image (EROFS for the release image, ext4 for the development one) and the
+# extra boot files of the development image. The placeholders must not
+# appear anywhere else in this file: sed replaces every one of them.
 
 image boot.vfat {
 	vfat {
