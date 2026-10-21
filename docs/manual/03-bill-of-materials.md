@@ -49,7 +49,7 @@ The biggest cost is the 7" 1000 nit display (≈ 78 €). A 7" that is not sunli
 | 18 | Zener | 15 V 1 W (1N4744A) ×1 | 1 | ≈ 0.20 € | Tachometer |
 | 19 | Resistors | 1/4 W 1% assortment; **22 kΩ 1 W ×2** (≥ 350 V) for the tachometer | — | ≈ 3 € | |
 | 20 | Capacitors | Ceramic 100 nF ×15, 2.2 nF ×1 (tachometer, value to be refined with the oscilloscope) | — | ≈ 1 € | |
-| 21 | Buttons | IP67 waterproof momentary push buttons, 12–16 mm | 2 | ≈ 4 € | MODE and SET |
+| 21 | Buttons | IP67 waterproof momentary panel push buttons, 12 mm, body ≤ 22 mm behind the panel | 2 | ≈ 4 € | MODE and SET, in the wings of the bezel |
 | 22 | Backup LEDs | 3 mm LEDs: green ×2 (turn signals), blue ×1 (high beam), green ×1 (neutral) + 1.5 kΩ resistors and 1N4148 | — | ≈ 1 € | They work even with the electronics off |
 
 ## 4. Speed sensor and harnesses
@@ -69,10 +69,10 @@ The biggest cost is the 7" 1000 nit display (≈ 78 €). A 7" that is not sunli
 | # | Component | Qty | Price | Notes |
 |---|---|---|---|---|
 | 30 | Double-sided 7×9 cm perfboard, headers and turned-pin sockets | 1 | ≈ 3 € | Dedicated PCB only after 500 km of testing |
-| 31 | Light-colored **ASA** filament (≈ 150 g) + matte black for the bezel | — | ≈ 5 € | ASA resists UV and heat (≈ 93 °C); PETG ages worse in the sun |
+| 31 | Matte black **ASA** filament (≈ 200 g) | — | ≈ 6 € | ASA resists UV and heat (≈ 93 °C); PETG ages worse in the sun |
 | 32 | 2 mm anti-glare polycarbonate or PMMA window | 1 | ≈ 4 € (estimate) | |
-| 33 | 1 mm EPDM foam flat gasket, M12 breather vent (Gore type), PG7 cable gland, Ø 4 mm acrylic rod for the light sensor | 1 | ≈ 6 € (estimate) | Prevents condensation; see chapter 07 |
-| 34 | M3 ×8 and M5 ×3 heat-set inserts, stainless M3 × 16 ×6 and M3 × 8 ×2 screws | — | ≈ 4 € | |
+| 33 | 1 mm EPDM foam sheet (two gaskets) and 2 mm adhesive foam pads, M12 breather vent (Gore type), PG7 cable gland, Ø 4 mm acrylic rod for the light sensor | 1 | ≈ 6 € (estimate) | Prevents condensation; see chapter 07 |
+| 34 | M3 ×13 and M5 ×3 heat-set inserts, stainless M3 × 10 ×9 and M3 × 30 ×4 screws, M2.5 × 6 self-tapping ×8 | — | ≈ 5 € | Display unit, pod and boards |
 | 35 | Conformal coating varnish | 1 | ≈ 6 € | Protects against moisture |
 
 ## 6. Development tools (optional)

@@ -93,7 +93,7 @@ Pin 1 (VBUS) of the data plug **stays disconnected**: the Pico is already powere
 
 File: [`backlight.yml`](../../hardware/harness/backlight.yml).
 
-The TPS61169 breakout (U701) does not fit on the perfboard: it sits next to the Kippah, in the rear shell. J701 gives it the supply and the dimming signal, and its output goes straight to the backlight LEDs of the panel (J704).
+The TPS61169 breakout (U701) does not fit on the perfboard: it sits next to the Kippah, on the cover of the display unit, inside the pod. J701 gives it the supply and the dimming signal, and its output goes straight to the backlight LEDs of the panel (J704).
 
 | From | Wire | To | Net |
 |---|---|---|---|

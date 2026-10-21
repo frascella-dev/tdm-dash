@@ -4,9 +4,9 @@ The enclosure and the bracket are designed in [OpenSCAD](https://openscad.org) w
 
 | Part | Source | Ready files in [`hardware/exports/cad/`](../../hardware/exports/cad/) |
 |---|---|---|
-| Front bezel with window | [`enclosure.scad`](../../hardware/enclosure/enclosure.scad), `part="front"` | `enclosure-front.stl` |
-| Rear shell | same, `part="rear"` | `enclosure-rear.stl` |
-| Sun visor | same, `part="visor"` | `enclosure-visor.stl` |
+| Bezel with window and button wings | [`enclosure.scad`](../../hardware/enclosure/enclosure.scad), `part="front"` | `enclosure-front.stl` |
+| Cover of the display unit | same, `part="cover"` | `enclosure-cover.stl` |
+| Rear pod | same, `part="rear"` | `enclosure-rear.stl` |
 | Sensor bracket | [`sensor-bracket.scad`](../../hardware/bracket/sensor-bracket.scad) | `sensor-bracket.dxf` (aluminum), `sensor-bracket.stl` (trial) |
 
 The dimensioned drawings are in [`hardware/exports/drawings/`](../../hardware/exports/drawings/), as SVG and as PDF to print at 100 %: the [enclosure](../../hardware/exports/drawings/enclosure.pdf) at 1:2 and the [sensor bracket](../../hardware/exports/drawings/sensor-bracket.pdf) at 1:1. They read their values from the `.scad` files, and the values marked [TO VERIFY] are orange.
@@ -18,42 +18,58 @@ docker run --rm -u 0 -v "$PWD":/w -w /w openscad/openscad:2021.01 hardware/cad-e
 python3 hardware/drawings/generate.py
 ```
 
-| Assembled | Exploded: bezel, window, display, rear shell and sun visor |
+| Assembled | Exploded: bezel, window, display, cover with the Pi, pod with the perfboard |
 |---|---|
 | ![Assembled enclosure](../../hardware/exports/cad/enclosure-assembly.png) | ![Exploded enclosure](../../hardware/exports/cad/enclosure-exploded.png) |
 
 ## The enclosure
 
-Outside dimensions: **181.8 × 120.8 mm**, depth 57 mm plus the sun visor.
+A thin display unit with a small pod behind it, like the aftermarket TFT dashboards:
+- **Display unit:** 213.8 × 130.8 mm, 14.5 mm thick. It is made of the bezel and a thin cover.
+- **Pod:** 109 × 89 mm, 51 mm deep, behind the lower half of the display.
+- **Total depth:** 65.6 mm.
+
+The pod depth follows the heights of the boards inside it, which are still [TO VERIFY].
 
 ![Enclosure drawing](../../hardware/exports/drawings/enclosure.svg)
 
 ```mermaid
 flowchart LR
-  subgraph F["Bezel (black ASA)"]
-    W["2 mm PC window<br/>anti-glare"]
-    G["1 mm foam tape"]
+  subgraph U["Display unit (black ASA)"]
+    F["Bezel<br/>window, buttons, light pipe"]
+    W["2 mm PC window<br/>1 mm foam tape"]
     P["Newhaven display"]
+    C["Cover<br/>Pi Zero 2 W + Kippah, TPS61169"]
   end
-  subgraph R["Rear shell (light ASA)"]
-    PI["Pi Zero 2 W + Kippah"]
+  subgraph R["Pod (ASA)"]
     PB["Perfboard"]
-    B["Buttons, cable gland,<br/>breather vent"]
+    G["Cable gland, breather vent"]
   end
-  F -- "EPDM gasket<br/>6 M3 screws" --> R
-  V["Sun visor"] -- "2 M3 screws" --> R
+  F --- W --- P --- C
+  C -- "EPDM gasket<br/>9 M3 screws" --> F
+  R -- "EPDM gasket<br/>4 M3 screws" --> C
   R -- "3 M5 inserts" --> S["Original cluster<br/>mount"]
 ```
 
-- **Bezel:** the opening is as large as the active area of the display plus 0.5 mm per side, with a 45° chamfer towards the rider that does not shade the image. Behind it is the window seat, then the foam tape and the display, which ends flush with the edge.
-- **Rear shell:**
-  - **Display:** four small tabs press it against the window.
-  - **Boards:** standoffs for the Pi Zero 2 W (holes 58 × 23 mm) and for the 90 × 70 mm perfboard.
-  - **Screws:** six bosses for the M3 screws that go into the bezel inserts.
-  - **Bottom face:** PG7 cable gland, M12 breather vent and the two 16 mm buttons.
-- **Sun visor:** a flat roof screwed on top of the rear shell, protruding 40 mm, with side cheeks. It shields from low sun and rain.
-- **Light sensor:** a 4 mm hole in the bottom edge of the bezel, closed by a glued-in clear acrylic rod. Behind it is the TEMT6000, glued to the rear shell.
-- **Color:** the rear shell is light-colored because it heats up less in the sun. The display and the Pi go up to 70 °C at most.
+- **Bezel:**
+  - **Outline:** as wide as the display plus the two "wings", where the buttons sit (SET on the left, MODE on the right). The bottom corners are chamfered.
+  - **Opening:** as large as the active area of the display plus 0.5 mm per side, with a 45° chamfer towards the rider that does not shade the image. Behind it are the window seat, the foam tape and the display, which ends flush with the back of the bezel.
+  - **Hollow rim:** the rim around the display is hollow. The nuts of the buttons sit there, and so does the TEMT6000 behind the light pipe. The wires of the buttons and of the sensor run along it to the hole that leads into the pod.
+- **Cover:**
+  - **Display:** a 2.5 mm plate that closes the display unit and presses the display against the window through adhesive foam pads.
+  - **Buttons:** two cups on its back take the button bodies.
+  - **Inside the pod:** the slot for the display ribbon cable, the wire hole, the four standoffs of the Pi Zero 2 W (with the Kippah on top) and the TPS61169 breakout.
+- **Pod:**
+  - **Contents:** the 90 × 70 mm perfboard on four standoffs.
+  - **Bottom face:** the PG7 cable gland and the M12 breather vent, close to the cover, above the parts of the perfboard.
+  - **Mount:** three lugs with M5 inserts take the bike mount.
+- **Light sensor:** a 4 mm hole in the bottom of the bezel, closed by a glued-in clear acrylic rod. The TEMT6000 is glued behind it, inside the rim.
+- **Color:** black ASA, like the photo the shape comes from. The display and the Pi go up to 70 °C at most. If the bike stands in the sun for long, the pod can be printed in a light color.
+
+The `.scad` file checks itself before exporting. Every `assert` at the end stops the export if a changed parameter makes two parts collide, for example:
+- a button touching the display
+- the pod reaching the button cups
+- the boards not fitting the pod depth
 
 ### Measurements to check before printing
 
@@ -63,10 +79,12 @@ The measurements marked **[TO VERIFY]** in the file come from datasheets or are 
 |---|---|---|
 | `panel_t` (display thickness) | 6.0 mm | Calipers on the display |
 | `aa_dx`, `aa_dy` (center of the active area) | 0, 0 | Measure the black borders on all four sides of the display while it is on |
-| Ribbon cable position | at the bottom | Look at the display: the tabs of the rear shell must not press on the ribbon cable |
-| `perf_holes` (perfboard holes) | 84 × 64 mm | Calipers on the board |
-| `mount_points` (mounting to the bike) | 3 points | Original cluster mount (chapter 08 and [measurements](../research/bike-measurements.md)) |
-| `button_d` (button hole) | 16.2 mm | Thread diameter of the buttons you bought |
+| `ffc_y`, `ffc_w` (ribbon cable slot) | 46.4 mm below the center, 34 mm | Where the ribbon cable leaves the display; it must reach the Kippah connector |
+| `pi_stack` (Pi Zero 2 W with the Kippah) | 15 mm | From the bottom of the Pi to the top of the Kippah |
+| `perf_parts` (tallest part on the perfboard) | 20 mm | The Pololu in its socket, the Pico on its headers |
+| `perf_w`, `perf_h`, `perf_holes` (perfboard) | 90 × 70 mm, holes 84 × 64 mm | Calipers on the board |
+| `button_body` (button behind the face) | 22 mm | Body and terminals of the buttons you bought |
+| `mount_points` (mounting to the bike) | 3 lugs | Original cluster mount (chapter 08 and [measurements](../research/bike-measurements.md)) |
 
 ## Printing
 
@@ -78,33 +96,40 @@ The measurements marked **[TO VERIFY]** in the file come from datasheets or are 
 | Perimeters | 4 |
 | Solid top and bottom layers | 5 |
 | Infill | 30% gyroid |
-| Supports | Only for the side holes of the rear shell, if the printer cannot bridge 16 mm |
+| Supports | Only for the gland and vent holes of the pod, if the printer cannot bridge 12.5 mm |
 
 Orientation:
 - **Bezel:** front face on the bed (better on textured PEI, which gives a matte surface)
-- **Rear shell:** bottom on the bed, opening at the top
-- **Sun visor:** top face on the bed
+- **Cover:** front face on the bed, cups and standoffs upwards
+- **Pod:** back on the bed, opening at the top
 
 ## Assembling the enclosure
 
-| Rear shell, open side: standoffs and screw columns | Back: the three M5 inserts for the bike mount |
+| Pod, open side: standoffs, screw columns, gland and vent | Back: the pod with the three mount lugs |
 |---|---|
-| ![Rear shell inside](../../hardware/exports/cad/enclosure-rear-inside.png) | ![Back of the enclosure](../../hardware/exports/cad/enclosure-back.png) |
+| ![Pod inside](../../hardware/exports/cad/enclosure-rear-inside.png) | ![Back of the enclosure](../../hardware/exports/cad/enclosure-back.png) |
 
-1. **Heat-set inserts:**
-   - **Bezel:** six M3 inserts (4 mm holes, 6 mm deep).
-   - **Rear shell:** two M3 inserts on the top face for the sun visor and three M5 inserts on the back for mounting.
-   - **How:** with the soldering iron at 220–240 °C, pushing without forcing.
-2. **Window:** 2 mm anti-glare polycarbonate or PMMA, cut to 165.4 × 104.4 mm. It rests in the bezel seat and is sealed at the edge with a bead of clear neutral-cure silicone.
-3. **Display:** 1 mm foam tape on the edge of the window, outside the active area, then the display with the ribbon cable pointing down.
-4. **Rear shell:**
-   - screw the Pi Zero 2 W with the Kippah and the perfboard to the standoffs (M2.5 × 6 self-tapping screws)
-   - fit the buttons, cable gland and breather vent
-   - glue the TEMT6000 behind the light hole
-5. **Closing:**
-   - cut a flat gasket from 1 mm EPDM foam in the shape of the edge, with holes for the screws
-   - close with six M3 × 16 socket cap screws, tightening crosswise and without forcing
-6. **Sun visor:** two M3 × 8 screws.
+1. **Heat-set inserts** (with the soldering iron at 220–240 °C, pushing without forcing):
+   - **Bezel:** nine M3 inserts in the rim (4 mm holes, 6 mm deep).
+   - **Cover:** four M3 inserts in the bosses inside the pod outline.
+   - **Pod:** three M5 inserts in the lugs.
+2. **Bezel:**
+   - **Window:** 2 mm anti-glare polycarbonate or PMMA, cut to 165.4 × 104.4 mm. It rests in the seat and is sealed at the edge with a bead of clear neutral-cure silicone.
+   - **Display:** 1 mm foam tape on the edge of the window, outside the active area, then the display with the ribbon cable pointing down.
+   - **Buttons:** fit the two 12 mm buttons in the wings and tighten their nuts from behind.
+   - **Light sensor:** glue the acrylic rod and the TEMT6000 behind it.
+   - **Wires:** solder the button and sensor wires, long enough to reach the pod, and run them along the rim to the wire hole.
+3. **Cover:**
+   - screw the Pi Zero 2 W with the Kippah to the standoffs (M2.5 × 6 self-tapping screws)
+   - fix the TPS61169 breakout next to it with double-sided tape
+   - stick 2 mm foam pads where the cover touches the back of the display
+   - pass the ribbon cable through the slot and the wires through the hole, then plug the ribbon cable into the Kippah
+4. **Closing the display unit:** cut a flat gasket from 1 mm EPDM foam in the shape of the edge, with holes for the screws. Close with nine M3 × 10 screws, tightening crosswise and without forcing.
+5. **Pod:**
+   - screw the perfboard to its standoffs (M2.5 × 6)
+   - fit the cable gland and the breather vent
+   - wire the perfboard to the Pi, the backlight and the buttons (chapter 05)
+   - close it on the cover with a gasket cut to its edge and four M3 × 30 screws from the back
 
 ## The sensor bracket
 
