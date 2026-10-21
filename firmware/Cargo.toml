@@ -1,0 +1,45 @@
+[package]
+name = "tdm-firmware"
+description = "tdm-dash co-processor firmware for the Raspberry Pi Pico (RP2040) and Pico 2 (RP2350)"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.97"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/frascella-dev/tdm-dash"
+publish = false
+
+# Own workspace: embedded targets, own profile and dependency set.
+[workspace]
+
+[features]
+default = ["rp2040"]
+rp2040 = ["embassy-rp/rp2040", "embassy-rp/boot2-w25q080"]
+rp2350 = ["embassy-rp/rp235xa", "embassy-rp/imagedef-secure-exe"]
+
+[dependencies]
+tdm-proto = { path = "../crates/tdm-proto" }
+tdm-core = { path = "../crates/tdm-core" }
+
+embassy-rp = { version = "0.10.0", features = ["defmt", "time-driver", "critical-section-impl", "unstable-pac"] }
+embassy-executor = { version = "0.10.0", features = ["platform-cortex-m", "executor-thread", "executor-interrupt", "defmt"] }
+embassy-time = { version = "0.5.1", features = ["defmt"] }
+embassy-usb = { version = "0.6.0", features = ["defmt"] }
+embassy-sync = { version = "0.8.0", features = ["defmt"] }
+embassy-futures = "0.1.2"
+cortex-m = { version = "0.7.7", features = ["inline-asm"] }
+cortex-m-rt = "0.7.5"
+defmt = "1.0.1"
+defmt-rtt = "1.0.0"
+panic-probe = { version = "1.0.0", features = ["print-defmt"] }
+static_cell = "2.1.0"
+portable-atomic = { version = "1.10", features = ["critical-section"] }
+
+[profile.release]
+debug = 2
+lto = "fat"
+opt-level = "s"
+codegen-units = 1
+incremental = false
+
+[profile.dev]
+opt-level = 1

@@ -1,0 +1,13 @@
+[build]
+target = "thumbv6m-none-eabi" # RP2040 (Pico); use --target thumbv8m.main-none-eabihf --no-default-features --features rp2350 for the Pico 2
+
+[target.thumbv6m-none-eabi]
+runner = "probe-rs run --chip RP2040"
+rustflags = ["-C", "link-arg=--nmagic", "-C", "link-arg=-Tlink.x", "-C", "link-arg=-Tlink-rp.x", "-C", "link-arg=-Tdefmt.x"]
+
+[target.thumbv8m.main-none-eabihf]
+runner = "probe-rs run --chip RP235x"
+rustflags = ["-C", "link-arg=--nmagic", "-C", "link-arg=-Tlink.x", "-C", "link-arg=-Tdefmt.x"]
+
+[env]
+DEFMT_LOG = "info"
