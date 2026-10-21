@@ -30,13 +30,30 @@ jobs:
       BR2_DL_DIR: ${{ github.workspace }}/os/dl
       BR2_CCACHE_DIR: ${{ github.workspace }}/os/ccache
     steps:
+      # The build needs about 15 GB and the licence collection (legal-info)
+      # several more: free what the runner image ships and we do not use.
       - name: Free disk space
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
-          df -h /
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
+            /opt/hostedtoolcache /usr/local/.ghcup /usr/local/share/boost \
+            /usr/local/share/powershell /usr/local/share/chromium /usr/share/swift \
+            /usr/lib/jvm /opt/microsoft /opt/google /opt/az
+          sudo docker image prune --all --force >/dev/null 2>&1 || true
+          df -h / /mnt || df -h /
       - uses: actions/checkout@v4
         with:
           submodules: true
+      # Hosted runners have a second disk on /mnt: put the Buildroot output
+      # there when it exists, the downloads and the cache stay in the
+      # workspace for actions/cache.
+      - name: Output on the second disk
+        run: |
+          if [ -d /mnt ] && [ "$(df --output=avail -BG /mnt | tail -1 | tr -dc 0-9)" -gt 20 ]; then
+            sudo mkdir -p /mnt/os-output
+            sudo chown "$(id -u):$(id -g)" /mnt/os-output
+            ln -s /mnt/os-output os/output
+          fi
+          ls -ld os/output 2>/dev/null || echo "output in the workspace"
       - name: Host packages
         run: |
           sudo apt-get update
@@ -53,7 +70,9 @@ jobs:
             buildroot-${{ matrix.image }}-
             buildroot-
       - name: Build
-        run: make -C os ${{ matrix.image }}
+        run: |
+          make -C os ${{ matrix.image }}
+          df -h / /mnt || df -h /
       - name: Kernel configuration has what the dashboard needs
         run: |
           cfg=$(ls os/output/${{ matrix.image }}/build/linux-*/.config | head -1)
@@ -81,6 +100,7 @@ jobs:
             make -C os release-legal-info
             tar -C os/output/release -cJf dist/tdm-dash-legal-info.tar.xz legal-info
           fi
+          df -h / /mnt || df -h /
       - uses: actions/upload-artifact@v4
         with:
           name: image-${{ matrix.image }}
