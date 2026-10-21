@@ -1,0 +1,65 @@
+# Raspberry Pi Zero 2 W: 5 V supply and the USB link to the Pico.
+#
+# Both cables end in a micro-USB plug, so nothing is soldered on the Pi:
+# - power goes into the "PWR IN" port;
+# - data goes into the "USB" port (the Pi is forced to host mode by
+#   dtoverlay=dwc2,dr_mode=host). VBUS is not wired: the Pico is supplied from
+#   VSYS through D103.
+# On the Pico side the data pair is soldered to the TP2 (D-) and TP3 (D+)
+# pads under the board, next to the micro-USB socket.
+
+metadata:
+  title: Collegamenti del Pi Zero 2 W
+  description: Alimentazione 5 V e USB dati verso il Pico
+
+options:
+  fontname: DejaVu Sans
+  bgcolor: WH
+  bgcolor_node: WH
+  bgcolor_connector: WH
+  bgcolor_cable: WH
+
+connectors:
+  J103:
+    type: Morsetto J103 sul millefori
+    subtype: 2 poli
+    pinlabels: [+5V, GND]
+  P1:
+    type: Spina micro-USB B
+    subtype: nella porta PWR IN del Pi
+    pinlabels: [VBUS, D-, D+, ID, GND]
+  U601:
+    type: Raspberry Pi Pico
+    subtype: pad sul retro
+    pinlabels: [TP2 D-, TP3 D+, GND (pin 38)]
+  P2:
+    type: Spina micro-USB B (OTG)
+    subtype: nella porta USB del Pi
+    notes: ID collegato a massa nella spina, come in un cavo OTG
+    pinlabels: [VBUS, D-, D+, ID, GND]
+    loops:
+      - [4, 5]
+
+cables:
+  W1:
+    type: Cavo di alimentazione
+    gauge: 0.5 mm2
+    length: 0.15
+    colors: [RD, BK]
+    notes: Corto e spesso, il Pi assorbe fino a 1 A all'avvio
+  W2:
+    type: Doppino intrecciato + massa
+    gauge: 0.14 mm2
+    length: 0.15
+    colors: [WH, GN, BK]
+    notes: Colori USB standard (bianco D-, verde D+). Ferrite a scatto sul cavo
+
+connections:
+  -
+    - J103: [1, 2]
+    - W1: [1, 2]
+    - P1: [1, 5]
+  -
+    - U601: [1, 2, 3]
+    - W2: [1, 2, 3]
+    - P2: [2, 3, 5]

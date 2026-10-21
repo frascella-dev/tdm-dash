@@ -48,7 +48,7 @@ Il costo più grande è il display da 7" e 1000 nit (≈ 78 €). Un 7" non legg
 | 17 | Diodi | 1N4148 ×8, 1N4007 ×2, BAT54S ×3 | — | ≈ 1 € | Protezioni e antiparallelo sugli opto |
 | 18 | Zener | 15 V 1 W (1N4744A) ×1 | 1 | ≈ 0,20 € | Contagiri |
 | 19 | Resistenze | Assortimento 1/4 W 1%; **22 kΩ 1 W ×2** (≥ 350 V) per il contagiri | — | ≈ 3 € | |
-| 20 | Condensatori | Ceramici 100 nF ×15, 10 nF ×3 | — | ≈ 1 € | |
+| 20 | Condensatori | Ceramici 100 nF ×15, 2,2 nF ×1 (contagiri, valore da affinare con l'oscilloscopio) | — | ≈ 1 € | |
 | 21 | Pulsanti | Pulsanti stagni IP67, 12–16 mm, momentanei | 2 | ≈ 4 € | MODE e SET |
 | 22 | LED di backup | LED 3 mm: verde ×2 (frecce), blu ×1 (abbaglianti), verde ×1 (folle) + resistenze 1,5 kΩ e 1N4148 | — | ≈ 1 € | Funzionano anche a elettronica spenta |
 
