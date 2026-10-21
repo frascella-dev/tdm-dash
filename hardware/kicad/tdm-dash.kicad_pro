@@ -16,9 +16,12 @@
   },
   "schematic": {
     "legacy_lib_dir": "",
-    "legacy_lib_list": []
+    "legacy_lib_list": [],
+    "page_layout_descr_file": "tdm-dash.kicad_wks"
   },
   "sheets": [],
   "boards": [],
-  "text_variables": {}
+  "text_variables": {
+    "LAST_SHEET": "8"
+  }
 }
