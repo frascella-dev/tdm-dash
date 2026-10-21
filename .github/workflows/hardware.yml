@@ -29,6 +29,21 @@ jobs:
           name: schematic
           path: hardware/exports/kicad/
 
+  cad:
+    name: Enclosure and bracket (OpenSCAD)
+    runs-on: ubuntu-latest
+    container:
+      image: openscad/openscad:2021.01
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+      - name: STL, DXF and previews
+        run: hardware/cad-export.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cad
+          path: hardware/exports/cad/
+
   harness:
     name: Wiring harnesses (WireViz)
     runs-on: ubuntu-latest
