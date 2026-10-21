@@ -1,43 +1,43 @@
 # Hardware
 
-| Cartella | Contenuto | Come si rigenera |
+| Folder | Contents | How to regenerate |
 |---|---|---|
-| [`kicad/`](kicad/) | Schema elettrico KiCad 9 del modulo sensori, 8 fogli. **Generato** da [`generate.py`](kicad/generate.py): non modificare i file `.kicad_sch` a mano | `python3 hardware/kicad/generate.py` |
-| [`harness/`](harness/) | Cablaggi in WireViz (YAML) | `wireviz -f st -o hardware/exports/harness hardware/harness/<file>.yml` |
-| [`exports/kicad/`](exports/kicad/) | Schema in PDF e un SVG per foglio | `hardware/kicad/export.sh` (ERC e controllo dei pin compresi) |
-| [`exports/harness/`](exports/harness/) | Disegni dei cablaggi (SVG) e distinte (TSV) | vedi `harness/` |
-| [`perfboard/`](perfboard/) | Disposizione per zone del millefori 90 × 70 mm (`layout.svg`) | `python3 hardware/perfboard/layout.py` |
-| [`enclosure/`](enclosure/) | Contenitore parametrico in OpenSCAD: cornice, guscio, palpebra | `hardware/cad-export.sh` |
-| [`bracket/`](bracket/) | Staffa del sensore ruota in OpenSCAD | `hardware/cad-export.sh` |
-| [`exports/cad/`](exports/cad/) | STL da stampare, DXF/SVG della staffa, anteprime PNG | `hardware/cad-export.sh` (anche con Docker, vedi sotto) |
+| [`kicad/`](kicad/) | KiCad 9 schematic of the sensor module, 8 sheets. **Generated** by [`generate.py`](kicad/generate.py): do not edit the `.kicad_sch` files by hand | `python3 hardware/kicad/generate.py` |
+| [`harness/`](harness/) | Wiring harnesses in WireViz (YAML) | `wireviz -f st -o hardware/exports/harness hardware/harness/<file>.yml` |
+| [`exports/kicad/`](exports/kicad/) | Schematic as PDF and one SVG per sheet | `hardware/kicad/export.sh` (ERC and pin check included) |
+| [`exports/harness/`](exports/harness/) | Harness drawings (SVG) and bills of materials (TSV) | see `harness/` |
+| [`perfboard/`](perfboard/) | Zone layout of the 90 × 70 mm perfboard (`layout.svg`) | `python3 hardware/perfboard/layout.py` |
+| [`enclosure/`](enclosure/) | Parametric enclosure in OpenSCAD: bezel, rear shell, sun visor | `hardware/cad-export.sh` |
+| [`bracket/`](bracket/) | Wheel sensor bracket in OpenSCAD | `hardware/cad-export.sh` |
+| [`exports/cad/`](exports/cad/) | STL files to print, DXF/SVG of the bracket, PNG previews | `hardware/cad-export.sh` (also with Docker, see below) |
 
-Dove sono spiegati nel manuale:
-- ogni foglio dello schema e il calcolo dei componenti: [capitolo 04](../docs/manuale/04-schemi-elettrici.md)
-- cablaggi e piedinature: [capitolo 05](../docs/manuale/05-schemi-collegamenti.md)
-- costruzione del millefori: [capitolo 06](../docs/manuale/06-costruzione.md)
-- contenitore e staffa: [capitolo 07](../docs/manuale/07-contenitore-e-staffa.md)
+Where they are explained in the manual:
+- every schematic sheet and the component calculations: [chapter 04](../docs/manual/04-schematics.md)
+- wiring harnesses and pinouts: [chapter 05](../docs/manual/05-wiring-harnesses.md)
+- building the perfboard: [chapter 06](../docs/manual/06-building-the-electronics.md)
+- enclosure and bracket: [chapter 07](../docs/manual/07-enclosure-and-bracket.md)
 
-Le parti meccaniche si esportano con OpenSCAD 2021.01, anche via Docker:
+The mechanical parts are exported with OpenSCAD 2021.01, also through Docker:
 
 ```sh
 docker run --rm -u 0 -v "$PWD":/w -w /w openscad/openscad:2021.01 hardware/cad-export.sh
 ```
 
-## Modificare lo schema
+## Editing the schematic
 
-1. Modifica la descrizione del circuito in `kicad/generate.py` (funzione `build()`): ogni componente ha il suo simbolo KiCad e la rete su ciascun pin.
-2. Rigenera e controlla con KiCad 9, anche via Docker:
+1. Edit the circuit description in `kicad/generate.py` (function `build()`): each component has its KiCad symbol and the net on each pin.
+2. Regenerate and check with KiCad 9, also through Docker:
 
    ```sh
    docker run --rm -u 0 -v "$PWD":/w -w /w kicad/kicad:9.0.9 \
        sh -c 'python3 hardware/kicad/generate.py && hardware/kicad/export.sh'
    ```
 
-   `export.sh` esegue l'ERC e [`tools/check_pinmap.py`](../tools/check_pinmap.py), che confronta i GPIO del Pico con `firmware/src/main.rs`, poi esporta PDF e SVG.
-3. Fai il commit sia di `generate.py` sia dei file generati: la CI (workflow `Hardware`) controlla che coincidano.
+   `export.sh` runs the ERC and [`tools/check_pinmap.py`](../tools/check_pinmap.py), which compares the Pico GPIOs with `firmware/src/main.rs`, then exports PDF and SVG.
+3. Commit both `generate.py` and the generated files: CI (the `Hardware` workflow) checks that they match.
 
-Aprire il progetto in KiCad per guardarlo va benissimo. Le modifiche fatte nell'editor vanno però riportate in `generate.py`, altrimenti la prossima generazione le cancella.
+Opening the project in KiCad to look at it is perfectly fine. Changes made in the editor must however be carried over to `generate.py`, otherwise the next generation erases them.
 
-## Licenza
+## License
 
-Hardware sotto CERN-OHL-P-2.0 (vedi [LICENSING.md](../LICENSING.md)).
+Hardware under CERN-OHL-P-2.0 (see [LICENSING.md](../LICENSING.md)).

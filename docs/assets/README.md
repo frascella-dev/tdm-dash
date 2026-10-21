@@ -1,16 +1,16 @@
-# Immagini del progetto
+# Project images
 
-| File | Cos'è | Come si rigenera |
+| File | What it is | How to regenerate it |
 |---|---|---|
-| `banner.svg` | Banner in cima al README: titolo, tecnologie e la moto su un quadrante | `python3 tools/make_banner.py` (serve `fonttools`) |
-| `tdm-850.svg` | Profilo della moto, disegno al tratto in un solo percorso SVG | `python3 tools/stl_outline.py <modello>.stl docs/assets/tdm-850.svg --drop …` (serve `numpy`) |
+| `banner.svg` | Banner at the top of the README: title, technologies and the bike on a dial | `python3 tools/make_banner.py` (needs `fonttools`) |
+| `tdm-850.svg` | Side view of the bike, line art in a single SVG path | `python3 tools/stl_outline.py <model>.stl docs/assets/tdm-850.svg --drop …` (needs `numpy`) |
 
-`tdm-850.svg` è ricavato da un modello STL in rilievo (`yamaha-tdm-850-v1.stl`) fornito dal proprietario del progetto. Lo script prende le facce di base del rilievo, ne segue il contorno e semplifica le curve. Le scritte e i loghi del modello originale (marchio sul serbatoio e sul coperchio frizione, logo del modello) sono tolti con le opzioni `--drop`: il repository non contiene marchi registrati.
+`tdm-850.svg` comes from a relief STL model (`yamaha-tdm-850-v1.stl`) supplied by the project owner. The script takes the base faces of the relief, follows their outline and simplifies the curves. The lettering and logos of the original model (brand on the tank and on the clutch cover, model logo) are removed with the `--drop` options: the repository contains no registered trademarks.
 
 ```sh
 python3 tools/stl_outline.py yamaha-tdm-850-v1.stl docs/assets/tdm-850.svg \
-    --drop 120,56,156,74 --drop 148,59,194,89 --drop 99,139,115,144 --title "TDM 850, profilo"
+    --drop 120,56,156,74 --drop 148,59,194,89 --drop 99,139,115,144 --title "TDM 850, side view"
 python3 tools/make_banner.py
 ```
 
-I testi del banner sono convertiti in tracciati con il font del quadro (Saira SemiCondensed, licenza OFL, in `crates/tdm-dash/fonts/`), quindi il file non dipende da font installati. I colori sono quelli del tema "giorno" (vedi `design/README.md`).
+The banner texts are converted to outlines with the dashboard font (Saira SemiCondensed, OFL license, in `crates/tdm-dash/fonts/`), so the file does not depend on installed fonts. The colors are those of the day theme (see `design/README.md`).

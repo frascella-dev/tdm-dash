@@ -9,8 +9,8 @@
 # pads under the board, next to the micro-USB socket.
 
 metadata:
-  title: Collegamenti del Pi Zero 2 W
-  description: Alimentazione 5 V e USB dati verso il Pico
+  title: Pi Zero 2 W connections
+  description: 5 V supply and USB data to the Pico
 
 options:
   fontname: DejaVu Sans
@@ -21,38 +21,38 @@ options:
 
 connectors:
   J103:
-    type: Morsetto J103 sul millefori
-    subtype: 2 poli
+    type: Terminal J103 on the perfboard
+    subtype: 2-pin
     pinlabels: [+5V, GND]
   P1:
-    type: Spina micro-USB B
-    subtype: nella porta PWR IN del Pi
+    type: Micro-USB B plug
+    subtype: in the Pi PWR IN port
     pinlabels: [VBUS, D-, D+, ID, GND]
   U601:
     type: Raspberry Pi Pico
-    subtype: pad sul retro
+    subtype: pads on the back
     pinlabels: [TP2 D-, TP3 D+, GND (pin 38)]
   P2:
-    type: Spina micro-USB B (OTG)
-    subtype: nella porta USB del Pi
-    notes: ID collegato a massa nella spina, come in un cavo OTG
+    type: Micro-USB B plug (OTG)
+    subtype: in the Pi USB port
+    notes: ID tied to ground in the plug, as in an OTG cable
     pinlabels: [VBUS, D-, D+, ID, GND]
     loops:
       - [4, 5]
 
 cables:
   W1:
-    type: Cavo di alimentazione
+    type: Power cable
     gauge: 0.5 mm2
     length: 0.15
     colors: [RD, BK]
-    notes: Corto e spesso, il Pi assorbe fino a 1 A all'avvio
+    notes: Short and thick, the Pi draws up to 1 A at boot
   W2:
-    type: Doppino intrecciato + massa
+    type: Twisted pair + ground
     gauge: 0.14 mm2
     length: 0.15
     colors: [WH, GN, BK]
-    notes: Colori USB standard (bianco D-, verde D+). Ferrite a scatto sul cavo
+    notes: Standard USB colors (white D-, green D+). Clip-on ferrite on the cable
 
 connections:
   -

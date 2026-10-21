@@ -4,7 +4,7 @@
 Text is converted to outlines with the dashboard font (Saira SemiCondensed,
 OFL, in crates/tdm-dash/fonts), so the SVG looks the same everywhere and
 needs no web font. The bike is docs/assets/tdm-850.svg (see
-tools/stl_outline.py). Colours are the day theme of design/README.md.
+tools/stl_outline.py). Colors are the day theme of design/README.md.
 
     python3 tools/make_banner.py        # needs fonttools
 """
@@ -73,7 +73,7 @@ def gauge(cx: float, cy: float, r: float) -> str:
 def main() -> int:
     left = 72
     title, tw = text_path("SairaSemiCondensed-Bold.ttf", "tdm-dash", 132, left, 168)
-    sub, sw = text_path("SairaSemiCondensed-SemiBold.ttf", "Quadro strumenti digitale open-source", 40, left, 252)
+    sub, sw = text_path("SairaSemiCondensed-SemiBold.ttf", "Open-source digital instrument cluster", 40, left, 252)
     tags, gw = text_path(
         "SairaSemiCondensed-Medium.ttf", "Raspberry Pi Zero 2 W · RP2040 · Rust · Slint · Buildroot", 25, left, 300
     )
@@ -85,7 +85,7 @@ def main() -> int:
     if widest > bx - 24:
         raise SystemExit(f"text ({widest:.0f}) runs into the bike ({bx:.0f})")
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-labelledby="t">
-<title id="t">tdm-dash · quadro strumenti digitale open-source</title>
+<title id="t">tdm-dash · open-source digital instrument cluster</title>
 <rect width="{W}" height="{H}" rx="18" fill="{BG}"/>
 {gauge(bx + bw * 0.52, 214, 168)}
 <path fill="{INK}" d="{title}"/>
@@ -96,7 +96,7 @@ def main() -> int:
 </svg>
 """
     OUT.write_text(svg, encoding="utf-8")
-    print(f"{OUT.relative_to(ROOT)}: {len(svg) // 1024} KiB, testo fino a x={widest:.0f}, moto da x={bx:.0f}")
+    print(f"{OUT.relative_to(ROOT)}: {len(svg) // 1024} KiB, text up to x={widest:.0f}, bike from x={bx:.0f}")
     return 0
 
 

@@ -2,16 +2,17 @@
 
 use std::rc::Rc;
 
-use slint::{Model, ModelRc, SharedString, VecModel};
+use slint::{ComponentHandle, Model, ModelRc, SharedString, VecModel};
 use tdm_link::Source;
 use tdm_link::sim::Turn;
 use tdm_logic::dash::Level;
+use tdm_logic::i18n::{self, Language, Msg, tr};
 use tdm_logic::warnings::Icon;
 use tdm_logic::{Dash, Layout, LinkState, Screen, Severity, Theme, UiState, ViewModel};
 
 use crate::geometry::{self, DialKind};
 use crate::theme;
-use crate::{AppWindow, Label, NeedleGeom, Row, Seg};
+use crate::{AppWindow, Label, Labels, NeedleGeom, Row, Seg};
 
 struct Faces {
     speed: slint::Image,
@@ -64,6 +65,33 @@ fn labels(v: Vec<geometry::DialLabel>) -> ModelRc<Label> {
     ))
 }
 
+/// The fixed texts of the Slint screens, in the dashboard's language.
+fn set_labels(ui: &AppWindow, lang: Language) {
+    let l = ui.global::<Labels>();
+    let t = |m: Msg| SharedString::from(tr(lang, m));
+    l.set_rpm(t(Msg::RpmUnit));
+    l.set_krpm(t(Msg::KRpmUnit));
+    l.set_fill(t(Msg::FillShort));
+    l.set_estimated_range(t(Msg::EstimatedRange));
+    l.set_range_caps(t(Msg::RangeCaps));
+    l.set_riding_caps(t(Msg::RidingCaps));
+    l.set_average_caps(t(Msg::AverageCaps));
+    l.set_trip_title(t(Msg::TripTitle));
+    l.set_trip_a(t(Msg::TripA));
+    l.set_since_fill(t(Msg::SinceFill));
+    l.set_riding_time(t(Msg::RidingTime));
+    l.set_average(t(Msg::Average));
+    l.set_top_speed(t(Msg::TopSpeed));
+    l.set_est_consumption(t(Msg::EstConsumption));
+    l.set_fuel_used(t(Msg::FuelUsed));
+    l.set_range(t(Msg::Range));
+    l.set_trip_keys(t(Msg::TripKeys));
+    l.set_diag_title(t(Msg::DiagTitle));
+    l.set_settings_title(t(Msg::SettingsTitle));
+    l.set_only_stopped(t(Msg::OnlyStopped));
+    l.set_settings_keys(t(Msg::SettingsKeys));
+}
+
 impl App {
     pub fn new(ui: AppWindow, dash: Dash, source: Box<dyn Source>) -> Self {
         let p = dash.profile().clone();
@@ -83,8 +111,9 @@ impl App {
         )));
         ui.set_arc_labels(labels(arc_labels));
         ui.set_redline_frac(p.tach.redline_rpm as f32 / p.tach.max_rpm as f32);
+        set_labels(&ui, dash.language());
         ui.set_splash_subtitle(
-            format!("profilo {} · v{}", p.bike.name, env!("CARGO_PKG_VERSION")).into(),
+            i18n::splash_profile(dash.language(), &p.bike.name, env!("CARGO_PKG_VERSION")).into(),
         );
         let speed_chars = Rc::new(VecModel::default());
         ui.set_speed_chars(ModelRc::from(speed_chars.clone()));

@@ -4,8 +4,9 @@ Digital instrument cluster for a 1992 Yamaha TDM 850 (3VD): Raspberry Pi Zero 2 
 
 ## Language
 
-- Documentation (`docs/`, `README.md`): **Italian**.
-- Code, comments, commit messages: **English**.
+- Everything in the repository is **English**: documentation, code, comments, commit messages, CLI output, schematic notes, harness labels (docs/adr/0012).
+- The dashboard texts are **bilingual** (English, Italian) in `crates/tdm-logic/src/i18n.rs`: every new text the rider can see is a `Msg` variant with both translations, or a function there with both. Fixed Slint labels go through the `Labels` global, set in `crates/tdm-dash/src/app.rs`. The language comes from `[display] language` in the profile (English by default; the TDM 850 profile uses Italian).
+- Numbers shown on the dashboard go through `tdm_logic::fmt` with the dashboard language; `tdmctl` always uses English.
 
 ## Diagrams
 
@@ -16,8 +17,8 @@ Digital instrument cluster for a 1992 Yamaha TDM 850 (3VD): Raspberry Pi Zero 2 
 
 ## Facts about the bike
 
-- Every fact about the original wiring is tagged [VERIFICATO] / [DA VERIFICARE] / [IPOTESI] in `docs/ricerca/impianto-originale.md`.
-- Never present a [DA VERIFICARE] wire colour as certain in schematics or harnesses.
+- Every fact about the original wiring is tagged [VERIFIED] / [TO VERIFY] / [HYPOTHESIS] in `docs/research/original-wiring.md`.
+- Never present a [TO VERIFY] wire color as certain in schematics or harnesses.
 
 ## Commands
 
@@ -27,7 +28,7 @@ cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
 cargo build -p tdm-proto -p tdm-core --target thumbv6m-none-eabi   # no_std check
 cargo clippy -p tdm-dash --no-default-features --features kms --all-targets -- -D warnings
-cargo run --release -p tdm-dash --no-default-features -- --screenshot design/screenshots   # refresh reference screens
+cargo run --release -p tdm-dash --no-default-features -- --screenshot design/screenshots   # refresh reference screens (English + it-* checks)
 cargo build --release --target aarch64-unknown-linux-gnu -p tdm-dash --no-default-features --features kms  # needs gcc-aarch64-linux-gnu
 python3 tools/check_mermaid.py --mmdc <path-to-mmdc> [--chrome <chromium>]
 docker run --rm -u 0 -v "$PWD":/w -w /w kicad/kicad:9.0.9 sh -c 'python3 hardware/kicad/generate.py && hardware/kicad/export.sh'   # schematic: regenerate, ERC, pin check, export
@@ -47,7 +48,7 @@ PUPPETEER_SKIP_DOWNLOAD=1 npm i --prefix "$SCRATCH/mmdc" @mermaid-js/mermaid-cli
 - `tdm-logic`: profile, conversions, filters, warnings, calibration (`calib`, behind `tdmctl calibrate`), `Dash` state machine → `ViewModel`.
 - `tdm-link`: `SimMcu` vehicle simulator, serial/replay sources, `tdmctl`.
 - `tdm-dash`: Slint UI (`ui/dash.slint`), platforms `desktop`, `kms`, headless screenshots/bench.
-- All font sizes used in `ui/dash.slint` must be listed in `crates/tdm-dash/build.rs` (`FONT_SIZES`), and any non-ASCII character that only appears in Rust strings must be added to the hidden `Text` in `dash.slint`, or the software renderer cannot draw it.
+- All font sizes used in `ui/dash.slint` must be listed in `crates/tdm-dash/build.rs` (`FONT_SIZES`), and any non-ASCII character that only appears in Rust strings (Italian texts included) must be added to the hidden `Text` in `dash.slint`, or the software renderer cannot draw it.
 
 ## Hardware and OS
 

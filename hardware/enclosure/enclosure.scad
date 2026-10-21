@@ -10,7 +10,7 @@
 //
 // Coordinates: X across the bike, Y up, Z towards the rider. The front face
 // of the bezel is at Z = 0, the enclosure extends to negative Z.
-// Values marked [DA VERIFICARE] come from datasheets or estimates and must be
+// Values marked [TO VERIFY] come from datasheets or estimates and must be
 // checked on the parts in hand before printing (manual, chapter 07).
 
 part = "all";
@@ -18,10 +18,10 @@ part = "all";
 /* [Display] */
 panel_w = 165.0;      // module outline (datasheet)
 panel_h = 104.0;
-panel_t = 6.0;        // module thickness [DA VERIFICARE]
+panel_t = 6.0;        // module thickness [TO VERIFY]
 aa_w = 154.2;         // active area (datasheet)
 aa_h = 85.6;
-aa_dx = 0.0;          // active area centre offset from the outline centre [DA VERIFICARE]
+aa_dx = 0.0;          // active area center offset from the outline center [TO VERIFY]
 aa_dy = 0.0;
 
 /* [Enclosure] */
@@ -42,7 +42,7 @@ button_d = 16.2;      // two IP67 push buttons, bottom face
 button_pitch = 26;
 light_d = 4.0;        // light pipe through the bottom rim for the TEMT6000
 mount_insert_d = 6.4; // M5 heat-set inserts on the back, for the bike bracket
-mount_points = [[-50, 44], [50, 44], [0, -44]];  // [DA VERIFICARE] on the bike
+mount_points = [[-50, 44], [50, 44], [0, -44]];  // [TO VERIFY] on the bike
 
 $fn = 64;
 
@@ -93,7 +93,7 @@ module front() {
 // ---------------------------------------------------------------- rear
 
 pi_holes = [for (x = [-29, 29], y = [-11.5, 11.5]) [x, y]];          // Pi Zero 2 W, 58 x 23
-perf_holes = [for (x = [-42, 42], y = [-32, 32]) [x, y]];            // 90 x 70 perfboard [DA VERIFICARE]
+perf_holes = [for (x = [-42, 42], y = [-32, 32]) [x, y]];            // 90 x 70 perfboard [TO VERIFY]
 pi_at = [inner_w / 2 - 40, 10];        // Pi + Kippah on the right (seen from the back: left)
 perf_at = [-inner_w / 2 + 50, 0];      // perfboard on the left
 

@@ -103,8 +103,8 @@ def main() -> int:
     errors = []
     for net, gpio in sorted(fw.items(), key=lambda kv: kv[1]):
         got = gpio_net.get(gpio)
-        status = "ok" if got == net else "ERRORE"
-        print(f"  GP{gpio:<2}  firmware {net:<14} schema {got or '-':<14} {status}")
+        status = "ok" if got == net else "ERROR"
+        print(f"  GP{gpio:<2}  firmware {net:<14} schematic {got or '-':<14} {status}")
         if got != net:
             errors.append(f"GP{gpio}: firmware expects {net}, schematic has {got}")
     for gpio, net in sorted(gpio_net.items()):
@@ -126,7 +126,7 @@ def main() -> int:
         with open(os.path.join(ROOT, "crates", "tdm-logic", "src", "profile.rs"), encoding="utf-8") as f:
             m = re.search(r"vbat_divider:\s*([\d.]+)\s*/\s*([\d.]+)", f.read())
         code = float(m.group(1)) / float(m.group(2))
-        print(f"  partitore batteria: schema {ratio:.4f}, codice {code:.4f}")
+        print(f"  battery divider: schematic {ratio:.4f}, code {code:.4f}")
         if abs(ratio - code) > 1e-6:
             errors.append(f"battery divider {ratio:.4f} differs from vbat_divider {code:.4f}")
 
@@ -137,14 +137,14 @@ def main() -> int:
         errors.append(f"coolant pull-up not found ({pull})")
     else:
         ohm = parse_value(values[pull.pop()])
-        print(f"  pull-up sensore acqua: schema {ohm:g} Ω, profilo {prof:g} Ω")
+        print(f"  coolant pull-up: schematic {ohm:g} Ω, profile {prof:g} Ω")
         if ohm != prof:
             errors.append(f"coolant pull-up {ohm:g} Ω differs from the profile ({prof:g} Ω)")
 
     for e in errors:
-        print(f"ERRORE: {e}", file=sys.stderr)
+        print(f"ERROR: {e}", file=sys.stderr)
     if not errors:
-        print("schema, firmware e profilo concordano")
+        print("schematic, firmware and profile agree")
     return 1 if errors else 0
 
 

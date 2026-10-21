@@ -7,9 +7,11 @@ pub mod conv;
 pub mod dash;
 pub mod filters;
 pub mod fmt;
+pub mod i18n;
 pub mod profile;
 pub mod warnings;
 
 pub use dash::{Dash, Level, LinkEvent, LinkState, Screen, Theme, UiState, ViewModel};
+pub use i18n::{Language, Msg, tr};
 pub use profile::{Layout, Profile, ThemeMode};
 pub use warnings::{Icon, Severity, WarningId};

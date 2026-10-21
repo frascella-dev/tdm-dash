@@ -1,8 +1,8 @@
-# Firmware del modulo sensori
+# Sensor module firmware
 
-Firmware in Rust ([embassy](https://embassy.dev)) per il Raspberry Pi Pico (RP2040) e il Pico 2 (RP2350). La logica applicativa è `tdm_core::McuCore`, la stessa eseguita dal simulatore del PC; questo crate collega solo l'hardware: pin, ADC, I²C, PWM, USB.
+Rust firmware ([embassy](https://embassy.dev)) for the Raspberry Pi Pico (RP2040) and the Pico 2 (RP2350). The application logic is `tdm_core::McuCore`, the same code the PC simulator runs; this crate only connects the hardware: pins, ADC, I²C, PWM, USB.
 
-Istruzioni per compilare, caricare e verificare: [manuale, capitolo 09](../docs/manuale/09-software.md#firmware-del-pico).
+How to build, flash and check it: [manual, chapter 09](../docs/manual/09-software.md#pico-firmware).
 
 ```sh
 cargo build --release                      # Pico

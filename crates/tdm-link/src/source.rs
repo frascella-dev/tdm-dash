@@ -165,7 +165,7 @@ impl Source for SerialSource {
     fn describe(&self) -> String {
         match &self.fixed {
             Some(p) => format!("USB {}", p.display()),
-            None => "USB (ricerca automatica)".into(),
+            None => "USB (automatic discovery)".into(),
         }
     }
 }

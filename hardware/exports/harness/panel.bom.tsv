@@ -1,0 +1,8 @@
+Id	Description	Qty	Unit	Designators
+1	Cable, Lead, 3 x 0.14 mm²	0.1	m	W2
+2	Cable, Lead, 4 x 0.25 mm²	0.15	m	W1
+3	Connector, IP67 push button, MODE, momentary NO, 2 pins	1		SW601
+4	Connector, IP67 push button, SET, momentary NO, 2 pins	1		SW602
+5	Connector, TEMT6000 (breakout), behind the window, facing forward, 3 pins	1		U1
+6	Connector, Terminal J501 on the perfboard, 3-pin, 3 pins	1		J501
+7	Connector, Terminal J601 on the perfboard, 3-pin, 3 pins	1		J601

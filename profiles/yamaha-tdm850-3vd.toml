@@ -1,9 +1,9 @@
-# Profilo: Yamaha TDM 850 prima serie (3VD, 1991–1995)
+# Profile: Yamaha TDM 850, first series (3VD, 1991–1995)
 #
-# BOZZA: i valori marcati "DA VERIFICARE" vanno confermati con i rilievi
-# (docs/ricerca/rilievi-sulla-moto.md) e con la calibrazione (manuale, cap. 10).
-# Lo schema è definito in crates/tdm-logic (milestone M2); i campi sconosciuti
-# vengono rifiutati.
+# DRAFT: the values marked "TO VERIFY" must be confirmed by the bike
+# measurements (docs/research/bike-measurements.md) and by the calibration
+# (manual, chapter 10). The schema is defined in crates/tdm-logic; unknown
+# keys are refused.
 
 schema = 1
 
@@ -12,9 +12,9 @@ id = "yamaha-tdm850-3vd"
 name = "Yamaha TDM 850 (3VD)"
 
 [speed]
-pulses_per_rev = 6                # DA VERIFICARE: bulloni del disco letti dal sensore
-wheel_circumference_mm = 1975     # 110/80-18, rotolamento stimato; si calibra col GPS
-display_gain = 1.03               # margine di legge: mai sotto la velocità reale
+pulses_per_rev = 6                # TO VERIFY: disc bolts read by the sensor
+wheel_circumference_mm = 1975     # 110/80-18, estimated rolling; calibrated with the GPS
+display_gain = 1.03               # legal margin: never below the true speed
 display_offset_kmh = 1.0
 zero_below_kmh = 2.5
 timeout_ms = 1500
@@ -23,15 +23,15 @@ dial_max_kmh = 220
 units = "metric"
 
 [tach]
-pulses_per_rev = 1.0              # DA VERIFICARE: bicilindrico 360°, una scintilla per giro
+pulses_per_rev = 1.0              # TO VERIFY: 360° twin, one spark per revolution
 max_rpm = 10000
-redline_rpm = 8000                # DA VERIFICARE
+redline_rpm = 8000                # TO VERIFY
 shift_rpm = 7500
 timeout_ms = 500
 
 [coolant]
-# Coppie [ohm, °C]. Solo 80 e 100 °C vengono dal manuale Haynes; gli altri
-# punti sono segnaposto da sostituire con la misura a bagnomaria.
+# Pairs [ohm, °C]. Only 80 and 100 °C come from the Haynes manual; the other
+# points are placeholders to replace with the water-bath measurement.
 curve = [[1000.0, 20], [450.0, 40], [200.0, 60], [50.0, 80], [27.5, 100], [16.0, 120]]
 warn_c = 105
 critical_c = 112
@@ -47,8 +47,8 @@ high_v = 15.0
 critical_high_v = 15.5
 
 [inputs]
-# Canali del microcontrollore (GP6–GP10, pulsanti GP11–GP12). invert = true
-# inverte la logica del singolo ingresso.
+# Microcontroller channels (GP6–GP10, buttons GP11–GP12). invert = true
+# inverts the logic of a single input.
 neutral = { ch = 0 }
 high_beam = { ch = 1 }
 turn_left = { ch = 2 }
@@ -58,7 +58,7 @@ btn_mode = { ch = 8 }
 btn_set = { ch = 9 }
 
 [display]
-layout = "classic"                # classic | sport | touring (scelta dopo l'artifact di design)
+layout = "classic"                # classic | sport | touring (chosen after the design mock-up)
 theme = "auto"                    # auto | day | night
 night_source = "light_sensor"     # light_sensor | illumination | manual
 light_raw_dark = 300
@@ -69,14 +69,15 @@ brightness_min_pct = 4
 brightness_max_pct = 100
 rotate_180 = false
 selftest = true
+language = "it"                   # en | it: language of the dashboard texts
 
 [fuel]
 tank_l = 18.0
 reserve_l = 3.5
-l_per_100km = 6.0                 # stima per l'autonomia (nessun sensore sul 3VD)
+l_per_100km = 6.0                 # estimate for the range (no fuel sensor on the 3VD)
 
 [board]
 coolant_pullup_ohm = 100.0
 
 [odometer]
-initial_km = 0                    # usato una sola volta, solo se la FRAM è vuota
+initial_km = 0                    # used once, only if the FRAM is blank

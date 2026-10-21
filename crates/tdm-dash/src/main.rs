@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 use tdm_link::SourceSpec;
-use tdm_logic::{Dash, Layout, Profile, ThemeMode};
+use tdm_logic::{Dash, Language, Layout, Profile, ThemeMode};
 
 mod app;
 mod geometry;
@@ -24,17 +24,18 @@ mod ui {
 pub use ui::*;
 
 const USAGE: &str = "\
-tdm-dash — quadro strumenti
+tdm-dash — instrument cluster
 
-USO: tdm-dash [opzioni]
-  --source SPEC        sim[:scenario] | serial[:/dev/ttyACMx] | replay:FILE  (default: sim:city sul PC, serial sul Pi)
-  --profile FILE       profilo moto (default: /boot/tdm-dash.toml, /etc/tdm-dash/default.toml, integrato)
-  --platform NOME      desktop | kms | headless
-  --layout NOME        classic | sport | touring (sostituisce il profilo)
-  --theme NOME         auto | day | night
-  --record FILE        registra il traffico USB per --source replay:FILE
-  --screenshot DIR     salva le schermate di riferimento in DIR ed esce
-  --bench N            misura il tempo di disegno su N frame ed esce
+USAGE: tdm-dash [options]
+  --source SPEC        sim[:scenario] | serial[:/dev/ttyACMx] | replay:FILE  (default: sim:city on a PC, serial on the Pi)
+  --profile FILE       bike profile (default: /boot/tdm-dash.toml, /etc/tdm-dash/default.toml, built-in)
+  --platform NAME      desktop | kms | headless
+  --layout NAME        classic | sport | touring (overrides the profile)
+  --theme NAME         auto | day | night
+  --language LANG      en | it (overrides the profile)
+  --record FILE        record the USB traffic for --source replay:FILE
+  --screenshot DIR     save the reference screens in DIR and exit
+  --bench N            measure the drawing time over N frames and exit
 ";
 
 #[derive(Debug)]
@@ -44,6 +45,7 @@ pub struct Options {
     platform: Option<String>,
     layout: Option<Layout>,
     theme: Option<ThemeMode>,
+    language: Option<Language>,
     record: Option<PathBuf>,
     screenshot: Option<PathBuf>,
     bench: Option<usize>,
@@ -56,13 +58,14 @@ fn parse_args() -> Result<Options, String> {
         platform: None,
         layout: None,
         theme: None,
+        language: None,
         record: None,
         screenshot: None,
         bench: None,
     };
     let mut it = std::env::args().skip(1);
     while let Some(a) = it.next() {
-        let mut val = || it.next().ok_or(format!("{a} vuole un valore"));
+        let mut val = || it.next().ok_or(format!("{a} needs a value"));
         match a.as_str() {
             "--source" => o.source = Some(val()?.parse()?),
             "--profile" => o.profile = Some(val()?.into()),
@@ -72,7 +75,7 @@ fn parse_args() -> Result<Options, String> {
                     "classic" => Layout::Classic,
                     "sport" => Layout::Sport,
                     "touring" => Layout::Touring,
-                    x => return Err(format!("layout sconosciuto '{x}'")),
+                    x => return Err(format!("unknown layout '{x}'")),
                 })
             }
             "--theme" => {
@@ -80,14 +83,21 @@ fn parse_args() -> Result<Options, String> {
                     "auto" => ThemeMode::Auto,
                     "day" => ThemeMode::Day,
                     "night" => ThemeMode::Night,
-                    x => return Err(format!("tema sconosciuto '{x}'")),
+                    x => return Err(format!("unknown theme '{x}'")),
+                })
+            }
+            "--language" => {
+                o.language = Some(match val()?.as_str() {
+                    "en" => Language::En,
+                    "it" => Language::It,
+                    x => return Err(format!("unknown language '{x}'")),
                 })
             }
             "--record" => o.record = Some(val()?.into()),
             "--screenshot" => o.screenshot = Some(val()?.into()),
-            "--bench" => o.bench = Some(val()?.parse().map_err(|_| "--bench vuole un numero")?),
+            "--bench" => o.bench = Some(val()?.parse().map_err(|_| "--bench needs a number")?),
             "-h" | "--help" => return Err(String::new()),
-            x => return Err(format!("opzione sconosciuta '{x}'")),
+            x => return Err(format!("unknown option '{x}'")),
         }
     }
     Ok(o)
@@ -110,7 +120,7 @@ pub fn load_profile(explicit: Option<&Path>) -> (Profile, Option<String>) {
 pub fn make_dash(o: &Options) -> Dash {
     let (profile, err) = load_profile(o.profile.as_deref());
     if let Some(e) = &err {
-        eprintln!("tdm-dash: {e}; uso il profilo integrato");
+        eprintln!("tdm-dash: {e}; using the built-in profile");
     }
     let mut d = Dash::new(profile, err);
     if let Some(l) = o.layout {
@@ -118,6 +128,9 @@ pub fn make_dash(o: &Options) -> Dash {
     }
     if let Some(t) = o.theme {
         d.set_theme_mode(t);
+    }
+    if let Some(l) = o.language {
+        d.set_language(l);
     }
     d
 }
@@ -127,7 +140,7 @@ fn main() -> ExitCode {
         Ok(o) => o,
         Err(e) => {
             if !e.is_empty() {
-                eprintln!("errore: {e}\n");
+                eprintln!("error: {e}\n");
             }
             eprint!("{USAGE}");
             return ExitCode::from(2);
@@ -136,11 +149,11 @@ fn main() -> ExitCode {
     if let Some(dir) = &o.screenshot {
         return match shots::screenshots(dir) {
             Ok(n) => {
-                println!("{n} schermate salvate in {}", dir.display());
+                println!("{n} screens saved in {}", dir.display());
                 ExitCode::SUCCESS
             }
             Err(e) => {
-                eprintln!("errore: {e}");
+                eprintln!("error: {e}");
                 ExitCode::FAILURE
             }
         };
@@ -163,12 +176,12 @@ fn main() -> ExitCode {
         "desktop" => run_desktop(&o),
         #[cfg(feature = "kms")]
         "kms" => kms::run(&o),
-        p => Err(format!("piattaforma '{p}' non compilata in questo binario")),
+        p => Err(format!("platform '{p}' is not built into this binary")),
     };
     match r {
         Ok(()) => ExitCode::SUCCESS,
         Err(e) => {
-            eprintln!("errore: {e}");
+            eprintln!("error: {e}");
             ExitCode::FAILURE
         }
     }
@@ -218,7 +231,7 @@ fn run_desktop(o: &Options) -> Result<(), String> {
         ui.on_key(move |t, pressed| app.borrow_mut().key(&t, pressed));
     }
     eprintln!(
-        "tdm-dash: M = MODE, S = SET (tieni premuto per il lungo), ←/→ frecce, H abbaglianti, L/K luce, U scollega USB, 1/2/3 layout"
+        "tdm-dash: M = MODE, S = SET (hold for a long press), ←/→ turn signals, H high beam, L/K light, U unplug USB, 1/2/3 layout"
     );
     ui.run().map_err(|e| e.to_string())
 }

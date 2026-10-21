@@ -24,9 +24,9 @@ kicad-cli sch export pdf -o "$out/tdm-dash.pdf" tdm-dash.kicad_sch
 kicad-cli sch export svg -o "$tmp/svg" tdm-dash.kicad_sch
 rm -f "$out"/*.svg
 for f in "$tmp"/svg/*.svg; do
-    # "tdm-dash-3 Contagiri.svg" -> "3-contagiri.svg", the root sheet -> "0-indice.svg"
+    # "tdm-dash-3 Tachometer.svg" -> "3-tachometer.svg", the root sheet -> "0-index.svg"
     name=$(basename "$f" .svg | sed 's/^tdm-dash-\{0,1\}//; s/ /-/g' | tr 'A-Z' 'a-z')
     # drop the export time from the <title>, so unchanged sheets give unchanged files
-    sed 's/ date [0-9/]* [0-9:]* </ </' "$f" >"$out/${name:-0-indice}.svg"
+    sed 's/ date [0-9/]* [0-9:]* </ </' "$f" >"$out/${name:-0-index}.svg"
 done
 ls "$out"

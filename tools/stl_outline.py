@@ -117,7 +117,7 @@ def main() -> int:
             f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width:.2f} {height:.2f}">{title}'
             f'<path fill="#0f1113" fill-rule="evenodd" d="{" ".join(parts)}"/></svg>\n'
         )
-    print(f"{a.svg}: {len(parts)} contorni ({dropped} tolti), {width:.1f} × {height:.1f} mm")
+    print(f"{a.svg}: {len(parts)} outlines ({dropped} dropped), {width:.1f} × {height:.1f} mm")
     return 0
 
 

@@ -91,7 +91,7 @@ jobs:
           readelf=$(ls $out/host/bin/*-readelf | head -1)
           $readelf -d $out/target/usr/bin/tdm-dash | tee needed.txt
           ! grep NEEDED needed.txt | grep -vE 'libc\.so|libm\.so|libgcc_s\.so|ld-linux'
-      - name: Compress the image and collect the licences
+      - name: Compress the image and collect the licenses
         run: |
           mkdir -p dist
           img=os/output/${{ matrix.image }}/images
@@ -112,7 +112,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1 ||
-            gh release create "${GITHUB_REF_NAME}" --draft --title "${GITHUB_REF_NAME}" --notes "Immagini e firmware di ${GITHUB_REF_NAME}."
+            gh release create "${GITHUB_REF_NAME}" --draft --title "${GITHUB_REF_NAME}" --notes "Images and firmware of ${GITHUB_REF_NAME}."
           gh release upload "${GITHUB_REF_NAME}" dist/* --clobber
       # The logs are not always at hand where the failure is looked at: put
       # the end of the build log and the free space in the job annotations.

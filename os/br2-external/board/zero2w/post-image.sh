@@ -22,7 +22,7 @@ update_config=0
 country=IT
 
 network={
-	ssid="nome-della-rete"
+	ssid="network-name"
 	psk="password"
 }
 WPA

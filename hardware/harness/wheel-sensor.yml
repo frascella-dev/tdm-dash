@@ -1,0 +1,63 @@
+# Wheel sensor: LJ12A3-4-Z/BX on the front brake disc -> DTM -> board J401.
+#
+# The sensor's own lead colors (brown +V, blue 0 V, black output) come from
+# its datasheet; the extension cable is a shielded 3-core, shield grounded at
+# the board end only.
+
+metadata:
+  title: LJ12A3 wheel sensor → tdm-dash
+  description: Inductive NPN NO sensor on the front disc bolts
+
+options:
+  fontname: DejaVu Sans
+  bgcolor: WH
+  bgcolor_node: WH
+  bgcolor_connector: WH
+  bgcolor_cable: WH
+
+connectors:
+  S1:
+    type: LJ12A3-4-Z/BX
+    subtype: inductive NPN NO, 6–36 V
+    pinlabels: [+V, OUT, 0V]
+  X1:
+    type: Deutsch DTM
+    subtype: 3-pin male (DTM04-3P)
+    notes: Near the fork yoke, held with a cable tie
+    pinlabels: [+12V, SIG, GND]
+  X2:
+    type: Deutsch DTM
+    subtype: 3-pin female (DTM06-3S + W3S)
+    pinlabels: [+12V, SIG, GND]
+  X3:
+    type: Terminal J401 on the perfboard
+    subtype: 3-pin
+    pinlabels: [+12V_P, WHEEL_SIG, GND]
+
+cables:
+  W1:
+    type: Sensor cable
+    gauge: 0.34 mm2
+    length: 1.0
+    colors: [BN, BK, BU]
+    notes: Shorten, leaving slack for the full fork travel and steering lock
+  W2:
+    type: Shielded 3-core cable
+    gauge: 0.34 mm2
+    length: 1.2
+    colors: [RD, WH, BK]
+    shield: true
+    notes: Shield grounded at the dashboard end only
+
+connections:
+  -
+    - S1: [1, 2, 3]
+    - W1: [1, 2, 3]
+    - X1: [1, 2, 3]
+  -
+    - X2: [1, 2, 3]
+    - W2: [1, 2, 3]
+    - X3: [1, 2, 3]
+  -
+    - W2: [s]
+    - X3: [3]

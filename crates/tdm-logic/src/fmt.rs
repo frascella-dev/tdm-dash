@@ -1,19 +1,30 @@
-//! Italian number formatting for the dashboard (decimal comma, space as
-//! thousands separator).
+//! Number formatting for the dashboard, in the profile's language:
+//! English `48,213` and `212.4`, Italian `48 213` and `212,4`.
 
-pub fn int(n: u64) -> String {
+use crate::i18n::Language;
+
+fn separators(lang: Language) -> (char, char) {
+    match lang {
+        Language::En => (',', '.'),
+        Language::It => (' ', ','),
+    }
+}
+
+pub fn int(lang: Language, n: u64) -> String {
+    let (group, _) = separators(lang);
     let s = n.to_string();
     let mut out = String::with_capacity(s.len() + s.len() / 3);
     for (i, c) in s.chars().enumerate() {
         if i > 0 && (s.len() - i).is_multiple_of(3) {
-            out.push(' ');
+            out.push(group);
         }
         out.push(c);
     }
     out
 }
 
-pub fn dec(x: f64, decimals: usize) -> String {
+pub fn dec(lang: Language, x: f64, decimals: usize) -> String {
+    let (_, point) = separators(lang);
     let neg = x < 0.0;
     let s = format!("{:.*}", decimals, x.abs());
     let (i, f) = s.split_once('.').unwrap_or((&s, ""));
@@ -21,10 +32,21 @@ pub fn dec(x: f64, decimals: usize) -> String {
     if neg {
         out.push('−');
     }
-    out.push_str(&int(i.parse().unwrap_or(0)));
+    out.push_str(&int(lang, i.parse().unwrap_or(0)));
     if decimals > 0 {
-        out.push(',');
+        out.push(point);
         out.push_str(f);
+    }
+    out
+}
+
+/// Placeholder shown instead of a number with `decimals` decimals, `--.-`.
+pub fn blank(lang: Language, int_digits: usize, decimals: usize) -> String {
+    let (_, point) = separators(lang);
+    let mut out = "-".repeat(int_digits);
+    if decimals > 0 {
+        out.push(point);
+        out.push_str(&"-".repeat(decimals));
     }
     out
 }
@@ -43,15 +65,31 @@ pub fn duration(secs: f64) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use Language::{En, It};
+
+    #[test]
+    fn english_numbers() {
+        assert_eq!(int(En, 48213), "48,213");
+        assert_eq!(int(En, 999), "999");
+        assert_eq!(int(En, 1_000_000), "1,000,000");
+        assert_eq!(dec(En, 212.44, 1), "212.4");
+        assert_eq!(dec(En, 1834.96, 1), "1,835.0");
+        assert_eq!(dec(En, -0.5, 1), "−0.5");
+        assert_eq!(blank(En, 3, 1), "---.-");
+    }
 
     #[test]
     fn italian_numbers() {
-        assert_eq!(int(48213), "48 213");
-        assert_eq!(int(999), "999");
-        assert_eq!(int(1_000_000), "1 000 000");
-        assert_eq!(dec(212.44, 1), "212,4");
-        assert_eq!(dec(1834.96, 1), "1 835,0");
-        assert_eq!(dec(-0.5, 1), "−0,5");
+        assert_eq!(int(It, 48213), "48 213");
+        assert_eq!(int(It, 1_000_000), "1 000 000");
+        assert_eq!(dec(It, 212.44, 1), "212,4");
+        assert_eq!(dec(It, 1834.96, 1), "1 835,0");
+        assert_eq!(dec(It, -0.5, 1), "−0,5");
+        assert_eq!(blank(It, 2, 1), "--,-");
+    }
+
+    #[test]
+    fn durations() {
         assert_eq!(duration(65.0), "1:05");
         assert_eq!(duration(3725.0), "1:02");
     }

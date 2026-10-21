@@ -1,7 +1,7 @@
 Id	Description	Qty	Unit	Designators
-1	Cable, Cavo di alimentazione, 2 x 0.5 mm²	0.15	m	W1
-2	Cable, Doppino intrecciato + massa, 3 x 0.14 mm²	0.15	m	W2
-3	Connector, Morsetto J103 sul millefori, 2 poli, 2 pins	1		J103
-4	Connector, Raspberry Pi Pico, pad sul retro, 3 pins	1		U601
-5	Connector, Spina micro-USB B (OTG), nella porta USB del Pi, 5 pins	1		P2
-6	Connector, Spina micro-USB B, nella porta PWR IN del Pi, 5 pins	1		P1
+1	Cable, Power cable, 2 x 0.5 mm²	0.15	m	W1
+2	Cable, Twisted pair + ground, 3 x 0.14 mm²	0.15	m	W2
+3	Connector, Micro-USB B plug (OTG), in the Pi USB port, 5 pins	1		P2
+4	Connector, Micro-USB B plug, in the Pi PWR IN port, 5 pins	1		P1
+5	Connector, Raspberry Pi Pico, pads on the back, 3 pins	1		U601
+6	Connector, Terminal J103 on the perfboard, 2-pin, 2 pins	1		J103

@@ -1,4 +1,6 @@
-//! Warnings with on-delays, clear conditions and snooze (manual, cap. 11).
+//! Warnings with on-delays, clear conditions and snooze (manual, chapter 11).
+
+use crate::i18n::{Language, Msg, tr};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Severity {
@@ -73,37 +75,43 @@ impl WarningId {
         }
     }
 
-    pub fn title(self) -> &'static str {
+    pub fn title(self, lang: Language) -> &'static str {
         use WarningId::*;
-        match self {
-            LinkLost => "Collegamento con il modulo sensori perso",
-            CoolantCritical => "Temperatura acqua critica",
-            Overvoltage => "Sovratensione",
-            CoolantHigh => "Temperatura acqua alta",
-            HighVoltage => "Tensione alta",
-            NotCharging => "Batteria non in carica",
-            BatteryLow => "Batteria bassa",
-            CoolantSensorFault => "Sensore temperatura scollegato",
-            FwMismatch => "Firmware del modulo non compatibile",
-            ConfigError => "Errore nel profilo: uso quello integrato",
-            OdometerFault => "Memoria del contachilometri guasta",
-            TurnSignalOn => "Freccia accesa",
-            FuelLow => "Riserva stimata",
-        }
+        tr(
+            lang,
+            match self {
+                LinkLost => Msg::WLinkLost,
+                CoolantCritical => Msg::WCoolantCritical,
+                Overvoltage => Msg::WOvervoltage,
+                CoolantHigh => Msg::WCoolantHigh,
+                HighVoltage => Msg::WHighVoltage,
+                NotCharging => Msg::WNotCharging,
+                BatteryLow => Msg::WBatteryLow,
+                CoolantSensorFault => Msg::WCoolantSensorFault,
+                FwMismatch => Msg::WFwMismatch,
+                ConfigError => Msg::WConfigError,
+                OdometerFault => Msg::WOdometerFault,
+                TurnSignalOn => Msg::WTurnSignalOn,
+                FuelLow => Msg::WFuelLow,
+            },
+        )
     }
 
-    pub fn detail(self) -> &'static str {
+    pub fn detail(self, lang: Language) -> &'static str {
         use WarningId::*;
-        match self {
-            LinkLost => "Velocità e giri non disponibili",
-            CoolantCritical => "Fermati appena puoi e spegni il motore",
-            Overvoltage => "Regolatore di tensione guasto: rischio per batteria e luci",
-            NotCharging => "Controlla statore e regolatore · SET: silenzia",
-            FwMismatch => "Aggiorna il firmware del Pico · SET: silenzia",
-            ConfigError => "Controlla /boot/tdm-dash.toml · SET: silenzia",
-            OdometerFault => "Vedi Diagnostica · SET: silenzia",
-            _ => "SET: silenzia per 5 minuti",
-        }
+        tr(
+            lang,
+            match self {
+                LinkLost => Msg::WLinkLostDetail,
+                CoolantCritical => Msg::WCoolantCriticalDetail,
+                Overvoltage => Msg::WOvervoltageDetail,
+                NotCharging => Msg::WNotChargingDetail,
+                FwMismatch => Msg::WFwMismatchDetail,
+                ConfigError => Msg::WConfigErrorDetail,
+                OdometerFault => Msg::WOdometerFaultDetail,
+                _ => Msg::WSnoozeDetail,
+            },
+        )
     }
 }
 
