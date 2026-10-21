@@ -26,11 +26,11 @@ def build(lib) -> Sheet:
          "Right turn signal"),
     ]
     y = 2100
-    for src, mid, anode, ret, rr, dd, led, colour, title in rows:
+    for src, mid, anode, ret, rr, dd, led, color, title in rows:
         s.text(1000, y - 500, title, size=60, bold=True)
         r = s.part(rr, "Device:R", "1.5k", (2000, y), rot=90, anchor="1", p1=src, p2=mid)
         d = s.part(dd, "Diode:1N4148", "1N4148", (2700, y), rot=180, anchor="A", A=mid, K=anode)
-        lamp = s.part(led, "Device:LED", colour, (3400, y), rot=180, anchor="A", A=anode, K=ret)
+        lamp = s.part(led, "Device:LED", color, (3400, y), rot=180, anchor="A", A=anode, K=ret)
         s.wire((1400, y), r["1"])
         port(s, src, (1400, y), LEFT)
         s.chain(r["2"], d["A"])

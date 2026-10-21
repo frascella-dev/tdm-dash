@@ -10,8 +10,8 @@ def build(lib) -> Sheet:
     s.heading(
         "Bike connectors, protection and 5 V supply",
         [
-            "+12V_KEY is the switched 12 V of the bike. Chain: 2 A fuse, P-MOSFET against reversed polarity,",
-            "24 V TVS for the load dump, LC filter, 5 V buck converter for the Pi, the backlight and the Pico.",
+            "+12V_KEY is the switched 12 V of the bike. Chain: 2 A fuse in the harness, P-MOSFET against reversed",
+            "polarity, 24 V TVS for the load dump, LC filter, 5 V buck converter for the Pi, the backlight and the Pico.",
             "The Pico runs from VSYS_PICO through D103: C103 keeps it alive long enough to save the trip.",
         ],
     )
@@ -29,12 +29,12 @@ def build(lib) -> Sheet:
         s.port(net, j102[pin], 2700, shape="output")
     s.wire(j102["4"], (2100, 3600))
     s.gnd((2100, 3600))
-    s.verify(950, 4050, "[TO VERIFY] pin numbers and wire colours of the\n"
+    s.verify(950, 4050, "[TO VERIFY] pin numbers and wire colors of the\n"
                         "original cluster connector: docs/research/original-wiring.md")
 
     # protection and filter --------------------------------------------------
     y = 1500  # +12 V line
-    f101 = s.part("F101", "Device:Fuse", "2A", (2600, y), rot=90, anchor="1", p1="+12V_KEY", p2="+12V_F")
+    f101 = s.part("F101", "Device:Fuse", "2A, in the harness", (2600, y), rot=90, anchor="1", p1="+12V_KEY", p2="+12V_F")
     s.wire(j101["1"], (2200, 2000), (2200, y), f101["1"])
     q101 = s.part("Q101", "Transistor_FET:IRF4905", "IRF4905", (3300, y), rot=90, anchor="D",
                   D="+12V_F", S="+12V_P", G="Q_GATE")

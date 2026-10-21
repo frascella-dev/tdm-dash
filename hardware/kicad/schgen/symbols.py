@@ -64,7 +64,7 @@ def box(
         pin(num, pname, -half_w - PIN_LEN, half_h - PITCH * (i + 1), 0)
     for i, (num, pname) in enumerate(right):
         pin(num, pname, half_w + PIN_LEN, half_h - PITCH * (i + 1), 180)
-    # top and bottom pins are centred on the box
+    # top and bottom pins are centered on the box
     for i, (num, pname) in enumerate(top):
         pin(num, pname, int((i - (len(top) - 1) / 2) * PITCH), half_h + PIN_LEN, 270)
     for i, (num, pname) in enumerate(bottom):
@@ -127,7 +127,7 @@ def project_symbols() -> dict[str, list]:
                   width=900))
     add(connector("tdm:Conn_Bike4", "Superseal 1.5, 4 pins", "Harness connector, second group of bike wires",
                   [("1", "TACH"), ("2", "COOLANT"), ("3", "ILLUM"), ("4", "GND")], width=900))
-    add(connector("tdm:Conn_Sensor3", "Deutsch DTM, 3 pins", "Wheel sensor connector",
+    add(connector("tdm:Conn_Sensor3", "to the wheel sensor", "Wheel sensor cable, from the DTM connector at the fork",
                   [("1", "+12V"), ("2", "SIG"), ("3", "GND")], width=600))
     add(connector("tdm:Conn_Light3", "to the TEMT6000", "Light sensor module, behind the window",
                   [("1", "VCC"), ("3", "SIG"), ("2", "GND")], width=600))
@@ -135,12 +135,14 @@ def project_symbols() -> dict[str, list]:
                   [("1", "MODE"), ("2", "SET"), ("3", "GND")], side="left", width=600))
     add(connector("tdm:Conn_Pi5V", "to the Pi PWR IN", "5 V supply of the Raspberry Pi Zero 2 W",
                   [("1", "+5V"), ("2", "GND")], side="left", width=600))
-    add(connector("tdm:Conn_Backlight2", "to the display LEDs", "Display backlight, through the Kippah",
+    add(connector("tdm:Conn_BLDriver3", "to the TPS61169 breakout", "Supply and dimming of the backlight driver",
+                  [("1", "+5V"), ("2", "CTRL"), ("3", "GND")], side="left", width=600))
+    add(connector("tdm:Conn_Backlight2", "display backlight", "Backlight LEDs of the panel, reached on the Kippah",
                   [("1", "LED_A"), ("2", "LED_K")], side="left", width=700))
     add(connector("tdm:Conn_USB_Pico", "Pico TP2/TP3 pads", "USB data from the pads on the back of the Pico",
                   [("1", "VBUS"), ("2", "D-"), ("3", "D+"), ("4", "GND")], width=600))
     add(connector("tdm:Conn_USB_Pi", "to the Pi USB port", "Micro-USB plug in the Pi Zero 2 W USB (OTG) port",
-                  [("1", "VBUS"), ("2", "D-"), ("3", "D+"), ("4", "GND")], side="left", width=600))
+                  [("1", "VBUS"), ("2", "D-"), ("3", "D+"), ("4", "ID"), ("5", "GND")], side="left", width=600))
     add(box("tdm:D36V28F5", "U", "Pololu D36V28F5", "5 V 3.2 A step-down module, input up to 50 V",
             left=[("1", "VIN"), ("4", "EN"), ("5", "PG")], right=[("3", "VOUT")], bottom=[("2", "GND")],
             width=1000))

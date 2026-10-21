@@ -18,7 +18,7 @@ Y = {
 }
 
 SHEETS = [
-    ("1 Power", "bike connectors J101 and J102, fuse, reverse polarity, TVS, LC filter, 5 V buck, Pico hold-up"),
+    ("1 Power", "bike connectors J101 and J102, harness fuse, reverse polarity, TVS, LC filter, 5 V buck, Pico hold-up"),
     ("2 Warning lights", "neutral, high beam, turn signals and illumination through EL817 optocouplers"),
     ("3 Tachometer", "coil negative to the H11L1 Schmitt trigger"),
     ("4 Wheel sensor", "LJ12A3 inductive sensor on J401, through an EL817"),
@@ -71,7 +71,7 @@ def build(sheets) -> Root:
     link(mcu, light, "BL_PWM", "BL_PWM", Y["BL_PWM"])
 
     # what is inside the larger blocks
-    r.note(800, 3900, "J101, J102: bike harness\nfuse, reverse polarity,\nTVS, LC filter, 5 V buck,\nPico hold-up")
+    r.note(800, 3900, "J101, J102: bike harness\nharness fuse, reverse\npolarity, TVS, LC filter,\n5 V buck, Pico hold-up")
     r.note(8100, 3700, "Raspberry Pi Pico\nFRAM (odometer)\nMODE and SET")
     r.note(9700, 2250, "TPS61169 driver\nUSB to the Pi")
 

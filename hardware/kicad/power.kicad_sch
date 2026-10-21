@@ -3038,7 +3038,7 @@
 		)
 		(uuid "aa504f91-bb4d-56a4-896a-4a7f4f72f5c0")
 	)
-	(text "+12V_KEY is the switched 12 V of the bike. Chain: 2 A fuse, P-MOSFET against reversed polarity,\n24 V TVS for the load dump, LC filter, 5 V buck converter for the Pi, the backlight and the Pico.\nThe Pico runs from VSYS_PICO through D103: C103 keeps it alive long enough to save the trip."
+	(text "+12V_KEY is the switched 12 V of the bike. Chain: 2 A fuse in the harness, P-MOSFET against reversed\npolarity, 24 V TVS for the load dump, LC filter, 5 V buck converter for the Pi, the backlight and the Pico.\nThe Pico runs from VSYS_PICO through D103: C103 keeps it alive long enough to save the trip."
 		(exclude_from_sim no)
 		(at 16.51 20.828 0)
 		(effects
@@ -3048,9 +3048,9 @@
 			)
 			(justify left top)
 		)
-		(uuid "ecf5737e-3fb2-5020-8c85-da8616f1059f")
+		(uuid "0211b9a5-a6df-5fed-b73d-09392bf3e2a5")
 	)
-	(text "[TO VERIFY] pin numbers and wire colours of the\noriginal cluster connector: docs/research/original-wiring.md"
+	(text "[TO VERIFY] pin numbers and wire colors of the\noriginal cluster connector: docs/research/original-wiring.md"
 		(exclude_from_sim no)
 		(at 24.13 102.87 0)
 		(effects
@@ -3060,7 +3060,7 @@
 			)
 			(justify left top)
 		)
-		(uuid "b785800e-bccc-553f-9d0f-50082de450c7")
+		(uuid "38de4bd6-bc46-5369-951d-991c4a0ac789")
 	)
 	(text "Q101: reverse polarity\nprotection; D101 keeps\nVgs within 12 V"
 		(exclude_from_sim no)
@@ -3671,7 +3671,7 @@
 				)
 			)
 		)
-		(property "Value" "2A"
+		(property "Value" "2A, in the harness"
 			(at 69.85 40.894 90)
 			(effects
 				(font

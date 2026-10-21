@@ -253,7 +253,7 @@ def check(sheets: list[Sheet], root: Root, declared: dict[str, set[str]]) -> dic
             names[uf.find((sh.file, pw.pos))].add(("power", pw.net))
     for lb in root.labels:
         names[uf.find(("root", lb.pos))].add(("label", lb.net))
-    for r, ns in names.items():
+    for ns in names.values():
         if len({n for _, n in ns}) > 1:
             errors.append(f"one net carries several names: {sorted(n for _, n in ns)}")
         kinds = {k for k, _ in ns}

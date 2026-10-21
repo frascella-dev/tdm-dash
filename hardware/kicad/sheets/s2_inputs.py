@@ -81,7 +81,7 @@ def build(lib) -> Sheet:
                        "R2x1 10 kΩ: an open wire reads off\n\n"
                        "The EL817 collector pulls the GPIO low\n"
                        "when the warning light is on.")
-    s.verify(6500, 3000, "[TO VERIFY] neutral logic and wire colours,\n"
+    s.verify(6500, 3000, "[TO VERIFY] neutral logic and wire colors,\n"
                          "with the bike measurements:\ndocs/research/original-wiring.md")
     return s
 

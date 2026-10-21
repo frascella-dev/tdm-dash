@@ -15,7 +15,7 @@ def build(lib) -> Sheet:
             "R402 pulls the output up for fast edges.",
         ],
     )
-    j401 = s.part("J401", "tdm:Conn_Sensor3", "Deutsch DTM, 3 pins", (2000, 2300), anchor="1",
+    j401 = s.part("J401", "tdm:Conn_Sensor3", "to the wheel sensor", (2000, 2300), anchor="1",
                   p1="+12V_P", p2="WHEEL_SIG", p3="GND")
     y1, y2 = 2000, 2900  # LED anode line, sensor output line
     s.wire(j401["1"], (2200, 2300), (2200, y1), (2500, y1), (2900, y1))

@@ -2072,7 +2072,7 @@
 		)
 		(uuid "03f6fe2f-9585-503d-b3c5-cd9f32e1a813")
 	)
-	(text "[TO VERIFY] neutral logic and wire colours,\nwith the bike measurements:\ndocs/research/original-wiring.md"
+	(text "[TO VERIFY] neutral logic and wire colors,\nwith the bike measurements:\ndocs/research/original-wiring.md"
 		(exclude_from_sim no)
 		(at 165.1 76.2 0)
 		(effects
@@ -2082,7 +2082,7 @@
 			)
 			(justify left top)
 		)
-		(uuid "e369797a-cf3b-51f4-b6d9-02fbbc890212")
+		(uuid "05451db6-28c1-5161-9ad0-51894c7ec0d3")
 	)
 	(symbol
 		(lib_id "Device:C")

@@ -369,6 +369,129 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "tdm:Conn_BLDriver3"
+			(pin_names
+				(offset 0.508)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at -7.62 7.112 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left bottom)
+				)
+			)
+			(property "Value" "to the TPS61169 breakout"
+				(at -7.62 -7.112 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Supply and dimming of the backlight driver"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Conn_BLDriver3_0_1"
+				(rectangle
+					(start -7.62 5.08)
+					(end 7.62 -5.08)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "Conn_BLDriver3_1_1"
+				(pin passive line
+					(at -10.16 2.54 0)
+					(length 2.54)
+					(name "+5V"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -10.16 0 0)
+					(length 2.54)
+					(name "CTRL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -10.16 -2.54 0)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "tdm:Conn_Backlight2"
 			(pin_names
 				(offset 0.508)
@@ -385,7 +508,7 @@
 					(justify left bottom)
 				)
 			)
-			(property "Value" "to the display LEDs"
+			(property "Value" "display backlight"
 				(at -8.89 -5.842 0)
 				(effects
 					(font
@@ -412,7 +535,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Display backlight, through the Kippah"
+			(property "Description" "Backlight LEDs of the panel, reached on the Kippah"
 				(at 0 0 0)
 				(effects
 					(font
@@ -482,7 +605,7 @@
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "J"
-				(at -7.62 8.382 0)
+				(at -7.62 9.652 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -491,7 +614,7 @@
 				)
 			)
 			(property "Value" "to the Pi USB port"
-				(at -7.62 -8.382 0)
+				(at -7.62 -9.652 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -528,8 +651,8 @@
 			)
 			(symbol "Conn_USB_Pi_0_1"
 				(rectangle
-					(start -7.62 6.35)
-					(end 7.62 -6.35)
+					(start -7.62 7.62)
+					(end 7.62 -7.62)
 					(stroke
 						(width 0.254)
 						(type default)
@@ -541,7 +664,7 @@
 			)
 			(symbol "Conn_USB_Pi_1_1"
 				(pin passive line
-					(at -10.16 3.81 0)
+					(at -10.16 5.08 0)
 					(length 2.54)
 					(name "VBUS"
 						(effects
@@ -559,7 +682,7 @@
 					)
 				)
 				(pin passive line
-					(at -10.16 1.27 0)
+					(at -10.16 2.54 0)
 					(length 2.54)
 					(name "D-"
 						(effects
@@ -577,7 +700,7 @@
 					)
 				)
 				(pin passive line
-					(at -10.16 -1.27 0)
+					(at -10.16 0 0)
 					(length 2.54)
 					(name "D+"
 						(effects
@@ -595,7 +718,25 @@
 					)
 				)
 				(pin passive line
-					(at -10.16 -3.81 0)
+					(at -10.16 -2.54 0)
+					(length 2.54)
+					(name "ID"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -10.16 -5.08 0)
 					(length 2.54)
 					(name "GND"
 						(effects
@@ -604,7 +745,7 @@
 							)
 						)
 					)
-					(number "4"
+					(number "5"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -928,6 +1069,12 @@
 		(color 0 0 0 0)
 		(uuid "51f8b3e1-ebfa-5522-b57e-45e9f4886f88")
 	)
+	(junction
+		(at 121.92 124.46)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "844f3de6-9216-51f3-84da-c7e687cf81f5")
+	)
 	(wire
 		(pts
 			(xy 35.56 58.42)
@@ -997,13 +1144,13 @@
 	(wire
 		(pts
 			(xy 68.58 58.42)
-			(xy 88.9 58.42)
+			(xy 104.14 58.42)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "774521ec-89b1-550d-bfdb-6aa057ec5d97")
+		(uuid "33796829-a15c-50d0-8591-893ba5f3093a")
 	)
 	(wire
 		(pts
@@ -1015,28 +1162,6 @@
 			(type default)
 		)
 		(uuid "ccedb897-29d7-5173-8982-bd79b63e8d0b")
-	)
-	(wire
-		(pts
-			(xy 86.36 53.34)
-			(xy 86.36 55.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4eb41492-554c-5477-b0a1-b8f475bca7e2")
-	)
-	(wire
-		(pts
-			(xy 86.36 55.88)
-			(xy 88.9 55.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e7f56174-85f7-5268-9a28-d838a33227d8")
 	)
 	(wire
 		(pts
@@ -1052,46 +1177,168 @@
 	(wire
 		(pts
 			(xy 88.9 124.46)
+			(xy 121.92 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9b061294-2068-5779-9f2c-58e94bd534d5")
+	)
+	(wire
+		(pts
+			(xy 93.98 53.34)
+			(xy 93.98 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1f948bba-301f-5aa4-99da-3c1c89af693c")
+	)
+	(wire
+		(pts
+			(xy 93.98 55.88)
+			(xy 104.14 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0c4af00d-5322-5cf1-90b8-ed8683db2611")
+	)
+	(wire
+		(pts
+			(xy 99.06 60.96)
+			(xy 99.06 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6a347d6d-8e2e-5e06-9386-91432f5816a2")
+	)
+	(wire
+		(pts
+			(xy 99.06 60.96)
+			(xy 104.14 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5dcefa84-13d7-558c-bc8e-655a06a77fc8")
+	)
+	(wire
+		(pts
+			(xy 121.92 124.46)
+			(xy 121.92 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "87ee4128-2467-562c-94e4-868b87a480f4")
+	)
+	(wire
+		(pts
+			(xy 121.92 124.46)
 			(xy 127 124.46)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "a800d59a-855f-54a7-8be6-921f55de30c1")
+		(uuid "aeb7e998-e027-5ef5-b7d1-be4afef37325")
 	)
 	(wire
 		(pts
-			(xy 104.14 63.5)
-			(xy 104.14 66.04)
+			(xy 121.92 127)
+			(xy 127 127)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "f7f35334-84d8-5bb7-99df-2829f79d2693")
+		(uuid "2f8a28e4-9326-5cd8-b472-e80000bb654d")
 	)
 	(wire
 		(pts
-			(xy 119.38 55.88)
-			(xy 139.7 55.88)
+			(xy 149.86 58.42)
+			(xy 162.56 58.42)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "79ae1d62-d52c-5eb3-9624-ceca1ad65297")
+		(uuid "e90a5b80-48a9-5f1c-90c7-fbe217cb04b9")
 	)
 	(wire
 		(pts
-			(xy 119.38 58.42)
-			(xy 139.7 58.42)
+			(xy 160.02 53.34)
+			(xy 160.02 55.88)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "9386c85f-1520-5bdf-90d8-fd011d36cc5f")
+		(uuid "6657c76a-5688-558b-9ee4-2385c5c9b5ed")
+	)
+	(wire
+		(pts
+			(xy 160.02 55.88)
+			(xy 162.56 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a6cc1fbc-2918-5d74-b663-8625484ac2dd")
+	)
+	(wire
+		(pts
+			(xy 177.8 63.5)
+			(xy 177.8 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "06b36403-c8ee-55db-86da-9bffb5925c98")
+	)
+	(wire
+		(pts
+			(xy 193.04 55.88)
+			(xy 213.36 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a5e96cca-56d8-5471-a139-32761e2e4d8c")
+	)
+	(wire
+		(pts
+			(xy 193.04 58.42)
+			(xy 213.36 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "742de91d-719c-53e0-943d-ed0b0932a58e")
+	)
+	(rectangle
+		(start 134.62 40.64)
+		(end 248.92 91.44)
+		(stroke
+			(width 0.1524)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "2f8a59a0-edfb-5a83-946e-31e38731b18f")
 	)
 	(text "Backlight and USB link to the Pi"
 		(exclude_from_sim no)
@@ -1141,9 +1388,9 @@
 		)
 		(uuid "6af29a98-58a7-580a-9815-3a5dd443322f")
 	)
-	(text "Newhaven panel: LEDs at 180 mA, 9.3 V"
+	(text "Off the board: TPS61169 breakout next to the Kippah,\nwired to J701 (backlight harness, chapter 05)"
 		(exclude_from_sim no)
-		(at 119.38 78.74 0)
+		(at 137.16 41.91 0)
 		(effects
 			(font
 				(size 1.397 1.397)
@@ -1151,11 +1398,23 @@
 			)
 			(justify left top)
 		)
-		(uuid "676560bc-8e2e-53d2-a882-3df1e4b95664")
+		(uuid "2ea88671-527e-506f-9373-b328fe5727f4")
 	)
-	(text "[TO VERIFY] module and display pins,\non the TPS61169 board and the panel datasheet"
+	(text "Newhaven panel: LEDs at 180 mA, 9.3 V"
 		(exclude_from_sim no)
-		(at 119.38 85.09 0)
+		(at 137.16 77.47 0)
+		(effects
+			(font
+				(size 1.397 1.397)
+				(color 0 0 132 1)
+			)
+			(justify left top)
+		)
+		(uuid "c5248c63-1dd4-5622-840b-2989cefcaebf")
+	)
+	(text "[TO VERIFY] breakout pins, and the panel LED pins\non the Kippah: panel datasheet, chapter 05"
+		(exclude_from_sim no)
+		(at 137.16 83.82 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1163,7 +1422,7 @@
 			)
 			(justify left top)
 		)
-		(uuid "98111ece-bd2f-5f2c-82fc-4d7d62f333fe")
+		(uuid "713abb1e-331e-5539-9ee8-ede60b99dd9b")
 	)
 	(text "USB between the Pico and the Pi Zero 2 W"
 		(exclude_from_sim no)
@@ -1177,7 +1436,7 @@
 		)
 		(uuid "e28d5ac3-7a63-5e3a-82a4-dea2c6aa0ddf")
 	)
-	(text "Short twisted pair with a clip-on ferrite.\nVBUS is not connected: the Pico is supplied from VSYS (sheet 1)."
+	(text "Short twisted pair with a clip-on ferrite.\nVBUS is not connected: the Pico is supplied from VSYS (sheet 1).\nID is tied to GND in the plug, so the Pi works as USB host."
 		(exclude_from_sim no)
 		(at 58.42 135.89 0)
 		(effects
@@ -1187,7 +1446,7 @@
 			)
 			(justify left top)
 		)
-		(uuid "2990817f-8bc7-5dcc-8f28-6dd0d2e5dd12")
+		(uuid "f8352b8c-baef-54b9-aab2-cdf78ff1082f")
 	)
 	(text "The display itself connects to the Pi\nthrough the Adafruit DPI Kippah (40-pin FFC),\nnot through this board."
 		(exclude_from_sim no)
@@ -1202,8 +1461,8 @@
 		(uuid "85ca8393-5cab-52ca-91e5-e7ebfe095042")
 	)
 	(symbol
-		(lib_id "tdm:Conn_Backlight2")
-		(at 151.13 57.15 0)
+		(lib_id "tdm:Conn_BLDriver3")
+		(at 114.3 58.42 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1211,7 +1470,7 @@
 		(dnp no)
 		(uuid "13639cf6-09db-56fd-94c2-9759ed7bac05")
 		(property "Reference" "J701"
-			(at 142.24 51.308 0)
+			(at 106.68 51.308 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1219,8 +1478,8 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "to the display LEDs"
-			(at 142.24 62.992 0)
+		(property "Value" "to the TPS61169 breakout"
+			(at 106.68 65.532 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1229,7 +1488,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 151.13 57.15 0)
+			(at 114.3 58.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1238,7 +1497,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 151.13 57.15 0)
+			(at 114.3 58.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1246,8 +1505,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Display backlight, through the Kippah"
-			(at 151.13 57.15 0)
+		(property "Description" "Supply and dimming of the backlight driver"
+			(at 114.3 58.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1260,6 +1519,9 @@
 		)
 		(pin "2"
 			(uuid "66765582-201f-5d65-a651-b9d4fe6d14e5")
+		)
+		(pin "3"
+			(uuid "9ec737c7-a0e0-537e-bb97-756aa04cce6e")
 		)
 		(instances
 			(project "tdm-dash"
@@ -1351,7 +1613,7 @@
 	)
 	(symbol
 		(lib_id "tdm:Conn_USB_Pi")
-		(at 137.16 120.65 0)
+		(at 137.16 121.92 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1368,7 +1630,7 @@
 			)
 		)
 		(property "Value" "to the Pi USB port"
-			(at 129.54 129.032 0)
+			(at 129.54 131.572 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1377,7 +1639,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 137.16 120.65 0)
+			(at 137.16 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1386,7 +1648,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 137.16 120.65 0)
+			(at 137.16 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1395,7 +1657,7 @@
 			)
 		)
 		(property "Description" "Micro-USB plug in the Pi Zero 2 W USB (OTG) port"
-			(at 137.16 120.65 0)
+			(at 137.16 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1415,6 +1677,9 @@
 		(pin "4"
 			(uuid "e4115695-45a4-5c5c-81b7-2b66e1e0bcf8")
 		)
+		(pin "5"
+			(uuid "d3268161-eebc-5051-b597-4a5bea0cd81f")
+		)
 		(instances
 			(project "tdm-dash"
 				(path "/41fcffbe-7acb-5177-bf9e-e385b1eac207/e7f6a3b9-38b2-5b0f-971f-e889495e02c3"
@@ -1427,6 +1692,75 @@
 	(no_connect
 		(at 127 116.84)
 		(uuid "c9b9ed3e-eb04-5e39-a98f-3c4807f95884")
+	)
+	(symbol
+		(lib_id "tdm:Conn_Backlight2")
+		(at 224.79 57.15 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8180dc89-eac8-5fc1-8834-cdf6fa385080")
+		(property "Reference" "J704"
+			(at 215.9 51.308 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Value" "display backlight"
+			(at 215.9 62.992 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(property "Footprint" ""
+			(at 224.79 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 224.79 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Backlight LEDs of the panel, reached on the Kippah"
+			(at 224.79 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "aa7d9355-7a25-59ee-87a2-de85241eda47")
+		)
+		(pin "2"
+			(uuid "aae4524e-020f-56aa-a3c2-ee900ad4788b")
+		)
+		(instances
+			(project "tdm-dash"
+				(path "/41fcffbe-7acb-5177-bf9e-e385b1eac207/e7f6a3b9-38b2-5b0f-971f-e889495e02c3"
+					(reference "J704")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "Device:R")
@@ -1602,7 +1936,7 @@
 	)
 	(symbol
 		(lib_id "tdm:TPS61169_Module")
-		(at 104.14 57.15 0)
+		(at 177.8 57.15 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1610,7 +1944,7 @@
 		(dnp no)
 		(uuid "b020df06-9a43-53ce-8b66-5d6470fd546e")
 		(property "Reference" "U701"
-			(at 91.44 50.038 0)
+			(at 165.1 50.038 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1619,7 +1953,7 @@
 			)
 		)
 		(property "Value" "TPS61169 (Adafruit 6354)"
-			(at 91.44 52.07 0)
+			(at 165.1 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1628,7 +1962,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 104.14 57.15 0)
+			(at 177.8 57.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1637,7 +1971,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 104.14 57.15 0)
+			(at 177.8 57.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1646,7 +1980,7 @@
 			)
 		)
 		(property "Description" "Constant-current LED boost module"
-			(at 104.14 57.15 0)
+			(at 177.8 57.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1753,80 +2087,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+5V")
-		(at 86.36 53.34 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(uuid "d4c41811-87e5-5594-8f02-c5cc9f2333d5")
-		(property "Reference" "#PWR702"
-			(at 86.36 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5V"
-			(at 86.36 49.784 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 86.36 53.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 86.36 53.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 86.36 53.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "ki_keywords" "global power"
-			(at 86.36 53.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "d9f72b83-8977-53fe-9fa9-c5fa7fd567dc")
-		)
-		(instances
-			(project "tdm-dash"
-				(path "/41fcffbe-7acb-5177-bf9e-e385b1eac207/e7f6a3b9-38b2-5b0f-971f-e889495e02c3"
-					(reference "#PWR702")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 88.9 127 0)
 		(unit 1)
@@ -1834,8 +2094,8 @@
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
-		(uuid "ad01890d-2049-5dba-95f6-e011002573e9")
-		(property "Reference" "#PWR703"
+		(uuid "d4c41811-87e5-5594-8f02-c5cc9f2333d5")
+		(property "Reference" "#PWR702"
 			(at 88.9 133.35 0)
 			(effects
 				(font
@@ -1889,6 +2149,80 @@
 			)
 		)
 		(pin "1"
+			(uuid "d9f72b83-8977-53fe-9fa9-c5fa7fd567dc")
+		)
+		(instances
+			(project "tdm-dash"
+				(path "/41fcffbe-7acb-5177-bf9e-e385b1eac207/e7f6a3b9-38b2-5b0f-971f-e889495e02c3"
+					(reference "#PWR702")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 93.98 53.34 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "ad01890d-2049-5dba-95f6-e011002573e9")
+		(property "Reference" "#PWR703"
+			(at 93.98 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 93.98 49.784 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 93.98 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 93.98 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 93.98 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "global power"
+			(at 93.98 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
 			(uuid "972cd011-42da-5e00-984c-ff0d1b9f4402")
 		)
 		(instances
@@ -1902,7 +2236,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 104.14 66.04 0)
+		(at 99.06 63.5 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -1910,7 +2244,7 @@
 		(dnp no)
 		(uuid "e0b69163-5d76-55d6-945f-fab6653c8e51")
 		(property "Reference" "#PWR704"
-			(at 104.14 72.39 0)
+			(at 99.06 69.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1919,7 +2253,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 104.14 69.85 0)
+			(at 99.06 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1927,7 +2261,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 104.14 66.04 0)
+			(at 99.06 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1936,7 +2270,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 104.14 66.04 0)
+			(at 99.06 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1945,7 +2279,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 104.14 66.04 0)
+			(at 99.06 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1954,7 +2288,7 @@
 			)
 		)
 		(property "ki_keywords" "global power"
-			(at 104.14 66.04 0)
+			(at 99.06 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1974,6 +2308,154 @@
 			)
 		)
 	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 160.02 53.34 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "f37970c7-44c1-5e23-b390-1b6d088363c7")
+		(property "Reference" "#PWR705"
+			(at 160.02 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 160.02 49.784 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 160.02 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 160.02 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 160.02 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "global power"
+			(at 160.02 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f754d9ea-e3df-5f98-ba76-2955323afbac")
+		)
+		(instances
+			(project "tdm-dash"
+				(path "/41fcffbe-7acb-5177-bf9e-e385b1eac207/e7f6a3b9-38b2-5b0f-971f-e889495e02c3"
+					(reference "#PWR705")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 177.8 66.04 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "d45bf769-13f5-56bc-abe1-6c2fcda19b85")
+		(property "Reference" "#PWR706"
+			(at 177.8 72.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 177.8 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 177.8 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 177.8 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 177.8 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "global power"
+			(at 177.8 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "70ab079d-fec1-50f5-9abb-481871665a92")
+		)
+		(instances
+			(project "tdm-dash"
+				(path "/41fcffbe-7acb-5177-bf9e-e385b1eac207/e7f6a3b9-38b2-5b0f-971f-e889495e02c3"
+					(reference "#PWR706")
+					(unit 1)
+				)
+			)
+		)
+	)
 	(hierarchical_label "BL_PWM"
 		(shape input)
 		(at 35.56 58.42 180)
@@ -1985,6 +2467,28 @@
 			(justify right)
 		)
 		(uuid "7cae3060-1ce5-532e-a1c1-bf62bb9c9aa3")
+	)
+	(label "BL_CTRL"
+		(at 78.74 58.42 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "0b0cf16a-c4e5-57d9-9332-21930f9d18fe")
+	)
+	(label "BL_CTRL"
+		(at 149.86 58.42 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "57d000d3-242e-5507-b0b7-28039d46100b")
 	)
 	(embedded_fonts no)
 )

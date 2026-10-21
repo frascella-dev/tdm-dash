@@ -345,7 +345,7 @@
 		)
 		(uuid "c7c9d624-6d3e-5cc3-ada3-227e4483af70")
 	)
-	(text "J101, J102: bike harness\nfuse, reverse polarity,\nTVS, LC filter, 5 V buck,\nPico hold-up"
+	(text "J101, J102: bike harness\nharness fuse, reverse\npolarity, TVS, LC filter,\n5 V buck, Pico hold-up"
 		(exclude_from_sim no)
 		(at 20.32 99.06 0)
 		(effects
@@ -355,7 +355,7 @@
 			)
 			(justify left top)
 		)
-		(uuid "8483267d-31e8-5bee-9c5c-2b3cd4081605")
+		(uuid "d503526e-338a-5d54-baf2-2eac537cd780")
 	)
 	(text "Raspberry Pi Pico\nFRAM (odometer)\nMODE and SET"
 		(exclude_from_sim no)
@@ -405,7 +405,7 @@
 		)
 		(uuid "a9dd1998-e049-5d28-9c27-d6dbc5fed8fe")
 	)
-	(text "1 Power: bike connectors J101 and J102, fuse, reverse polarity, TVS, LC filter, 5 V buck, Pico hold-up\n2 Warning lights: neutral, high beam, turn signals and illumination through EL817 optocouplers\n3 Tachometer: coil negative to the H11L1 Schmitt trigger\n4 Wheel sensor: LJ12A3 inductive sensor on J401, through an EL817\n5 Analog inputs: battery voltage, coolant sender and ambient light to the ADC\n6 MCU: Raspberry Pi Pico, FRAM for the odometer, MODE and SET buttons\n7 Backlight and Pi: TPS61169 backlight driver dimmed by the Pico, USB link to the Pi\n8 Backup LEDs: indicators wired straight to the bike, alive with the electronics off"
+	(text "1 Power: bike connectors J101 and J102, harness fuse, reverse polarity, TVS, LC filter, 5 V buck, Pico hold-up\n2 Warning lights: neutral, high beam, turn signals and illumination through EL817 optocouplers\n3 Tachometer: coil negative to the H11L1 Schmitt trigger\n4 Wheel sensor: LJ12A3 inductive sensor on J401, through an EL817\n5 Analog inputs: battery voltage, coolant sender and ambient light to the ADC\n6 MCU: Raspberry Pi Pico, FRAM for the odometer, MODE and SET buttons\n7 Backlight and Pi: TPS61169 backlight driver dimmed by the Pico, USB link to the Pi\n8 Backup LEDs: indicators wired straight to the bike, alive with the electronics off"
 		(exclude_from_sim no)
 		(at 19.05 160.782 0)
 		(effects
@@ -414,7 +414,7 @@
 			)
 			(justify left top)
 		)
-		(uuid "05a8aa30-ad77-57ec-a86f-a24b2a0d6c09")
+		(uuid "964946e1-d0f4-51a2-be8f-ea388399dc1c")
 	)
 	(text "Net names"
 		(exclude_from_sim no)

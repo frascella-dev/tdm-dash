@@ -6,7 +6,7 @@ KiCad writes every string of the stroke font as
 box of each text can be measured. The check fails when:
 
 - two texts overlap;
-- a wire (KiCad default colour #009600) crosses a text;
+- a wire (KiCad default color #009600) crosses a text;
 - a symbol outline (#840000) crosses a reference, value or label;
 - a text leaves the frame or enters the title block.
 
