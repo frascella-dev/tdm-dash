@@ -1,6 +1,6 @@
 Id	Description	Qty	Unit	Designators
 1	Cable, FLRY-B, 4 x 0.5 mm²	0.3	m	W2
 2	Cable, FLRY-B, 6 x 0.5 mm²	0.3	m	W1
-3	Connector, Original cluster connectors (bike side), pinout [TO VERIFY], 9 pins	1		X1
-4	Connector, Superseal 1.5, 4-pin, female (harness side), 4 pins	1		X3
-5	Connector, Superseal 1.5, 6-pin, female (harness side), 6 pins	1		X2
+3	Connector, Original cluster connectors, bike side, pinout [TO VERIFY], 9 pins	1		X1
+4	Connector, Superseal 1.5, female, mates J101, 6 pins	1		P101
+5	Connector, Superseal 1.5, female, mates J102, 4 pins	1		P102

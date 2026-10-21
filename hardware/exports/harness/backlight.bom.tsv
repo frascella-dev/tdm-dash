@@ -1,5 +1,6 @@
 Id	Description	Qty	Unit	Designators
-1	Cable, Pair, 2 x 0.25 mm²	0.25	m	W1, W2
-2	Connector, Newhaven NHD-7.0-800480AF-ASXP, backlight LEDs, through the Kippah [TO VERIFY], 2 pins	1		X1
-3	Connector, TPS61169 (Adafruit 6354), LED output, 2 pins	1		U701
-4	Connector, Terminal J701 on the perfboard, 2-pin, 2 pins	1		J701
+1	Cable, Lead, 3 x 0.25 mm²	0.15	m	W1
+2	Cable, Pair, 2 x 0.25 mm²	0.1	m	W2
+3	Connector, Panel backlight LEDs, on the Kippah [TO VERIFY], 2 pins	1		J704
+4	Connector, TPS61169 breakout, pin order [TO VERIFY], 5 pins	1		U701
+5	Connector, Terminal on the perfboard, 3 pins	1		J701

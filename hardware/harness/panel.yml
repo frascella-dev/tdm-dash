@@ -1,4 +1,6 @@
 # Parts on the enclosure: MODE/SET buttons and the TEMT6000 light sensor.
+# J601, J501, SW601 and SW602 are the designators of the schematic (sheets 5
+# and 6).
 
 metadata:
   title: Buttons and light sensor
@@ -11,10 +13,14 @@ options:
   bgcolor_connector: WH
   bgcolor_cable: WH
 
+tweak:  # same look in every harness: columns 1 inch apart instead of 2
+  override:
+    graph:
+      ranksep: "1"
+
 connectors:
   J601:
-    type: Terminal J601 on the perfboard
-    subtype: 3-pin
+    type: Terminal on the perfboard
     pinlabels: [BTN_MODE_SW, BTN_SET_SW, GND]
   SW601:
     type: IP67 push button
@@ -25,12 +31,11 @@ connectors:
     subtype: SET, momentary NO
     pinlabels: ['1', '2']
   J501:
-    type: Terminal J501 on the perfboard
-    subtype: 3-pin
+    type: Terminal on the perfboard
     pinlabels: [+3V3, GND, LIGHT_RAW]
   U1:
     type: TEMT6000 (breakout)
-    subtype: behind the window, facing forward
+    subtype: behind the light hole
     pinlabels: [VCC, GND, SIG]
 
 cables:
