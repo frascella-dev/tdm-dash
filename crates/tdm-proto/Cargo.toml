@@ -1,0 +1,18 @@
+[package]
+name = "tdm-proto"
+description = "Wire protocol shared by the tdm-dash MCU firmware and the Linux UI"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[features]
+default = []
+std = []
+
+[dependencies]
+
+[lints]
+workspace = true

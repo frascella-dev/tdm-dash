@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rust:
+    name: Rust (fmt, clippy, test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # rust-toolchain.toml pins the version and the cross targets.
+      - run: rustup show active-toolchain
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace
+      - name: no_std crates build for RP2040 and RP2350
+        run: |
+          cargo build -p tdm-proto -p tdm-core --target thumbv6m-none-eabi
+          cargo build -p tdm-proto -p tdm-core --target thumbv8m.main-none-eabihf
+
+  docs:
+    name: Docs (Mermaid, local links)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Render every Mermaid block
+        run: |
+          # Installed outside the checkout so the link check below does not
+          # scan the Markdown files shipped inside node_modules.
+          npm install --prefix "$RUNNER_TEMP/mmdc" @mermaid-js/mermaid-cli@11.16.0
+          python3 tools/check_mermaid.py --mmdc "$RUNNER_TEMP/mmdc/node_modules/.bin/mmdc"
+      - name: Check relative links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --no-progress --include-fragments --exclude-path node_modules --exclude-path target '**/*.md'
+          fail: true

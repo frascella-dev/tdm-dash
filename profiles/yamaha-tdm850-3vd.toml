@@ -1,0 +1,82 @@
+# Profilo: Yamaha TDM 850 prima serie (3VD, 1991–1995)
+#
+# BOZZA: i valori marcati "DA VERIFICARE" vanno confermati con i rilievi
+# (docs/ricerca/rilievi-sulla-moto.md) e con la calibrazione (manuale, cap. 10).
+# Lo schema è definito in crates/tdm-logic (milestone M2); i campi sconosciuti
+# vengono rifiutati.
+
+schema = 1
+
+[bike]
+id = "yamaha-tdm850-3vd"
+name = "Yamaha TDM 850 (3VD)"
+
+[speed]
+pulses_per_rev = 6                # DA VERIFICARE: bulloni del disco letti dal sensore
+wheel_circumference_mm = 1975     # 110/80-18, rotolamento stimato; si calibra col GPS
+display_gain = 1.03               # margine di legge: mai sotto la velocità reale
+display_offset_kmh = 1.0
+zero_below_kmh = 2.5
+timeout_ms = 1500
+max_kmh = 240
+dial_max_kmh = 220
+units = "metric"
+
+[tach]
+pulses_per_rev = 1.0              # DA VERIFICARE: bicilindrico 360°, una scintilla per giro
+max_rpm = 10000
+redline_rpm = 8000                # DA VERIFICARE
+shift_rpm = 7500
+timeout_ms = 500
+
+[coolant]
+# Coppie [ohm, °C]. Solo 80 e 100 °C vengono dal manuale Haynes; gli altri
+# punti sono segnaposto da sostituire con la misura a bagnomaria.
+curve = [[1000.0, 20], [450.0, 40], [200.0, 60], [50.0, 80], [27.5, 100], [16.0, 120]]
+warn_c = 105
+critical_c = 112
+hysteresis_c = 3
+gauge_min_c = 40
+gauge_max_c = 120
+
+[battery]
+low_v = 11.8
+not_charging_v = 12.8
+not_charging_min_rpm = 3000
+high_v = 15.0
+critical_high_v = 15.5
+
+[inputs]
+# Canali del microcontrollore (GP6–GP10, pulsanti GP11–GP12). invert = true
+# inverte la logica del singolo ingresso.
+neutral = { ch = 0 }
+high_beam = { ch = 1 }
+turn_left = { ch = 2 }
+turn_right = { ch = 3 }
+illumination = { ch = 4 }
+btn_mode = { ch = 8 }
+btn_set = { ch = 9 }
+
+[display]
+layout = "classic"                # classic | sport | touring (scelta dopo l'artifact di design)
+theme = "auto"                    # auto | day | night
+night_source = "light_sensor"     # light_sensor | illumination | manual
+light_raw_dark = 300
+light_raw_bright = 3500
+night_below = 0.25
+day_above = 0.40
+brightness_min_pct = 4
+brightness_max_pct = 100
+rotate_180 = false
+selftest = true
+
+[fuel]
+tank_l = 18.0
+reserve_l = 3.5
+l_per_100km = 6.0                 # stima per l'autonomia (nessun sensore sul 3VD)
+
+[board]
+coolant_pullup_ohm = 100.0
+
+[odometer]
+initial_km = 0                    # usato una sola volta, solo se la FRAM è vuota
