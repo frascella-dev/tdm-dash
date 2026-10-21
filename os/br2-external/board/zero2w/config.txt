@@ -1,0 +1,35 @@
+# tdm-dash · Raspberry Pi Zero 2 W · release image
+# Reference: https://www.raspberrypi.com/documentation/computers/config_txt.html
+
+# Cut-down GPU firmware: no camera and no video codecs, which the dashboard
+# does not use. The display is driven by the vc4 KMS driver in Linux.
+start_file=start_cd.elf
+fixup_file=fixup_cd.dat
+gpu_mem=16
+arm_64bit=1
+kernel=Image
+
+# Boot as fast as possible
+boot_delay=0
+disable_splash=1
+initial_turbo=30
+disable_fw_kms_setup=1
+
+# Nothing we do not use
+dtoverlay=disable-bt
+dtoverlay=disable-wifi
+dtparam=audio=off
+camera_auto_detect=0
+display_auto_detect=0
+
+# The Pico is on the USB data port: the Pi is always the host
+dtoverlay=dwc2,dr_mode=host
+
+# Display: Newhaven NHD-7.0-800480AF-ASXP on the Adafruit DPI Kippah,
+# RGB666 on GPIO 0-21. Timings from the datasheet: DCLK 25 MHz,
+# horizontal 800 + 8 front porch / 4 sync / 8 back porch, vertical
+# 480 + 16 / 4 / 16, about 59 Hz. Sync and clock polarities are the
+# overlay defaults (made for the Kippah) [DA VERIFICARE on the bench:
+# add pixclk-invert if the image shimmers].
+dtoverlay=vc4-kms-v3d,nohdmi,noaudio
+dtoverlay=vc4-kms-dpi-generic,clock-frequency=25000000,hactive=800,hfp=8,hsync=4,hbp=8,vactive=480,vfp=16,vsync=4,vbp=16,width-mm=154,height-mm=86

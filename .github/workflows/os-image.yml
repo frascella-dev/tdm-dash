@@ -1,0 +1,126 @@
+name: OS image
+
+# Full Buildroot build of the SD card images (about an hour without cache).
+# Runs on release tags, every week, by hand, and on pull requests that touch
+# the OS tree.
+on:
+  push:
+    tags: ['v*']
+  pull_request:
+    paths:
+      - 'os/**'
+      - '.github/workflows/os-image.yml'
+  schedule:
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  image:
+    name: Image (${{ matrix.image }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [release, dev]
+    env:
+      BR2_DL_DIR: ${{ github.workspace }}/os/dl
+      BR2_CCACHE_DIR: ${{ github.workspace }}/os/ccache
+    steps:
+      # The build needs about 15 GB and the licence collection (legal-info)
+      # several more: free what the runner image ships and we do not use.
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
+            /opt/hostedtoolcache /usr/local/.ghcup /usr/local/share/boost \
+            /usr/local/share/powershell /usr/local/share/chromium /usr/share/swift \
+            /usr/lib/jvm /opt/microsoft /opt/google /opt/az
+          sudo docker image prune --all --force >/dev/null 2>&1 || true
+          df -h / /mnt || df -h /
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      # Hosted runners have a second disk on /mnt: put the Buildroot output
+      # there when it exists, the downloads and the cache stay in the
+      # workspace for actions/cache.
+      - name: Output on the second disk
+        run: |
+          if [ -d /mnt ] && [ "$(df --output=avail -BG /mnt | tail -1 | tr -dc 0-9)" -gt 20 ]; then
+            sudo mkdir -p /mnt/os-output
+            sudo chown "$(id -u):$(id -g)" /mnt/os-output
+            ln -s /mnt/os-output os/output
+          fi
+          ls -ld os/output 2>/dev/null || echo "output in the workspace"
+      - name: Host packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential bc cpio file rsync unzip wget libncurses-dev python3
+      - uses: actions/cache@v4
+        with:
+          path: |
+            os/dl
+            os/ccache
+          key: buildroot-${{ matrix.image }}-${{ hashFiles('os/br2-external/configs/*', 'os/br2-external/board/zero2w/*.fragment', 'Cargo.lock') }}-${{ github.run_id }}
+          restore-keys: |
+            buildroot-${{ matrix.image }}-${{ hashFiles('os/br2-external/configs/*', 'os/br2-external/board/zero2w/*.fragment', 'Cargo.lock') }}-
+            buildroot-${{ matrix.image }}-
+            buildroot-
+      - name: Build
+        run: |
+          set -o pipefail
+          make -C os ${{ matrix.image }} 2>&1 | tee build.log
+          df -h / /mnt || df -h /
+      - name: Kernel configuration has what the dashboard needs
+        run: |
+          cfg=$(ls os/output/${{ matrix.image }}/build/linux-*/.config | head -1)
+          for opt in DRM_VC4 DRM_PANEL_SIMPLE USB_DWC2 USB_ACM BCM2835_WDT EROFS_FS VFAT_FS DEVTMPFS_MOUNT; do
+            grep -qx "CONFIG_${opt}=y" "$cfg" || { echo "missing CONFIG_${opt}=y"; exit 1; }
+          done
+          if [ "${{ matrix.image }}" = release ]; then
+            for opt in NET FRAMEBUFFER_CONSOLE; do
+              if grep -qx "CONFIG_${opt}=y" "$cfg"; then echo "CONFIG_${opt} must be off"; exit 1; fi
+            done
+          fi
+      - name: The dashboard links only glibc
+        run: |
+          out=os/output/${{ matrix.image }}
+          readelf=$(ls $out/host/bin/*-readelf | head -1)
+          $readelf -d $out/target/usr/bin/tdm-dash | tee needed.txt
+          ! grep NEEDED needed.txt | grep -vE 'libc\.so|libm\.so|libgcc_s\.so|ld-linux'
+      - name: Compress the image and collect the licences
+        run: |
+          mkdir -p dist
+          img=os/output/${{ matrix.image }}/images
+          xz -T0 -c "$img/sdcard.img" > "dist/tdm-dash-${{ matrix.image }}-sdcard.img.xz"
+          ls -la "$img" dist
+          if [ "${{ matrix.image }}" = release ]; then
+            make -C os release-legal-info
+            tar -C os/output/release -cJf dist/tdm-dash-legal-info.tar.xz legal-info
+          fi
+          df -h / /mnt || df -h /
+      - uses: actions/upload-artifact@v4
+        with:
+          name: image-${{ matrix.image }}
+          path: dist/
+      - name: Attach to the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1 ||
+            gh release create "${GITHUB_REF_NAME}" --draft --title "${GITHUB_REF_NAME}" --notes "Immagini e firmware di ${GITHUB_REF_NAME}."
+          gh release upload "${GITHUB_REF_NAME}" dist/* --clobber
+      # The logs are not always at hand where the failure is looked at: put
+      # the end of the build log and the free space in the job annotations.
+      - name: Report a failure
+        if: failure()
+        run: |
+          esc() { sed -e 's/%/%25/g' -e 's/\r//g' | awk '{printf "%s%%0A", $0}'; }
+          # annotations are cut at a few KB: the error lines first, then the end of the log
+          echo "::error title=Errors in the build log::$(grep -iE 'error|\*\*\*|no space|could not|failed' build.log 2>/dev/null | tail -n 15 | cut -c1-200 | esc)"
+          echo "::error title=End of the build log::$(tail -n 20 build.log 2>/dev/null | cut -c1-200 | esc)"
+          echo "::error title=Free space::$( (df -h / /mnt || df -h /) 2>&1 | esc)"

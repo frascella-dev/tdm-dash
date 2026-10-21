@@ -1,0 +1,14 @@
+# /etc/inittab · tdm-dash release image (BusyBox init)
+#
+# The root filesystem is read-only EROFS: no rc scripts, no login, no
+# services. Mount the virtual filesystems and the boot partition (for the
+# profile), then keep the dashboard running. /dev is mounted by the kernel
+# (CONFIG_DEVTMPFS_MOUNT) and populated without udev.
+::sysinit:/bin/mount -a
+::sysinit:/bin/hostname -F /etc/hostname
+
+# The dashboard feeds the hardware watchdog (10 s, see cmdline.txt): if it
+# hangs the Pi reboots, if it exits it is started again here.
+::respawn:/usr/bin/tdm-dash
+
+::shutdown:/bin/umount -a -r

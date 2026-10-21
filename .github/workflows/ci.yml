@@ -99,5 +99,5 @@ jobs:
       - name: Check relative links
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --offline --no-progress --include-fragments --exclude-path node_modules --exclude-path target '**/*.md'
+          args: --offline --no-progress --include-fragments --exclude-path node_modules --exclude-path target --exclude-path os/buildroot '**/*.md'
           fail: true

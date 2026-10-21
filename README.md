@@ -5,7 +5,7 @@
 **Quadro strumenti digitale open-source per Yamaha TDM 850 prima serie (3VD, 1991–1995).**
 *Open-source digital instrument cluster for the first-generation Yamaha TDM 850. Documentation is in Italian; code and comments are in English.*
 
-> **Stato:** progetto in sviluppo. Software del quadro e simulatore funzionanti sul PC (milestone M2); hardware non ancora costruito. **Non** utilizzabile su strada.
+> **Stato:** progetto in sviluppo. Il software del quadro e il simulatore funzionano sul PC. Firmware del Pico, schemi elettrici e immagine Linux sono pronti ma non ancora provati sull'hardware, che non è ancora costruito. **Non** utilizzabile su strada.
 
 tdm-dash sostituisce il quadro originale con un display da 7" leggibile al sole (1000 nit) e mostra:
 - velocità e giri

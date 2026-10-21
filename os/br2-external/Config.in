@@ -1,0 +1,1 @@
+source "$BR2_EXTERNAL_TDMDASH_PATH/package/tdm-dash/Config.in"
