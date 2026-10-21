@@ -16,6 +16,8 @@ authors = ["Emanuele Frascella and tdm-dash contributors"]
 [workspace.dependencies]
 tdm-proto = { path = "crates/tdm-proto" }
 tdm-core = { path = "crates/tdm-core" }
+tdm-logic = { path = "crates/tdm-logic" }
+tdm-link = { path = "crates/tdm-link" }
 
 [workspace.lints.rust]
 unsafe_op_in_unsafe_fn = "deny"

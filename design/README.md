@@ -6,6 +6,8 @@
 
 Per provarlo in locale basta aprirlo nel browser.
 
+Le schermate del software vero (Rust/Slint), generate con `tdm-dash --screenshot`, sono in [`screenshots/`](screenshots/) e nel [capitolo 11 del manuale](../docs/manuale/11-uso.md).
+
 ## Cosa simula
 
 ```mermaid

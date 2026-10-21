@@ -1,8 +1,18 @@
-//! Measurement logic that runs unchanged on the RP2040 and in the desktop
-//! simulator: pulse period measurement, input debouncing, odometer state and
-//! the FRAM record codec. Implemented in milestone M2 (see `docs/adr/0004`).
+//! Measurement and odometer logic that runs unchanged on the RP2040 and in the
+//! desktop simulator: pulse period measurement, input debouncing, odometer
+//! state, power-fail-safe FRAM records and the co-processor's message handling.
 
 #![no_std]
+
+pub mod debounce;
+pub mod mcu;
+pub mod nvm;
+pub mod pulse;
+
+pub use debounce::Debouncer;
+pub use mcu::{McuCore, Poll};
+pub use nvm::{MemNvm, Nvm};
+pub use pulse::{PulseConfig, PulseMeter};
 
 /// Odometer and trip counters in micrometres, so per-pulse distance never
 /// accumulates rounding error.
@@ -24,6 +34,10 @@ impl OdoState {
     pub fn odo_m(&self) -> u32 {
         (self.odo_um / 1_000_000) as u32
     }
+
+    pub fn trip_m(&self, idx: usize) -> u32 {
+        (self.trip_um[idx] / 1_000_000) as u32
+    }
 }
 
 #[cfg(test)]
@@ -38,6 +52,6 @@ mod tests {
         }
         assert_eq!(odo.odo_m(), 329);
         assert_eq!(odo.trip_um[0], odo.odo_um);
-        assert_eq!(odo.trip_um[1], odo.odo_um);
+        assert_eq!(odo.trip_m(1), 329);
     }
 }

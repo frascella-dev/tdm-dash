@@ -26,6 +26,9 @@ cargo fmt --all --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
 cargo build -p tdm-proto -p tdm-core --target thumbv6m-none-eabi   # no_std check
+cargo clippy -p tdm-dash --no-default-features --features kms --all-targets -- -D warnings
+cargo run --release -p tdm-dash --no-default-features -- --screenshot design/screenshots   # refresh reference screens
+cargo build --release --target aarch64-unknown-linux-gnu -p tdm-dash --no-default-features --features kms  # needs gcc-aarch64-linux-gnu
 python3 tools/check_mermaid.py --mmdc <path-to-mmdc> [--chrome <chromium>]
 ```
 
@@ -34,6 +37,15 @@ In the cloud container, Chromium is at `/opt/pw-browsers/chromium-1194/chrome-li
 ```sh
 PUPPETEER_SKIP_DOWNLOAD=1 npm i --prefix "$SCRATCH/mmdc" @mermaid-js/mermaid-cli@11.16.0   # outside the repo
 ```
+
+## Crates
+
+- `tdm-proto` (no_std): messages and COBS/CRC framing.
+- `tdm-core` (no_std): `PulseMeter`, `Debouncer`, FRAM records, `McuCore` (the MCU application logic, shared by firmware and simulator).
+- `tdm-logic`: profile, conversions, filters, warnings, `Dash` state machine → `ViewModel`.
+- `tdm-link`: `SimMcu` vehicle simulator, serial/replay sources, `tdmctl`.
+- `tdm-dash`: Slint UI (`ui/dash.slint`), platforms `desktop`, `kms`, headless screenshots/bench.
+- All font sizes used in `ui/dash.slint` must be listed in `crates/tdm-dash/build.rs` (`FONT_SIZES`), and any non-ASCII character that only appears in Rust strings must be added to the hidden `Text` in `dash.slint`, or the software renderer cannot draw it.
 
 ## Invariants
 
