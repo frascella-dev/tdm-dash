@@ -37,6 +37,31 @@ export struct Row {
     value: string,
 }
 
+// Fixed labels; set from tdm_logic::i18n at start-up (docs/adr/0012).
+export global Labels {
+    in property <string> rpm: "rpm";
+    in property <string> krpm: "×1000 rpm";
+    in property <string> fill: "FILL";
+    in property <string> estimated-range: "estimated range";
+    in property <string> range-caps: "RANGE";
+    in property <string> riding-caps: "RIDING";
+    in property <string> average-caps: "AVERAGE";
+    in property <string> trip-title: "TRIP";
+    in property <string> trip-a: "TRIP A";
+    in property <string> since-fill: "SINCE FILL-UP";
+    in property <string> riding-time: "Riding time";
+    in property <string> average: "Average";
+    in property <string> top-speed: "Top speed";
+    in property <string> est-consumption: "Est. consumption";
+    in property <string> fuel-used: "Fuel used";
+    in property <string> range: "Range";
+    in property <string> trip-keys: "SET: select · hold SET: reset · MODE: next screen";
+    in property <string> diag-title: "DIAGNOSTICS";
+    in property <string> settings-title: "SETTINGS";
+    in property <string> only-stopped: "only when stopped";
+    in property <string> settings-keys: "MODE: next item · SET: change · hold SET: exit";
+}
+
 export global Palette {
     in-out property <color> bg: #eceae4;
     in-out property <color> panel: #dcd9d1;
@@ -170,7 +195,7 @@ component BottomStrip inherits Rectangle {
     T { x: 60px; y: 0; height: 48px; text: odo; font-size: 24px; }
     T { x: 166px; y: 0; height: 48px; text: "A"; font-size: 13px; color: Palette.dim; }
     T { x: 182px; y: 0; height: 48px; text: trip-a; font-size: 24px; }
-    T { x: 282px; y: 0; height: 48px; text: "PIENO"; font-size: 13px; color: Palette.dim; }
+    T { x: 282px; y: 0; height: 48px; text: Labels.fill; font-size: 13px; color: Palette.dim; }
     T { x: 330px; y: 0; height: 48px; text: trip-b; font-size: 24px; }
     if info-icon == 1: FuelIcon { x: 500px; y: 8px; color: Palette.amber; }
     if info-icon == 2: TurnIcon { x: 500px; y: 8px; color: Palette.amber; }
@@ -334,11 +359,11 @@ export component AppWindow inherits Window {
     // ---------------- classic
     if main-visible && layout == 0: Rectangle {
         Dial { x: 30px; y: 58px; face: speed-face; labels: speed-labels; needle: speed-needle; unit: "km/h"; }
-        Dial { x: 430px; y: 58px; face: rpm-face; labels: rpm-labels; needle: rpm-needle; unit: "×1000 giri/min"; }
+        Dial { x: 430px; y: 58px; face: rpm-face; labels: rpm-labels; needle: rpm-needle; unit: Labels.krpm; }
         Cells { x: 200px - self.width / 2; y: 268px; height: 64px; chars: speed-chars; cell: 36px; size: 64px; ink: digit-color; }
         T { x: 150px; y: 334px; width: 100px; height: 18px; text: "km/h"; font-size: 14px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
         T { x: 520px; y: 268px; width: 160px; height: 44px; text: rpm-text; font-size: 34px; color: digit-color; horizontal-alignment: center; }
-        T { x: 550px; y: 312px; width: 100px; height: 18px; text: "giri/min"; font-size: 14px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+        T { x: 550px; y: 312px; width: 100px; height: 18px; text: Labels.rpm; font-size: 14px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
         if shift: Rectangle { x: 593px; y: 113px; width: 14px; height: 14px; border-radius: 7px; background: Palette.needle; }
         T {
             x: 372px; y: 104px; width: 56px; height: 30px;
@@ -365,7 +390,7 @@ export component AppWindow inherits Window {
             color: l.red ? Palette.red : Palette.dim;
         }
         T { x: 300px; y: 150px; width: 200px; height: 40px; text: rpm-text; font-size: 30px; color: digit-color; horizontal-alignment: center; }
-        T { x: 300px; y: 188px; width: 200px; height: 18px; text: "giri/min"; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+        T { x: 300px; y: 188px; width: 200px; height: 18px; text: Labels.rpm; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
         Cells { x: 400px - self.width / 2; y: 228px; height: 190px; chars: speed-chars; cell: 112px; size: 200px; weight: 700; ink: digit-color; }
         T { x: 350px; y: 412px; width: 100px; height: 18px; text: "km/h"; font-size: 16px; color: Palette.dim; horizontal-alignment: center; }
         CoolantIcon { x: 24px; y: 284px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
@@ -376,7 +401,7 @@ export component AppWindow inherits Window {
         FuelIcon { x: 640px; y: 284px; color: Palette.dim; }
         T { x: 600px; y: 288px; width: 142px; height: 36px; text: range-text; font-size: 28px; horizontal-alignment: right; color: range-low ? Palette.amber : Palette.ink; }
         T { x: 746px; y: 292px; height: 30px; text: "km"; font-size: 14px; color: Palette.dim; }
-        T { x: 600px; y: 326px; width: 170px; height: 16px; text: "autonomia stimata"; font-size: 12px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
+        T { x: 600px; y: 326px; width: 170px; height: 16px; text: Labels.estimated-range; font-size: 12px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
     }
 
     // ---------------- touring
@@ -389,14 +414,14 @@ export component AppWindow inherits Window {
             text: k * 2; font-size: 15px; horizontal-alignment: center;
             color: k * 2 / 10 >= redline-frac ? Palette.red : Palette.dim;
         }
-        T { x: 34px; y: 372px; height: 26px; text: "giri/min"; font-size: 14px; weight: 500; color: Palette.dim; }
+        T { x: 34px; y: 372px; height: 26px; text: Labels.rpm; font-size: 14px; weight: 500; color: Palette.dim; }
         T { x: 238px; y: 368px; width: 200px; height: 34px; text: rpm-text; font-size: 26px; horizontal-alignment: right; color: digit-color; }
         Rectangle { x: 478px; y: 70px; width: 2px; height: 340px; background: Palette.faint; }
         for r[i] in [
-            { label: "PARZIALE A", value: trip-a-text, unit: "km" },
-            { label: "MEDIA", value: avg-text, unit: "" },
-            { label: "IN SELLA", value: ride-time-text, unit: "" },
-            { label: "AUTONOMIA", value: range-text, unit: "km" },
+            { label: Labels.trip-a, value: trip-a-text, unit: "km" },
+            { label: Labels.average-caps, value: avg-text, unit: "" },
+            { label: Labels.riding-caps, value: ride-time-text, unit: "" },
+            { label: Labels.range-caps, value: range-text, unit: "km" },
         ]: Rectangle {
             x: 506px; y: 74px + i * 66px; width: 270px; height: 60px;
             T { x: 0; y: 0; height: 16px; text: r.label; font-size: 13px; color: Palette.dim; }
@@ -413,10 +438,10 @@ export component AppWindow inherits Window {
 
     // ---------------- trip
     if ui-state == 2 && screen == 1: Rectangle {
-        T { x: 40px; y: 76px; height: 20px; text: "VIAGGIO"; font-size: 15px; color: Palette.dim; }
+        T { x: 40px; y: 76px; height: 20px; text: Labels.trip-title; font-size: 15px; color: Palette.dim; }
         for c[i] in [
-            { title: "PARZIALE A", value: trip-a-text, k1: "In sella", v1: ride-time-text, k2: "Media", v2: avg-text, k3: "Massima", v3: max-text },
-            { title: "DAL PIENO", value: trip-b-text, k1: "Consumo stimato", v1: consumption-text, k2: "Benzina usata", v2: fuel-used-text, k3: "Autonomia", v3: range-text + " km" },
+            { title: Labels.trip-a, value: trip-a-text, k1: Labels.riding-time, v1: ride-time-text, k2: Labels.average, v2: avg-text, k3: Labels.top-speed, v3: max-text },
+            { title: Labels.since-fill, value: trip-b-text, k1: Labels.est-consumption, v1: consumption-text, k2: Labels.fuel-used, v2: fuel-used-text, k3: Labels.range, v3: range-text + " km" },
         ]: Rectangle {
             x: 24px + i * 380px; y: 110px; width: 352px; height: 300px;
             background: trip-sel == i ? Palette.panel : transparent;
@@ -430,12 +455,12 @@ export component AppWindow inherits Window {
                 T { x: 0; y: 0; width: 316px; height: 30px; text: kv.v; font-size: 21px; horizontal-alignment: right; }
             }
         }
-        T { x: 0; y: 438px; width: 800px; height: 24px; text: "SET: scegli · SET lungo: azzera · MODE: schermata successiva"; font-size: 15px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+        T { x: 0; y: 438px; width: 800px; height: 24px; text: Labels.trip-keys; font-size: 15px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
     }
 
     // ---------------- diagnostics
     if ui-state == 2 && screen == 2: Rectangle {
-        T { x: 40px; y: 76px; height: 20px; text: "DIAGNOSTICA"; font-size: 15px; color: Palette.dim; }
+        T { x: 40px; y: 76px; height: 20px; text: Labels.diag-title; font-size: 15px; color: Palette.dim; }
         for d[i] in diag: Rectangle {
             x: 40px; y: 108px + i * 32px; width: 740px; height: 28px;
             T { x: 0; y: 0; height: 28px; text: d.label; font-size: 17px; weight: 500; color: Palette.dim; }
@@ -446,8 +471,8 @@ export component AppWindow inherits Window {
 
     // ---------------- settings
     if ui-state == 3: Rectangle {
-        T { x: 40px; y: 76px; height: 20px; text: "IMPOSTAZIONI"; font-size: 15px; color: Palette.dim; }
-        T { x: 560px; y: 76px; width: 200px; height: 20px; text: "solo da fermi"; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
+        T { x: 40px; y: 76px; height: 20px; text: Labels.settings-title; font-size: 15px; color: Palette.dim; }
+        T { x: 560px; y: 76px; width: 200px; height: 20px; text: Labels.only-stopped; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
         for s[i] in settings: Rectangle {
             x: 24px; y: 112px + i * 42px; width: 752px; height: 38px;
             background: i == settings-sel ? Palette.panel : transparent;
@@ -455,7 +480,7 @@ export component AppWindow inherits Window {
             T { x: 20px; y: 0; height: 38px; text: s.label; font-size: 20px; weight: i == settings-sel ? 600 : 500; color: i == settings-sel ? Palette.ink : Palette.dim; }
             T { x: 300px; y: 0; width: 432px; height: 38px; text: s.value; font-size: 19px; weight: 500; horizontal-alignment: right; color: i == settings-sel ? Palette.ink : Palette.dim; }
         }
-        T { x: 0; y: 438px; width: 800px; height: 24px; text: "MODE: voce successiva · SET: cambia · SET lungo: esci"; font-size: 15px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+        T { x: 0; y: 438px; width: 800px; height: 24px; text: Labels.settings-keys; font-size: 15px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
     }
 
     if ui-state >= 1 && ui-state <= 3: Telltales {

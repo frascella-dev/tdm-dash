@@ -6,27 +6,30 @@ use std::process::ExitCode;
 use std::time::{Duration, Instant};
 
 use tdm_link::{SerialSource, Source, find_ports, scenario, scenarios, sim::SimMcu};
-use tdm_logic::{Dash, LinkEvent, Profile, calib, conv, fmt};
+use tdm_logic::{Dash, Language, LinkEvent, Profile, calib, conv, fmt};
 use tdm_proto::{HostMsg, McuMsg};
 
+/// The command-line tool always speaks English.
+const EN: Language = Language::En;
+
 const USAGE: &str = "\
-tdmctl — strumento per il modulo sensori di tdm-dash
+tdmctl — tool for the tdm-dash sensor module
 
-USO:
-  tdmctl list                         elenca i moduli collegati via USB
-  tdmctl monitor [--port DEV] [-n S]  mostra la telemetria (S secondi, default infinito)
-  tdmctl record FILE [--port DEV]     registra il traffico per --source replay:FILE
-  tdmctl reset-trip a|b [--port DEV]  azzera un parziale
-  tdmctl init-odo KM [--port DEV]     imposta il contachilometri (solo FRAM vuota)
-  tdmctl bootsel [--port DEV]         riavvia il Pico nel bootloader USB
-  tdmctl sim [SCENARIO] [-n S]        simula senza hardware e stampa velocità e giri
-  tdmctl scenarios                    elenca gli scenari del simulatore
+USAGE:
+  tdmctl list                         list the modules connected over USB
+  tdmctl monitor [--port DEV] [-n S]  show the telemetry (for S seconds, default forever)
+  tdmctl record FILE [--port DEV]     record the traffic for --source replay:FILE
+  tdmctl reset-trip a|b [--port DEV]  reset a trip
+  tdmctl init-odo KM [--port DEV]     set the odometer (blank FRAM only)
+  tdmctl bootsel [--port DEV]         restart the Pico into its USB bootloader
+  tdmctl sim [SCENARIO] [-n S]        simulate without hardware, print speed and rpm
+  tdmctl scenarios                    list the simulator scenarios
 
-CALIBRAZIONE (capitolo 10 del manuale; --profile FILE = profilo in uso):
-  tdmctl calibrate wheel KM_GPS KM_PARZIALE      circonferenza della ruota
-  tdmctl calibrate tach GIRI_VERI GIRI_MOSTRATI  impulsi per giro del contagiri
-  tdmctl calibrate battery V_TESTER V_MOSTRATI   rapporto del partitore della batteria
-  tdmctl calibrate coolant FILE                  curva del sensore acqua (\"°C ohm\" per riga)
+CALIBRATION (manual, chapter 10; --profile FILE = the profile in use):
+  tdmctl calibrate wheel KM_GPS KM_TRIP           wheel circumference
+  tdmctl calibrate tach TRUE_RPM SHOWN_RPM        tachometer pulses per revolution
+  tdmctl calibrate battery V_METER V_SHOWN        battery divider ratio
+  tdmctl calibrate coolant FILE                   coolant sender curve (\"°C ohm\" per line)
 ";
 
 struct Args {
@@ -39,7 +42,7 @@ struct Args {
 
 fn parse() -> Result<Args, String> {
     let mut it = std::env::args().skip(1);
-    let cmd = it.next().ok_or("manca il comando")?;
+    let cmd = it.next().ok_or("missing command")?;
     let mut a = Args {
         cmd,
         pos: vec![],
@@ -49,16 +52,16 @@ fn parse() -> Result<Args, String> {
     };
     while let Some(x) = it.next() {
         match x.as_str() {
-            "--port" => a.port = Some(it.next().ok_or("--port vuole un dispositivo")?.into()),
+            "--port" => a.port = Some(it.next().ok_or("--port needs a device")?.into()),
             "-n" | "--seconds" => {
                 a.seconds = Some(
                     it.next()
-                        .ok_or("-n vuole un numero")?
+                        .ok_or("-n needs a number")?
                         .parse()
-                        .map_err(|_| "-n vuole un numero")?,
+                        .map_err(|_| "-n needs a number")?,
                 )
             }
-            "--profile" => a.profile = Some(it.next().ok_or("--profile vuole un file")?.into()),
+            "--profile" => a.profile = Some(it.next().ok_or("--profile needs a file")?.into()),
             "-h" | "--help" => return Err(String::new()),
             _ => a.pos.push(x),
         }
@@ -71,7 +74,7 @@ fn main() -> ExitCode {
         Ok(a) => a,
         Err(e) => {
             if !e.is_empty() {
-                eprintln!("errore: {e}\n");
+                eprintln!("error: {e}\n");
             }
             eprint!("{USAGE}");
             return ExitCode::from(2);
@@ -81,7 +84,7 @@ fn main() -> ExitCode {
         Some(p) => match Profile::load(p) {
             Ok(p) => p,
             Err(e) => {
-                eprintln!("errore: {e}");
+                eprintln!("error: {e}");
                 return ExitCode::FAILURE;
             }
         },
@@ -92,7 +95,7 @@ fn main() -> ExitCode {
             let ports = find_ports();
             if ports.is_empty() {
                 println!(
-                    "nessun modulo trovato (VID:PID {:04x}:{:04x})",
+                    "no module found (VID:PID {:04x}:{:04x})",
                     tdm_proto::USB_VID,
                     tdm_proto::USB_PID
                 );
@@ -105,12 +108,12 @@ fn main() -> ExitCode {
         "monitor" => monitor(&a, &profile, None),
         "record" => match a.pos.first() {
             Some(f) => monitor(&a, &profile, Some(f.into())),
-            None => Err("record vuole il nome del file".into()),
+            None => Err("record needs a file name".into()),
         },
         "reset-trip" => match a.pos.first().map(String::as_str) {
             Some("a" | "A") => command(&a, HostMsg::ResetTrip { idx: 0 }),
             Some("b" | "B") => command(&a, HostMsg::ResetTrip { idx: 1 }),
-            _ => Err("reset-trip vuole a oppure b".into()),
+            _ => Err("reset-trip needs a or b".into()),
         },
         "init-odo" => match a
             .pos
@@ -123,7 +126,7 @@ fn main() -> ExitCode {
                     odo_m: (km * 1000.0).round() as u32,
                 },
             ),
-            _ => Err("init-odo vuole i km, per esempio 48213".into()),
+            _ => Err("init-odo needs the km, for example 48213".into()),
         },
         "bootsel" => command(&a, HostMsg::EnterBootloader),
         "scenarios" => {
@@ -134,12 +137,12 @@ fn main() -> ExitCode {
         }
         "sim" => simulate(&a, profile),
         "calibrate" => calibrate(&a, &profile),
-        other => Err(format!("comando sconosciuto '{other}'")),
+        other => Err(format!("unknown command '{other}'")),
     };
     match r {
         Ok(()) => ExitCode::SUCCESS,
         Err(e) => {
-            eprintln!("errore: {e}");
+            eprintln!("error: {e}");
             ExitCode::FAILURE
         }
     }
@@ -156,7 +159,7 @@ fn wait_hello(src: &mut SerialSource, t0: Instant) -> Result<(), String> {
         for e in src.poll(now) {
             if let LinkEvent::Msg(McuMsg::Hello(h)) = e {
                 println!(
-                    "modulo: firmware {}.{}.{}, protocollo {}, FRAM {:?}, acceso da {} s",
+                    "module: firmware {}.{}.{}, protocol {}, FRAM {:?}, up {} s",
                     h.fw[0],
                     h.fw[1],
                     h.fw[2],
@@ -169,7 +172,7 @@ fn wait_hello(src: &mut SerialSource, t0: Instant) -> Result<(), String> {
         }
         std::thread::sleep(Duration::from_millis(20));
     }
-    Err("il modulo non risponde (prova `tdmctl list`)".into())
+    Err("the module does not answer (try `tdmctl list`)".into())
 }
 
 fn command(a: &Args, msg: HostMsg) -> Result<(), String> {
@@ -178,7 +181,7 @@ fn command(a: &Args, msg: HostMsg) -> Result<(), String> {
     wait_hello(&mut src, t0)?;
     src.send(msg);
     if matches!(msg, HostMsg::EnterBootloader) {
-        println!("riavvio nel bootloader: il Pico comparirà come disco RPI-RP2");
+        println!("restarting into the bootloader: the Pico will show up as the RPI-RP2 drive");
         std::thread::sleep(Duration::from_millis(300));
         return Ok(());
     }
@@ -187,15 +190,15 @@ fn command(a: &Args, msg: HostMsg) -> Result<(), String> {
         for e in src.poll(0.0) {
             if let LinkEvent::Msg(McuMsg::Ack { status, .. }) = e {
                 if status != tdm_proto::status::OK {
-                    return Err("il modulo ha rifiutato il comando".into());
+                    return Err("the module refused the command".into());
                 }
-                println!("fatto");
+                println!("done");
                 return Ok(());
             }
         }
         std::thread::sleep(Duration::from_millis(20));
     }
-    Err("nessuna conferma dal modulo".into())
+    Err("no acknowledgement from the module".into())
 }
 
 fn monitor(a: &Args, p: &Profile, record: Option<PathBuf>) -> Result<(), String> {
@@ -219,13 +222,13 @@ fn monitor(a: &Args, p: &Profile, record: Option<PathBuf>) -> Result<(), String>
                         let r = conv::rpm(p, &t.ign).unwrap_or(f64::NAN);
                         let (c, ohm) = conv::coolant(p, t.coolant_raw);
                         println!(
-                            "{:>7.1} s  {frames:>3} frame/s  {:>5.1} km/h  {:>5.0} giri  {:>5.2} V  acqua {:?} ({} Ω)  luce {}  ingressi {:#06x}",
+                            "{:>7.1} s  {frames:>3} frame/s  {:>5.1} km/h  {:>5.0} rpm  {:>5.2} V  coolant {:?} ({} Ω)  light {}  inputs {:#06x}",
                             now,
                             v,
                             r,
                             conv::vbat_volts(p, t.vbat_raw),
                             c,
-                            ohm.map_or("--".into(), |o| fmt::dec(o, 1)),
+                            ohm.map_or("--".into(), |o| fmt::dec(EN, o, 1)),
                             t.light_raw,
                             t.inputs
                         );
@@ -236,14 +239,14 @@ fn monitor(a: &Args, p: &Profile, record: Option<PathBuf>) -> Result<(), String>
                 LinkEvent::Msg(McuMsg::Odometer(o)) if now - last_print < 0.02 => {
                     println!(
                         "           km {} · A {} · B {}",
-                        fmt::int(o.odo_m as u64 / 1000),
-                        fmt::dec(o.trip_m[0] as f64 / 1000.0, 1),
-                        fmt::dec(o.trip_m[1] as f64 / 1000.0, 1)
+                        fmt::int(EN, o.odo_m as u64 / 1000),
+                        fmt::dec(EN, o.trip_m[0] as f64 / 1000.0, 1),
+                        fmt::dec(EN, o.trip_m[1] as f64 / 1000.0, 1)
                     );
                 }
-                LinkEvent::Down(r) => println!("collegamento perso: {r}"),
+                LinkEvent::Down(r) => println!("link lost: {r}"),
                 LinkEvent::Up(d) => {
-                    println!("collegato: {d}");
+                    println!("connected: {d}");
                     src.send(HostMsg::GetInfo);
                 }
                 _ => {}
@@ -257,7 +260,7 @@ fn monitor(a: &Args, p: &Profile, record: Option<PathBuf>) -> Result<(), String>
 
 fn number(s: Option<&String>, what: &str) -> Result<f64, String> {
     s.and_then(|v| v.replace(',', ".").parse().ok())
-        .ok_or_else(|| format!("manca {what}"))
+        .ok_or_else(|| format!("missing {what}"))
 }
 
 /// Prints the corrected value as a TOML fragment for the profile.
@@ -265,65 +268,65 @@ fn calibrate(a: &Args, p: &Profile) -> Result<(), String> {
     let arg = |i: usize| a.pos.get(i);
     match a.pos.first().map(String::as_str) {
         Some("wheel") => {
-            let gps = number(arg(1), "la distanza misurata col GPS, in km")?;
-            let trip = number(arg(2), "il parziale segnato dal quadro, in km")?;
+            let gps = number(arg(1), "the distance measured with the GPS, in km")?;
+            let trip = number(arg(2), "the trip shown by the dashboard, in km")?;
             let old = p.speed.wheel_circumference_mm;
             let new = calib::wheel_circumference(old, gps, trip)?;
             println!(
-                "circonferenza: {old:.1} → {new:.1} mm ({:+.2} %)\n\n[speed]\nwheel_circumference_mm = {new:.1}",
+                "circumference: {old:.1} → {new:.1} mm ({:+.2} %)\n\n[speed]\nwheel_circumference_mm = {new:.1}",
                 (new / old - 1.0) * 100.0
             );
         }
         Some("tach") => {
-            let reference = number(arg(1), "i giri veri (contagiri di riferimento)")?;
-            let shown = number(arg(2), "i giri mostrati dal quadro")?;
+            let reference = number(arg(1), "the true rpm (reference tachometer)")?;
+            let shown = number(arg(2), "the rpm shown by the dashboard")?;
             let old = p.tach.pulses_per_rev;
             let (exact, snapped) = calib::tach_pulses_per_rev(old, reference, shown)?;
-            println!("impulsi per giro: {old} → {exact:.3}, arrotondato a {snapped}");
+            println!("pulses per revolution: {old} → {exact:.3}, rounded to {snapped}");
             if (exact - snapped).abs() > 0.05 * snapped {
                 println!(
-                    "attenzione: lontano da un multiplo di 0,5, ripeti la misura a regime stabile"
+                    "warning: far from a multiple of 0.5, repeat the measurement at steady rpm"
                 );
             }
             println!("\n[tach]\npulses_per_rev = {snapped}");
         }
         Some("battery") => {
-            let actual = number(arg(1), "la tensione misurata col tester")?;
-            let shown = number(arg(2), "la tensione mostrata dal quadro")?;
+            let actual = number(arg(1), "the voltage measured with the multimeter")?;
+            let shown = number(arg(2), "the voltage shown by the dashboard")?;
             let old = p.board.vbat_divider;
             let new = calib::vbat_divider(old, actual, shown)?;
             println!(
-                "partitore: {old:.4} → {new:.4} ({:+.2} %)\n\n[board]\nvbat_divider = {new:.4}",
+                "divider: {old:.4} → {new:.4} ({:+.2} %)\n\n[board]\nvbat_divider = {new:.4}",
                 (new / old - 1.0) * 100.0
             );
         }
         Some("coolant") => {
-            let file = arg(1).ok_or("manca il file con le misure")?;
+            let file = arg(1).ok_or("missing the file with the measurements")?;
             let text = std::fs::read_to_string(file).map_err(|e| format!("{file}: {e}"))?;
             let curve = calib::coolant_curve(&calib::parse_measurements(&text)?)?;
             println!(
-                "{} punti\n\n[coolant]\n{}",
+                "{} points\n\n[coolant]\n{}",
                 curve.len(),
                 calib::curve_toml(&curve)
             );
         }
-        _ => return Err("calibrate vuole wheel, tach, battery oppure coolant".into()),
+        _ => return Err("calibrate needs wheel, tach, battery or coolant".into()),
     }
     Ok(())
 }
 
 fn simulate(a: &Args, p: Profile) -> Result<(), String> {
     let id = a.pos.first().map_or("city", String::as_str);
-    let sc =
-        scenario(id).ok_or_else(|| format!("scenario sconosciuto '{id}' (tdmctl scenarios)"))?;
+    let sc = scenario(id).ok_or_else(|| format!("unknown scenario '{id}' (tdmctl scenarios)"))?;
     let secs = a.seconds.unwrap_or(30.0);
     let mut sim = SimMcu::new(&p, sc, 1);
     let mut d = Dash::new(p, None);
+    d.set_language(EN);
     d.on_event(LinkEvent::Up("sim".into()), 0.0);
     let dt = 1.0 / 60.0;
     let mut t = 0.0;
     let mut next_print = 1.0;
-    println!("   tempo  reale  mostrata  giri    acqua  batteria  avviso");
+    println!("    time   true     shown   rpm  coolant   battery  warning");
     while t < secs {
         t += dt;
         for m in sim.step(dt) {

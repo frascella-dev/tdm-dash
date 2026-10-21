@@ -1,17 +1,18 @@
 # Architecture Decision Records
 
-Ogni file registra una decisione di progetto: il contesto, la scelta e le conseguenze. Una decisione superata non si cancella: si scrive un nuovo ADR che la sostituisce e si aggiorna lo stato del vecchio.
+Each file records a project decision: the context, the choice and the consequences. A superseded decision is not deleted: a new ADR is written to replace it and the status of the old one is updated.
 
-| # | Decisione | Stato |
+| # | Decision | Status |
 |---|---|---|
-| [0001](0001-pi-piu-microcontrollore.md) | Pi Zero 2 W per la grafica, RP2040 per l'I/O | Accettata |
-| [0002](0002-protocollo-usb.md) | USB CDC con postcard, COBS e CRC-16 con tag di direzione | Accettata |
-| [0003](0003-piattaforma-slint-drm.md) | Slint con piattaforma DRM propria e renderer software | Accettata, da confermare col benchmark |
-| [0004](0004-contachilometri-su-fram.md) | Contachilometri sul microcontrollore, in FRAM | Accettata |
-| [0005](0005-rootfs-sola-lettura.md) | Rootfs EROFS in sola lettura, nessuno spegnimento ordinato | Accettata |
-| [0006](0006-retroilluminazione-fail-dark.md) | Retroilluminazione comandata dal microcontrollore, "fail-dark" | Accettata |
-| [0007](0007-licenze.md) | Licenze del codice, dell'immagine, dell'hardware e dei documenti | Accettata |
-| [0008](0008-profili-toml.md) | Profili moto in TOML a strati | Accettata |
-| [0009](0009-display-7-pollici.md) | Display Newhaven 7" 800×480 da 1000 nit in DPI | Accettata |
-| [0010](0010-layout-predefinito.md) | Layout predefinito Classic | Accettata |
-| [0011](0011-immagine-dal-checkout.md) | L'immagine compila il quadro dal checkout (metodo `local` di Buildroot) | Accettata |
+| [0001](0001-pi-plus-microcontroller.md) | Pi Zero 2 W for graphics, RP2040 for I/O | Accepted |
+| [0002](0002-usb-protocol.md) | USB CDC with postcard, COBS and CRC-16 with direction tag | Accepted |
+| [0003](0003-slint-drm-platform.md) | Slint with its own DRM platform and software renderer | Accepted, to be confirmed by the benchmark |
+| [0004](0004-odometer-in-fram.md) | Odometer on the microcontroller, in FRAM | Accepted |
+| [0005](0005-read-only-rootfs.md) | Read-only EROFS rootfs, no orderly shutdown | Accepted |
+| [0006](0006-fail-dark-backlight.md) | Backlight driven by the microcontroller, "fail-dark" | Accepted |
+| [0007](0007-licences.md) | Licences of the code, the image, the hardware and the documents | Accepted |
+| [0008](0008-toml-profiles.md) | Layered TOML bike profiles | Accepted |
+| [0009](0009-seven-inch-display.md) | Newhaven 7" 800×480 1000 nit DPI display | Accepted |
+| [0010](0010-default-layout.md) | Classic default layout | Accepted |
+| [0011](0011-image-from-checkout.md) | The image builds the dashboard from the checkout (Buildroot `local` method) | Accepted |
+| [0012](0012-english-repository-bilingual-ui.md) | English repository, bilingual dashboard | Accepted |

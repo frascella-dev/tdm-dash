@@ -1,27 +1,27 @@
-# Licenze
+# Licensing
 
-tdm-dash comprende software, un'immagine di sistema, hardware e documentazione, con licenze diverse (vedi [ADR 0007](docs/adr/0007-licenze.md)).
+tdm-dash includes software, a system image, hardware and documentation, under different licences (see [ADR 0007](docs/adr/0007-licences.md)).
 
-| Parte | Percorso | Licenza |
+| Part | Path | Licence |
 |---|---|---|
-| Codice sorgente (crate Rust, firmware, strumenti) | `crates/`, `firmware/`, `tools/`, `os/` | [MIT](LICENSE-MIT) **oppure** [Apache-2.0](LICENSE-APACHE), a scelta |
-| Immagine del sistema distribuita (`sdcard.img`) | release su GitHub | **GPL-3.0-only** nel suo insieme, perché include [Slint](https://github.com/slint-ui/slint) in licenza GPLv3. Ogni release include l'output di `make legal-info` con sorgenti e licenze di tutti i componenti |
-| Hardware (schemi KiCad, cablaggi, CAD) | `hardware/` | [CERN-OHL-P-2.0](https://ohwr.org/cern_ohl_p_v2.txt) |
-| Documentazione, manuale, design | `docs/`, `design/` | [CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
-| Font inclusi | `crates/tdm-dash/fonts/`, `design/` | [SIL OFL-1.1](https://openfontlicense.org) |
+| Source code (Rust crates, firmware, tools) | `crates/`, `firmware/`, `tools/`, `os/` | [MIT](LICENSE-MIT) **or** [Apache-2.0](LICENSE-APACHE), at your option |
+| Distributed system image (`sdcard.img`) | GitHub releases | **GPL-3.0-only** as a whole, because it includes [Slint](https://github.com/slint-ui/slint) under the GPLv3 licence. Every release includes the output of `make legal-info` with the sources and licences of all components |
+| Hardware (KiCad schematics, harnesses, CAD) | `hardware/` | [CERN-OHL-P-2.0](https://ohwr.org/cern_ohl_p_v2.txt) |
+| Documentation, manual, design | `docs/`, `design/` | [CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| Bundled fonts | `crates/tdm-dash/fonts/`, `design/` | [SIL OFL-1.1](https://openfontlicense.org) |
 
-## Contributi
+## Contributions
 
-Salvo indicazione contraria, ogni contributo inviato per l'inclusione in questo progetto è concesso con le stesse licenze della parte che modifica, senza termini aggiuntivi.
+Unless stated otherwise, every contribution submitted for inclusion in this project is granted under the same licences as the part it modifies, without any additional terms.
 
-## Slint e uso commerciale
+## Slint and commercial use
 
-La licenza royalty-free di Slint **esclude** i sistemi embedded. Chi vuole distribuire un derivato chiuso deve:
-- acquistare una licenza commerciale di Slint, **oppure**
-- sostituire lo strato di interfaccia (`crates/tdm-dash`).
+Slint's royalty-free licence **excludes** embedded systems. Anyone who wants to distribute a closed derivative must:
+- buy a commercial Slint licence, **or**
+- replace the interface layer (`crates/tdm-dash`).
 
-Il resto del codice (protocollo, misure, logica, firmware) resta MIT/Apache.
+The rest of the code (protocol, measurement, logic, firmware) stays MIT/Apache.
 
-## Esclusione di garanzia
+## Disclaimer of warranty
 
-Il progetto è fornito "così com'è", senza garanzie di alcun tipo. Non è un dispositivo certificato. Vedi le licenze e il capitolo [Introduzione e sicurezza](docs/manuale/00-introduzione-e-sicurezza.md).
+The project is provided "as is", without warranty of any kind. It is not a certified device. See the licences and the [Introduction and safety](docs/manual/00-introduction-and-safety.md) chapter.

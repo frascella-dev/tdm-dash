@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1225 703" width="1225" height="703" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
-<title>tdm-dash · disposizione del millefori 90 × 70 mm</title>
+<title>tdm-dash · 90 × 70 mm perfboard layout</title>
 <rect width="1225" height="703" fill="#ffffff"/>
 <rect x="34" y="34" width="698" height="561" rx="8" fill="#e7d9b0" stroke="#8b7a4a" stroke-width="2"/>
 <circle cx="51.4" cy="51.4" r="3.2" fill="#b98d3e"/><circle cx="51.4" cy="51.4" r="1.4" fill="#5b4a2a"/>
@@ -724,53 +724,53 @@
 <circle cx="714.4" cy="577.2" r="3.2" fill="#b98d3e"/><circle cx="714.4" cy="577.2" r="1.4" fill="#5b4a2a"/>
 <rect x="41.1" y="41.1" width="43.4" height="363.5" rx="6" fill="#0f1113" fill-opacity="0.16" stroke="#0f1113" stroke-width="2.5"/>
 <circle cx="62.9" cy="222.9" r="15" fill="#0f1113"/><text x="62.9" y="228.9" font-size="17" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
-<circle cx="789.8000000000001" cy="42" r="12" fill="#0f1113"/><text x="789.8000000000001" y="47" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">1</text><text x="809.8000000000001" y="47" font-size="15" font-weight="bold" fill="#0f1113">Connettori della moto</text>
-<text x="809.8000000000001" y="66" font-size="13" fill="#1d1f21">J101 6p: +12V_KEY, GND, folle, abbaglianti, frecce</text>
-<text x="809.8000000000001" y="83" font-size="13" fill="#1d1f21">J102 4p: contagiri, acqua, luci, GND</text>
-<text x="809.8000000000001" y="100" font-size="13" fill="#1d1f21">J401 3p: sensore ruota</text>
+<circle cx="789.8000000000001" cy="42" r="12" fill="#0f1113"/><text x="789.8000000000001" y="47" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">1</text><text x="809.8000000000001" y="47" font-size="15" font-weight="bold" fill="#0f1113">Bike connectors</text>
+<text x="809.8000000000001" y="66" font-size="13" fill="#1d1f21">J101 6p: +12V_KEY, GND, neutral, high beam, turn signals</text>
+<text x="809.8000000000001" y="83" font-size="13" fill="#1d1f21">J102 4p: tachometer, coolant, lights, GND</text>
+<text x="809.8000000000001" y="100" font-size="13" fill="#1d1f21">J401 3p: wheel sensor</text>
 <rect x="86.9" y="41.1" width="272.0" height="180.6" rx="6" fill="#c98a14" fill-opacity="0.16" stroke="#c98a14" stroke-width="2.5"/>
 <circle cx="222.9" cy="131.4" r="15" fill="#c98a14"/><text x="222.9" y="137.4" font-size="17" font-weight="bold" fill="#fff" text-anchor="middle">2</text>
-<circle cx="789.8000000000001" cy="121" r="12" fill="#c98a14"/><text x="789.8000000000001" y="126" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">2</text><text x="809.8000000000001" y="126" font-size="15" font-weight="bold" fill="#c98a14">Alimentazione (foglio 1)</text>
-<text x="809.8000000000001" y="145" font-size="13" fill="#1d1f21">Q101 IRF4905 (TO-220 coricato) · R101 10k · D101 12 V</text>
+<circle cx="789.8000000000001" cy="121" r="12" fill="#c98a14"/><text x="789.8000000000001" y="126" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">2</text><text x="809.8000000000001" y="126" font-size="15" font-weight="bold" fill="#c98a14">Power (sheet 1)</text>
+<text x="809.8000000000001" y="145" font-size="13" fill="#1d1f21">Q101 IRF4905 (TO-220 lying flat) · R101 10k · D101 12 V</text>
 <text x="809.8000000000001" y="162" font-size="13" fill="#1d1f21">D102 SMCJ24A · L101 22 µH · C101 100 µF · C102 1 µF</text>
-<text x="809.8000000000001" y="179" font-size="13" fill="#1d1f21">U101 Pololu D36V28F5 su zoccolo</text>
+<text x="809.8000000000001" y="179" font-size="13" fill="#1d1f21">U101 Pololu D36V28F5 in a socket</text>
 <text x="809.8000000000001" y="196" font-size="13" fill="#1d1f21">D103 1N5819 · C103 470 µF</text>
 <rect x="361.2" y="41.1" width="226.3" height="180.6" rx="6" fill="#d9410b" fill-opacity="0.16" stroke="#d9410b" stroke-width="2.5"/>
 <circle cx="474.3" cy="131.4" r="15" fill="#d9410b"/><text x="474.3" y="137.4" font-size="17" font-weight="bold" fill="#fff" text-anchor="middle">3</text>
-<circle cx="789.8000000000001" cy="217" r="12" fill="#d9410b"/><text x="789.8000000000001" y="222" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">3</text><text x="809.8000000000001" y="222" font-size="15" font-weight="bold" fill="#d9410b">Contagiri (foglio 3)</text>
-<text x="809.8000000000001" y="241" font-size="13" fill="#1d1f21">D301 1N4007 · R301, R302 22k 1 W (staccate dalla scheda)</text>
-<text x="809.8000000000001" y="258" font-size="13" fill="#1d1f21">D302 1N4744A · C301 2,2 nF · R303 2,2k</text>
-<text x="809.8000000000001" y="275" font-size="13" fill="#1d1f21">U301 H11L1 su zoccolo · R304 4,7k · C302 100 nF</text>
+<circle cx="789.8000000000001" cy="217" r="12" fill="#d9410b"/><text x="789.8000000000001" y="222" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">3</text><text x="809.8000000000001" y="222" font-size="15" font-weight="bold" fill="#d9410b">Tachometer (sheet 3)</text>
+<text x="809.8000000000001" y="241" font-size="13" fill="#1d1f21">D301 1N4007 · R301, R302 22k 1 W (raised off the board)</text>
+<text x="809.8000000000001" y="258" font-size="13" fill="#1d1f21">D302 1N4744A · C301 2.2 nF · R303 2.2k</text>
+<text x="809.8000000000001" y="275" font-size="13" fill="#1d1f21">U301 H11L1 in a socket · R304 4.7k · C302 100 nF</text>
 <rect x="589.8" y="41.1" width="134.9" height="180.6" rx="6" fill="#575b5d" fill-opacity="0.16" stroke="#575b5d" stroke-width="2.5"/>
 <circle cx="657.2" cy="131.4" r="15" fill="#575b5d"/><text x="657.2" y="137.4" font-size="17" font-weight="bold" fill="#fff" text-anchor="middle">4</text>
-<circle cx="789.8000000000001" cy="296" r="12" fill="#575b5d"/><text x="789.8000000000001" y="301" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">4</text><text x="809.8000000000001" y="301" font-size="15" font-weight="bold" fill="#575b5d">FRAM e uscita 5 V (foglio 6)</text>
-<text x="809.8000000000001" y="320" font-size="13" fill="#1d1f21">U602 breakout FRAM su header 8 poli</text>
-<text x="809.8000000000001" y="337" font-size="13" fill="#1d1f21">J103 2p: 5 V al Pi</text>
+<circle cx="789.8000000000001" cy="296" r="12" fill="#575b5d"/><text x="789.8000000000001" y="301" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">4</text><text x="809.8000000000001" y="301" font-size="15" font-weight="bold" fill="#575b5d">FRAM and 5 V output (sheet 6)</text>
+<text x="809.8000000000001" y="320" font-size="13" fill="#1d1f21">U602 FRAM breakout on an 8-pin header</text>
+<text x="809.8000000000001" y="337" font-size="13" fill="#1d1f21">J103 2p: 5 V to the Pi</text>
 <rect x="86.9" y="224.0" width="317.8" height="180.6" rx="6" fill="#2bb655" fill-opacity="0.16" stroke="#2bb655" stroke-width="2.5"/>
 <circle cx="245.7" cy="314.3" r="15" fill="#2bb655"/><text x="245.7" y="320.3" font-size="17" font-weight="bold" fill="#fff" text-anchor="middle">5</text>
-<circle cx="789.8000000000001" cy="358" r="12" fill="#2bb655"/><text x="789.8000000000001" y="363" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">5</text><text x="809.8000000000001" y="363" font-size="15" font-weight="bold" fill="#2bb655">Spie, 5 canali (foglio 2)</text>
-<text x="809.8000000000001" y="382" font-size="13" fill="#1d1f21">per canale: EL817 su zoccolo, 4,7k (folle 3,3k),</text>
-<text x="809.8000000000001" y="399" font-size="13" fill="#1d1f21">10k, 1N4148, 100 nF · uscite a GP6–GP10</text>
+<circle cx="789.8000000000001" cy="358" r="12" fill="#2bb655"/><text x="789.8000000000001" y="363" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">5</text><text x="809.8000000000001" y="363" font-size="15" font-weight="bold" fill="#2bb655">Warning lights, 5 channels (sheet 2)</text>
+<text x="809.8000000000001" y="382" font-size="13" fill="#1d1f21">per channel: EL817 in a socket, 4.7k (neutral 3.3k),</text>
+<text x="809.8000000000001" y="399" font-size="13" fill="#1d1f21">10k, 1N4148, 100 nF · outputs to GP6–GP10</text>
 <rect x="406.9" y="224.0" width="134.9" height="180.6" rx="6" fill="#3b6ff0" fill-opacity="0.16" stroke="#3b6ff0" stroke-width="2.5"/>
 <circle cx="474.3" cy="314.3" r="15" fill="#3b6ff0"/><text x="474.3" y="320.3" font-size="17" font-weight="bold" fill="#fff" text-anchor="middle">6</text>
-<circle cx="789.8000000000001" cy="420" r="12" fill="#3b6ff0"/><text x="789.8000000000001" y="425" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">6</text><text x="809.8000000000001" y="425" font-size="15" font-weight="bold" fill="#3b6ff0">Sensore ruota (foglio 4)</text>
-<text x="809.8000000000001" y="444" font-size="13" fill="#1d1f21">U401 EL817 · R401 2,2k · R402 4,7k</text>
+<circle cx="789.8000000000001" cy="420" r="12" fill="#3b6ff0"/><text x="789.8000000000001" y="425" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">6</text><text x="809.8000000000001" y="425" font-size="15" font-weight="bold" fill="#3b6ff0">Wheel sensor (sheet 4)</text>
+<text x="809.8000000000001" y="444" font-size="13" fill="#1d1f21">U401 EL817 · R401 2.2k · R402 4.7k</text>
 <text x="809.8000000000001" y="461" font-size="13" fill="#1d1f21">D401 1N4148 · C401 100 nF</text>
 <rect x="544.1" y="224.0" width="180.6" height="180.6" rx="6" fill="#7a4fd6" fill-opacity="0.16" stroke="#7a4fd6" stroke-width="2.5"/>
 <circle cx="634.4" cy="314.3" r="15" fill="#7a4fd6"/><text x="634.4" y="320.3" font-size="17" font-weight="bold" fill="#fff" text-anchor="middle">7</text>
-<circle cx="789.8000000000001" cy="482" r="12" fill="#7a4fd6"/><text x="789.8000000000001" y="487" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">7</text><text x="809.8000000000001" y="487" font-size="15" font-weight="bold" fill="#7a4fd6">Ingressi analogici (foglio 5)</text>
+<circle cx="789.8000000000001" cy="482" r="12" fill="#7a4fd6"/><text x="789.8000000000001" y="487" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">7</text><text x="809.8000000000001" y="487" font-size="15" font-weight="bold" fill="#7a4fd6">Analog inputs (sheet 5)</text>
 <text x="809.8000000000001" y="506" font-size="13" fill="#1d1f21">R501 100k · R502 22k · R503 100 Ω · R504, R505 1k</text>
 <text x="809.8000000000001" y="523" font-size="13" fill="#1d1f21">C501–C503 100 nF</text>
-<text x="809.8000000000001" y="540" font-size="13" fill="#1d1f21">D501–D503 BAT54S su adattatore SOT-23</text>
+<text x="809.8000000000001" y="540" font-size="13" fill="#1d1f21">D501–D503 BAT54S on SOT-23 adapters</text>
 <rect x="41.1" y="406.9" width="180.6" height="180.6" rx="6" fill="#8b877e" fill-opacity="0.16" stroke="#8b877e" stroke-width="2.5"/>
 <circle cx="131.4" cy="497.2" r="15" fill="#8b877e"/><text x="131.4" y="503.2" font-size="17" font-weight="bold" fill="#fff" text-anchor="middle">8</text>
-<circle cx="789.8000000000001" cy="561" r="12" fill="#8b877e"/><text x="789.8000000000001" y="566" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">8</text><text x="809.8000000000001" y="566" font-size="15" font-weight="bold" fill="#8b877e">Pulsanti, luce, retroilluminazione (fogli 6–7)</text>
-<text x="809.8000000000001" y="585" font-size="13" fill="#1d1f21">J601 pulsanti · J501 TEMT6000 · J701 al TPS61169</text>
+<circle cx="789.8000000000001" cy="561" r="12" fill="#8b877e"/><text x="789.8000000000001" y="566" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">8</text><text x="809.8000000000001" y="566" font-size="15" font-weight="bold" fill="#8b877e">Buttons, light, backlight (sheets 6–7)</text>
+<text x="809.8000000000001" y="585" font-size="13" fill="#1d1f21">J601 buttons · J501 TEMT6000 · J701 to the TPS61169</text>
 <text x="809.8000000000001" y="602" font-size="13" fill="#1d1f21">R603, R604 1k · C602, C603 100 nF · R701 1k · R702 100k</text>
 <rect x="224.0" y="406.9" width="477.8" height="180.6" rx="6" fill="#0f1113" fill-opacity="0.16" stroke="#0f1113" stroke-width="2.5"/>
 <circle cx="462.9" cy="497.2" r="15" fill="#0f1113"/><text x="462.9" y="503.2" font-size="17" font-weight="bold" fill="#fff" text-anchor="middle">9</text>
-<circle cx="789.8000000000001" cy="623" r="12" fill="#0f1113"/><text x="789.8000000000001" y="628" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">9</text><text x="809.8000000000001" y="628" font-size="15" font-weight="bold" fill="#0f1113">Raspberry Pi Pico su header 2×20 (foglio 6)</text>
-<text x="809.8000000000001" y="647" font-size="13" fill="#1d1f21">USB verso il bordo; doppino saldato ai pad TP2/TP3</text>
-<text x="809.8000000000001" y="664" font-size="13" fill="#1d1f21">sotto il Pico (capitolo 05)</text>
-<text x="40" y="645" font-size="13" fill="#575b5d">Lato componenti · passo 2,54 mm · 30 × 24 fori · le zone seguono i fogli dello schema KiCad</text>
+<circle cx="789.8000000000001" cy="623" r="12" fill="#0f1113"/><text x="789.8000000000001" y="628" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">9</text><text x="809.8000000000001" y="628" font-size="15" font-weight="bold" fill="#0f1113">Raspberry Pi Pico on 2×20 headers (sheet 6)</text>
+<text x="809.8000000000001" y="647" font-size="13" fill="#1d1f21">USB towards the edge; twisted pair soldered to the TP2/TP3</text>
+<text x="809.8000000000001" y="664" font-size="13" fill="#1d1f21">pads under the Pico (chapter 05)</text>
+<text x="40" y="645" font-size="13" fill="#575b5d">Component side · 2.54 mm pitch · 30 × 24 holes · the zones follow the KiCad schematic sheets</text>
 </svg>

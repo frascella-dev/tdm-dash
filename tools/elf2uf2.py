@@ -94,7 +94,7 @@ def main() -> int:
     data = uf2(pages, FAMILIES[a.family])
     with open(a.out, "wb") as f:
         f.write(data)
-    print(f"{a.out}: {len(pages)} pagine da 256 byte ({len(pages) * PAGE // 1024} KiB in flash), famiglia {a.family}")
+    print(f"{a.out}: {len(pages)} pages of 256 bytes ({len(pages) * PAGE // 1024} KiB of flash), family {a.family}")
     return 0
 
 

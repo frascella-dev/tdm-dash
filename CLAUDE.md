@@ -16,7 +16,7 @@ Digital instrument cluster for a 1992 Yamaha TDM 850 (3VD): Raspberry Pi Zero 2 
 
 ## Facts about the bike
 
-- Every fact about the original wiring is tagged [VERIFICATO] / [DA VERIFICARE] / [IPOTESI] in `docs/ricerca/impianto-originale.md`.
+- Every fact about the original wiring is tagged [VERIFICATO] / [DA VERIFICARE] / [IPOTESI] in `docs/research/original-wiring.md`.
 - Never present a [DA VERIFICARE] wire colour as certain in schematics or harnesses.
 
 ## Commands

@@ -1,4 +1,4 @@
-# Builds the tdm-dash SD card images with Buildroot (docs/manuale/09-software.md).
+# Builds the tdm-dash SD card images with Buildroot (docs/manual/09-software.md).
 #
 #   make -C os release                    # image for the road: read-only EROFS
 #   make -C os dev                        # development image: ext4, Wi-Fi, SSH
@@ -33,7 +33,7 @@ $(OUT)/$(1)/.config: $(EXT)/configs/$(DEFCONFIG_$(1)) | $(BR)/Makefile
 
 $(1): $(OUT)/$(1)/.config
 	$$(MAKE) -C $(BR) O=$(OUT)/$(1)
-	@echo "Immagine: $(OUT)/$(1)/images/sdcard.img"
+	@echo "Image: $(OUT)/$(1)/images/sdcard.img"
 
 $(1)-%: $(OUT)/$(1)/.config
 	$$(MAKE) -C $(BR) O=$(OUT)/$(1) $$*

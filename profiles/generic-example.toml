@@ -1,15 +1,15 @@
-# Esempio di profilo per un'altra moto. Copialo, rinominalo e cambia i valori
-# marcati con ← (vedi CONTRIBUTING.md e il manuale, capitolo 10).
+# Example profile for another motorcycle. Copy it, rename it and change the
+# values marked with ← (see CONTRIBUTING.md and the manual, chapter 10).
 
 schema = 1
 
 [bike]
 id = "example-single-17"
-name = "Monocilindrica d'esempio"
+name = "Example single"
 
 [speed]
-pulses_per_rev = 5                # ← bulloni o magneti letti per giro di ruota
-wheel_circumference_mm = 1900     # ← circonferenza di rotolamento
+pulses_per_rev = 5                # ← bolts or magnets read per wheel revolution
+wheel_circumference_mm = 1900     # ← rolling circumference
 display_gain = 1.03
 display_offset_kmh = 1.0
 zero_below_kmh = 2.5
@@ -19,7 +19,7 @@ dial_max_kmh = 180
 units = "metric"
 
 [tach]
-pulses_per_rev = 0.5              # ← monocilindrico 4 tempi: una scintilla ogni due giri
+pulses_per_rev = 0.5              # ← four-stroke single: one spark every two revolutions
 max_rpm = 10000
 redline_rpm = 8500
 shift_rpm = 8000
@@ -61,3 +61,4 @@ brightness_min_pct = 4
 brightness_max_pct = 100
 rotate_180 = false
 selftest = true
+language = "en"                   # en | it: language of the dashboard texts

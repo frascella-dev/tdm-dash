@@ -79,7 +79,7 @@ struct Output {
 }
 
 fn open_output() -> Result<Output, String> {
-    let mut last_err = String::from("nessun /dev/dri/card*");
+    let mut last_err = String::from("no /dev/dri/card*");
     for i in 0..4 {
         let path = format!("/dev/dri/card{i}");
         let Ok(f) = OpenOptions::new().read(true).write(true).open(&path) else {
@@ -113,7 +113,7 @@ fn setup(card: Card) -> Result<Output, String> {
                 1
             }
         })
-        .ok_or("nessun connettore collegato")?;
+        .ok_or("no connected connector")?;
     let mode = con.modes()[0];
     let crtc = con
         .current_encoder()
@@ -125,7 +125,7 @@ fn setup(card: Card) -> Result<Output, String> {
                 .filter_map(|h| card.get_encoder(*h).ok())
                 .find_map(|enc| res.filter_crtcs(enc.possible_crtcs()).first().copied())
         })
-        .ok_or("nessun CRTC per il connettore")?;
+        .ok_or("no CRTC for the connector")?;
     let (w, h) = mode.size();
     let mk = || -> Result<(DumbBuffer, framebuffer::Handle), String> {
         let mut db = card

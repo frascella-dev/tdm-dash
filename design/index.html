@@ -1,6 +1,6 @@
-<title>Quadro tdm-dash</title>
+<title>tdm-dash dashboard</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Proposta di design interattiva del quadro digitale tdm-dash per Yamaha TDM 850 (3VD), a 800×480 reali.">
+<meta name="description" content="Interactive design proposal for the tdm-dash digital dashboard for the Yamaha TDM 850 (3VD), at true 800×480.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Saira+Semi+Condensed:wght@400;500;600;700&display=swap">
@@ -175,11 +175,11 @@ footer a { color: var(--ink); }
 <div class="wrap">
   <header class="masthead">
     <div>
-      <p class="eyebrow">Proposta di design · milestone M1</p>
-      <h1>Quadro tdm-dash</h1>
-      <p class="lead">Il quadro digitale per la Yamaha TDM 850 del '92, simulato a 800×480 reali con le stesse misure, gli stessi filtri e gli stessi avvisi che userà il software in Rust. Usa MODE e SET come sulla moto.</p>
+      <p class="eyebrow">Design proposal · milestone M1</p>
+      <h1>tdm-dash dashboard</h1>
+      <p class="lead">The digital dashboard for the '92 Yamaha TDM 850, simulated at true 800×480 with the same measurements, the same filters and the same warnings that the Rust software will use. Use MODE and SET as on the bike.</p>
     </div>
-    <ul class="specline" aria-label="Specifiche del display">
+    <ul class="specline" aria-label="Display specifications">
       <li>7″ IPS</li><li>800×480 · 133 ppi</li><li>1000 cd/m²</li><li>Pi Zero 2 W + Pico</li>
     </ul>
   </header>
@@ -188,19 +188,19 @@ footer a { color: var(--ink); }
     <div class="stage">
       <div class="scroller">
         <div class="unit" id="unit" data-scale="fit">
-          <div class="screen"><canvas id="dash" width="800" height="480" aria-label="Quadro strumenti simulato" role="img"></canvas><div class="bl" id="bl"></div></div>
+          <div class="screen"><canvas id="dash" width="800" height="480" aria-label="Simulated instrument cluster" role="img"></canvas><div class="bl" id="bl"></div></div>
           <div class="keys">
-            <button class="hwkey" id="kMode" type="button" aria-label="Tasto MODE (tieni premuto per la pressione lunga)">MODE</button>
-            <button class="hwkey" id="kSet" type="button" aria-label="Tasto SET (tieni premuto per la pressione lunga)">SET</button>
+            <button class="hwkey" id="kMode" type="button" aria-label="MODE key (hold for a long press)">MODE</button>
+            <button class="hwkey" id="kSet" type="button" aria-label="SET key (hold for a long press)">SET</button>
           </div>
         </div>
       </div>
       <p class="status" id="status" aria-live="polite"></p>
     </div>
 
-    <aside class="controls" aria-label="Controlli del simulatore">
+    <aside class="controls" aria-label="Simulator controls">
       <div class="group">
-        <h2>Layout di guida</h2>
+        <h2>Riding layout</h2>
         <div class="seg" id="segLayout">
           <button type="button" data-v="classic" aria-pressed="true">Classic</button>
           <button type="button" data-v="sport" aria-pressed="false">Sport</button>
@@ -209,114 +209,114 @@ footer a { color: var(--ink); }
       </div>
 
       <div class="group">
-        <h2>Schermata</h2>
-        <select id="selScreen" aria-label="Vai alla schermata">
-          <option value="main">Guida</option>
-          <option value="trip">Viaggio</option>
-          <option value="diag">Diagnostica</option>
-          <option value="settings">Impostazioni (da fermi)</option>
+        <h2>Screen</h2>
+        <select id="selScreen" aria-label="Go to screen">
+          <option value="main">Riding</option>
+          <option value="trip">Trip</option>
+          <option value="diag">Diagnostics</option>
+          <option value="settings">Settings (when stopped)</option>
         </select>
-        <p class="hint">Sulla moto: MODE breve cambia schermata, SET lungo da fermi apre le impostazioni.</p>
+        <p class="hint">On the bike: a short MODE changes screen, a long SET when stopped opens the settings.</p>
       </div>
 
       <div class="group">
         <h2>Scenario</h2>
-        <select id="selScenario" aria-label="Scenario di guida"></select>
+        <select id="selScenario" aria-label="Riding scenario"></select>
         <p class="scenario-note" id="scenarioNote"></p>
         <div class="row">
-          <button class="btn" id="btnPlay" type="button">Pausa</button>
+          <button class="btn" id="btnPlay" type="button">Pause</button>
           <div class="seg" id="segSpeed" style="flex: 1 1 140px">
             <button type="button" data-v="1" aria-pressed="true">×1</button>
             <button type="button" data-v="2" aria-pressed="false">×2</button>
             <button type="button" data-v="4" aria-pressed="false">×4</button>
           </div>
         </div>
-        <button class="btn" id="btnBoot" type="button">Gira la chiave (riavvio completo)</button>
+        <button class="btn" id="btnBoot" type="button">Turn the key (full restart)</button>
       </div>
 
       <div class="group">
-        <h2>Luce ambiente</h2>
-        <input type="range" id="rngLight" min="0" max="100" value="72" aria-label="Luce ambiente">
-        <div class="scale-labels"><span>notte</span><span>galleria</span><span>nuvoloso</span><span>sole</span></div>
+        <h2>Ambient light</h2>
+        <input type="range" id="rngLight" min="0" max="100" value="72" aria-label="Ambient light">
+        <div class="scale-labels"><span>night</span><span>tunnel</span><span>cloudy</span><span>sun</span></div>
         <div class="seg" id="segTheme">
           <button type="button" data-v="auto" aria-pressed="true">Auto</button>
-          <button type="button" data-v="day" aria-pressed="false">Giorno</button>
-          <button type="button" data-v="night" aria-pressed="false">Notte</button>
+          <button type="button" data-v="day" aria-pressed="false">Day</button>
+          <button type="button" data-v="night" aria-pressed="false">Night</button>
         </div>
         <p class="readout" id="lightReadout"></p>
       </div>
 
       <div class="group">
-        <h2>Guasti da provare</h2>
+        <h2>Faults to try</h2>
         <div class="row">
-          <button class="btn" id="btnLink" type="button">Scollega l'USB</button>
-          <button class="btn" id="btnHang" type="button">Blocca l'app</button>
+          <button class="btn" id="btnLink" type="button">Unplug the USB</button>
+          <button class="btn" id="btnHang" type="button">Freeze the app</button>
         </div>
-        <p class="hint">Mostrano il comportamento "fail-dark": meglio uno schermo nero che dati vecchi.</p>
+        <p class="hint">They show the "fail-dark" behavior: better a black screen than stale data.</p>
       </div>
 
       <div class="group">
-        <h2>Scala</h2>
+        <h2>Scale</h2>
         <div class="seg" id="segScale">
-          <button type="button" data-v="fit" aria-pressed="true">Adatta</button>
+          <button type="button" data-v="fit" aria-pressed="true">Fit</button>
           <button type="button" data-v="px" aria-pressed="false">1:1 pixel</button>
-          <button type="button" data-v="real" aria-pressed="false">Reale</button>
+          <button type="button" data-v="real" aria-pressed="false">Real</button>
         </div>
-        <p class="hint">"Reale" mostra i 154 × 86 mm dell'area attiva su uno schermo a 96 dpi.</p>
+        <p class="hint">"Real" shows the 154 × 86 mm of the active area on a 96 dpi screen.</p>
       </div>
 
-      <p class="kbd"><kbd>M</kbd> MODE · <kbd>S</kbd> SET (tieni premuto ≥ 1 s per il lungo) · <kbd>←</kbd> <kbd>→</kbd> frecce · <kbd>H</kbd> abbaglianti · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> layout · <kbd>Spazio</kbd> pausa</p>
+      <p class="kbd"><kbd>M</kbd> MODE · <kbd>S</kbd> SET (hold ≥ 1 s for a long press) · <kbd>←</kbd> <kbd>→</kbd> turn signals · <kbd>H</kbd> high beam · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> layout · <kbd>Space</kbd> pause</p>
     </aside>
   </main>
 
   <section class="panel" aria-labelledby="chartTitle">
     <div class="panel-head">
-      <h2 id="chartTitle">Velocità: reale, misurata e mostrata · ultimi 12 s</h2>
+      <h2 id="chartTitle">Speed: true, measured and shown · last 12 s</h2>
       <ul class="legend">
-        <li><i id="lgTrue"></i>reale</li>
-        <li><i id="lgRaw"></i>misurata dal Pico (finestre su giri interi di ruota)</li>
-        <li><i id="lgShown"></i>mostrata (filtro, +3 % +1 km/h, isteresi)</li>
+        <li><i id="lgTrue"></i>true</li>
+        <li><i id="lgRaw"></i>measured by the Pico (windows over whole wheel revolutions)</li>
+        <li><i id="lgShown"></i>shown (filter, +3 % +1 km/h, hysteresis)</li>
       </ul>
     </div>
-    <canvas id="chart" aria-label="Grafico della velocità" role="img"></canvas>
+    <canvas id="chart" aria-label="Speed chart" role="img"></canvas>
   </section>
 
   <div class="notes">
     <section>
       <h2>Display</h2>
       <dl class="spec">
-        <dt>Modello</dt><dd>Newhaven NHD-7.0-800480AF-ASXP</dd>
-        <dt>Diagonale</dt><dd>7″ · 133 ppi</dd>
-        <dt>Area attiva</dt><dd>154,2 × 85,6 mm</dd>
-        <dt>Ingombro</dt><dd>165 × 104 mm</dd>
-        <dt>Risoluzione</dt><dd>800 × 480, RGB 18 bit via DPI</dd>
-        <dt>Luminosità</dt><dd>1000 cd/m², IPS</dd>
-        <dt>Temperatura</dt><dd>−20 … +70 °C</dd>
-        <dt>Retroilluminazione</dt><dd>180 mA a 9,3 V · TPS61169, PWM dal Pico</dd>
-        <dt>Avvio</dt><dd>&lt; 4 s dalla chiave al primo frame</dd>
+        <dt>Model</dt><dd>Newhaven NHD-7.0-800480AF-ASXP</dd>
+        <dt>Diagonal</dt><dd>7″ · 133 ppi</dd>
+        <dt>Active area</dt><dd>154.2 × 85.6 mm</dd>
+        <dt>Outline</dt><dd>165 × 104 mm</dd>
+        <dt>Resolution</dt><dd>800 × 480, 18-bit RGB over DPI</dd>
+        <dt>Brightness</dt><dd>1000 cd/m², IPS</dd>
+        <dt>Temperature</dt><dd>−20 … +70 °C</dd>
+        <dt>Backlight</dt><dd>180 mA at 9.3 V · TPS61169, PWM from the Pico</dd>
+        <dt>Boot</dt><dd>&lt; 4 s from key to first frame</dd>
       </dl>
     </section>
     <section>
-      <h2>Regole per Slint</h2>
+      <h2>Rules for Slint</h2>
       <ul>
-        <li>Nessuna rotazione tranne le lancette, disegnate come <code>Path</code> con i punti calcolati in Rust.</li>
-        <li>Quadranti, bagliori e gradienti pre-renderizzati all'avvio (tiny-skia) come immagini opache.</li>
-        <li>Barre dei giri: immagine pre-renderizzata scoperta da un rettangolo di clip.</li>
-        <li>Cifre in celle a larghezza fissa: i numeri non "ballano" quando cambiano.</li>
-        <li>Velocità sport ≥ 140 px di altezza (≈ 27 mm sul 7″); contrasto di giorno ≥ 7:1.</li>
-        <li>Spie nei colori ECE: verde frecce e folle, blu abbaglianti, ambra attenzione, rosso critico.</li>
-        <li>Niente animazioni durante la guida, tranne avvisi e luce di cambiata.</li>
+        <li>No rotation except the needles, drawn as <code>Path</code>s with the points computed in Rust.</li>
+        <li>Dials, glows and gradients pre-rendered at startup (tiny-skia) as opaque images.</li>
+        <li>Rpm bars: pre-rendered image revealed by a clip rectangle.</li>
+        <li>Digits in fixed-width cells: the numbers do not "jump" when they change.</li>
+        <li>Sport speed ≥ 140 px high (≈ 27 mm on the 7″); daytime contrast ≥ 7:1.</li>
+        <li>Warning lights in ECE colors: green turn signals and neutral, blue high beam, amber caution, red critical.</li>
+        <li>No animations while riding, except warnings and the shift light.</li>
       </ul>
     </section>
     <section>
       <h2>Palette</h2>
       <div class="swatches" id="swatches"></div>
-      <p class="hint" style="margin-top:10px">Tipografia: Saira Semi Condensed (OFL) per cifre e scritte del quadro.</p>
+      <p class="hint" style="margin-top:10px">Typography: Saira Semi Condensed (OFL) for the dashboard digits and text.</p>
     </section>
   </div>
 
   <footer>
-    Progetto open-source <a href="https://github.com/frascella-dev/tdm-dash">frascella-dev/tdm-dash</a> · proposta di design per la milestone M1 · i valori della moto sono una bozza fino ai rilievi.
+    Open-source project <a href="https://github.com/frascella-dev/tdm-dash">frascella-dev/tdm-dash</a> · design proposal for milestone M1 · the bike values are a draft until the bike measurements.
   </footer>
 </div>
 
@@ -340,12 +340,12 @@ const MM_PER_PULSE = P.wheelCircMm / P.wheelPpr;
 // Dash themes. Night keeps whites warm and telltales desaturated so they do not dazzle.
 const TH = {
   day: {
-    name: "Giorno", bg: "#eceae4", panel: "#dcd9d1", ink: "#0f1113", dim: "#575b5d", faint: "#bdb9b0",
+    name: "Day", bg: "#eceae4", panel: "#dcd9d1", ink: "#0f1113", dim: "#575b5d", faint: "#bdb9b0",
     ghost: "rgba(15,17,19,0.11)", needle: "#d9410b", red: "#cc1f1a", redDim: "rgba(204,31,26,0.30)",
     amber: "#b86e00", amberBg: "#f2a516", green: "#0b9a3b", blue: "#1849e6", critBg: "#c41c17", critInk: "#ffffff", cautionInk: "#1b1300",
   },
   night: {
-    name: "Notte", bg: "#050607", panel: "#0e1113", ink: "#e8e2d6", dim: "#8b877e", faint: "#2f3234",
+    name: "Night", bg: "#050607", panel: "#0e1113", ink: "#e8e2d6", dim: "#8b877e", faint: "#2f3234",
     ghost: "rgba(232,226,214,0.09)", needle: "#ff6a1a", red: "#c3332b", redDim: "rgba(195,51,43,0.32)",
     amber: "#d9951c", amberBg: "#c98a14", green: "#2bb655", blue: "#3b6ff0", critBg: "#9e211b", critInk: "#fff4ec", cautionInk: "#140d00",
   },
@@ -358,11 +358,11 @@ const MONO = '"IBM Plex Mono", ui-monospace, Menlo, monospace';
 // ======================================================================
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const lerp = (a, b, t) => a + (b - a) * t;
-const TS = " "; // thin space as thousands separator
+const TS = ","; // thousands separator (English UI)
 function fmtInt(n) { return String(Math.floor(Math.abs(n))).replace(/\B(?=(\d{3})+(?!\d))/g, TS); }
 function fmtDec(x, d) {
   const s = Math.abs(x).toFixed(d).split(".");
-  return (x < 0 ? "−" : "") + s[0].replace(/\B(?=(\d{3})+(?!\d))/g, TS) + (d ? "," + s[1] : "");
+  return (x < 0 ? "−" : "") + s[0].replace(/\B(?=(\d{3})+(?!\d))/g, TS) + (d ? "." + s[1] : "");
 }
 function fmtDur(sec) {
   sec = Math.floor(sec); const h = Math.floor(sec / 3600), m = Math.floor(sec / 60) % 60, s = sec % 60;
@@ -430,7 +430,7 @@ const RPM_PER_MS = (60 / 1.98) * 1.708 * 2.8125;          // primary × final, r
 
 const SCENARIOS = {
   city: {
-    name: "Città", note: "Semafori, folle da fermi, frecce alle svolte, cambiate sotto i 4500 giri.",
+    name: "City", note: "Traffic lights, neutral when stopped, turn signals at corners, shifts below 4500 rpm.",
     shift: 4300, down: 2300, cool: 88, coolStop: 97, vbat: "ok",
     legs: [
       { v: 0, hold: 5 }, { v: 48, a: 2.2, hold: 7 }, { v: 26, d: 3, turn: "R", hold: 2 }, { v: 46, a: 2, hold: 6 },
@@ -438,7 +438,7 @@ const SCENARIOS = {
     ],
   },
   mountain: {
-    name: "Passo di montagna", note: "Allunghi fino alla zona rossa: la barra dei giri lampeggia sopra i 7500.",
+    name: "Mountain pass", note: "Revving up to the red zone: the rpm bar flashes above 7500.",
     shift: 7900, down: 4800, cool: 92, coolStop: 98, vbat: "ok",
     legs: [
       { v: 0, hold: 2 }, { v: 95, a: 4.2, hold: 2 }, { v: 42, d: 6, hold: 2 }, { v: 105, a: 4.4, hold: 1.5 },
@@ -446,33 +446,33 @@ const SCENARIOS = {
     ],
   },
   motorway: {
-    name: "Autostrada", note: "Crociera a 130 con sorpassi. L'autonomia stimata scende sotto la riserva: compare l'avviso informativo.",
+    name: "Motorway", note: "Cruising at 130 with overtaking. The estimated range drops below the reserve: the info warning appears.",
     shift: 5500, down: 3000, cool: 84, coolStop: 92, vbat: "ok", tripB: 240.5,
     legs: [
       { v: 0, hold: 2 }, { v: 130, a: 2.8, hold: 14 }, { v: 148, a: 1.6, turn: "L", hold: 5 }, { v: 130, d: 1.2, turn: "R", hold: 16 },
     ],
   },
   warmup: {
-    name: "Riscaldamento a freddo", note: "Moto ferma al minimo dopo una notte all'aperto: la temperatura parte da 14 °C (LO).",
+    name: "Cold warm-up", note: "Bike stopped at idle after a night outdoors: the temperature starts from 14 °C (LO).",
     shift: 4000, down: 2200, cool: 82, coolStop: 82, coolStart: 14, coolRate: 0.9, vbat: "ok", legs: [{ v: 0, hold: 9999 }],
   },
   nocharge: {
-    name: "Ricarica guasta", note: "Lo statore non carica: la tensione cala con il motore oltre i 3000 giri. Prima \"non in carica\", poi \"batteria bassa\".",
+    name: "Charging fault", note: "The stator does not charge: the voltage drops with the engine above 3000 rpm. First \"not charging\", then \"battery low\".",
     shift: 5200, down: 3100, cool: 86, coolStop: 94, vbat: "fail",
     legs: [{ v: 0, hold: 2 }, { v: 80, a: 2.5, hold: 20 }, { v: 60, d: 2, hold: 10 }, { v: 85, a: 2, hold: 20 }],
   },
   regulator: {
-    name: "Regolatore guasto", note: "Il regolatore SH629A non limita più: la tensione sale oltre 15 V e poi 15,5 V.",
+    name: "Faulty regulator", note: "The SH629A regulator no longer limits: the voltage rises above 15 V and then 15.5 V.",
     shift: 5200, down: 3000, cool: 86, coolStop: 94, vbat: "over",
     legs: [{ v: 0, hold: 2 }, { v: 90, a: 2.5, hold: 30 }, { v: 70, d: 2, hold: 15 }],
   },
   overheat: {
-    name: "Coda d'estate", note: "Incolonnati sotto il sole: l'acqua supera 105 °C (attenzione) e poi 112 °C (critico).",
+    name: "Summer traffic jam", note: "Queuing in the sun: the coolant goes above 105 °C (caution) and then 112 °C (critical).",
     shift: 3800, down: 2100, cool: 99, coolStop: 117, coolRate: 0.45, vbat: "ok",
     legs: [{ v: 0, hold: 8 }, { v: 12, a: 1.2, hold: 3 }, { v: 0, d: 2, hold: 9 }, { v: 9, a: 1, hold: 2 }, { v: 0, d: 2, hold: 10 }],
   },
   linkdrop: {
-    name: "Collegamento instabile", note: "Ogni 20 s il cavo USB si interrompe per 4 s: cifre attenuate, poi \"---\" e avviso critico, poi riconnessione.",
+    name: "Unstable link", note: "Every 20 s the USB cable drops out for 4 s: dimmed digits, then \"---\" and a critical warning, then reconnection.",
     shift: 4500, down: 2400, cool: 88, coolStop: 96, vbat: "ok", linkEvery: 20, linkFor: 4,
     legs: [{ v: 0, hold: 3 }, { v: 60, a: 2.4, hold: 12 }, { v: 30, d: 3, hold: 4 }, { v: 70, a: 2.2, hold: 10 }, { v: 0, d: 3, hold: 4 }],
   },
@@ -711,16 +711,16 @@ function stepBrightness(t, dt) {
 
 // ---------------------------------------------------------------- warnings
 const WARN = {
-  link: { sev: 3, text: "Collegamento con il modulo sensori perso", sub: "Velocità e giri non disponibili", icon: "link" },
-  coolCrit: { sev: 3, text: "Temperatura acqua critica", sub: "Fermati appena puoi e spegni il motore", icon: "cool" },
-  overCrit: { sev: 3, text: "Sovratensione", sub: "Regolatore di tensione guasto: rischio per batteria e luci", icon: "bat" },
-  coolHigh: { sev: 2, text: "Temperatura acqua alta", sub: "SET: silenzia per 5 minuti", icon: "cool" },
-  over: { sev: 2, text: "Tensione alta", sub: "SET: silenzia per 5 minuti", icon: "bat" },
-  noChg: { sev: 2, text: "Batteria non in carica", sub: "Controlla statore e regolatore · SET: silenzia", icon: "bat" },
-  lowBat: { sev: 2, text: "Batteria bassa", sub: "SET: silenzia per 5 minuti", icon: "bat" },
-  coolFault: { sev: 2, text: "Sensore temperatura scollegato", sub: "SET: silenzia per 5 minuti", icon: "cool" },
-  turn: { sev: 1, text: "Freccia accesa", icon: "turn" },
-  fuel: { sev: 1, text: "Riserva stimata", icon: "fuel" },
+  link: { sev: 3, text: "Sensor module link lost", sub: "Speed and rpm not available", icon: "link" },
+  coolCrit: { sev: 3, text: "Coolant temperature critical", sub: "Stop as soon as you can and switch off the engine", icon: "cool" },
+  overCrit: { sev: 3, text: "Overvoltage", sub: "Faulty voltage regulator: risk for battery and lights", icon: "bat" },
+  coolHigh: { sev: 2, text: "Coolant temperature high", sub: "SET: snooze for 5 minutes", icon: "cool" },
+  over: { sev: 2, text: "High voltage", sub: "SET: snooze for 5 minutes", icon: "bat" },
+  noChg: { sev: 2, text: "Battery not charging", sub: "Check stator and regulator · SET: snooze", icon: "bat" },
+  lowBat: { sev: 2, text: "Battery low", sub: "SET: snooze for 5 minutes", icon: "bat" },
+  coolFault: { sev: 2, text: "Coolant sender disconnected", sub: "SET: snooze for 5 minutes", icon: "cool" },
+  turn: { sev: 1, text: "Turn signal on", icon: "turn" },
+  fuel: { sev: 1, text: "Estimated reserve", icon: "fuel" },
 };
 const warnState = Object.fromEntries(Object.keys(WARN).map((k) => [k, { on: false, t: 0, clearT: 0, since: 0, snooze: 0 }]));
 
@@ -779,22 +779,22 @@ const ui = {
   hang: false, hangT: 0, linkCut: 0, bootPhase: null,
 };
 const SETTINGS_ITEMS = [
-  { id: "layout", label: "Layout di guida" },
-  { id: "theme", label: "Tema" },
-  { id: "bright", label: "Luminosità" },
-  { id: "diag", label: "Schermata diagnostica" },
-  { id: "calib", label: "Calibrazione velocità" },
-  { id: "tach", label: "Calibrazione contagiri" },
-  { id: "exit", label: "Esci" },
+  { id: "layout", label: "Riding layout" },
+  { id: "theme", label: "Theme" },
+  { id: "bright", label: "Brightness" },
+  { id: "diag", label: "Diagnostics screen" },
+  { id: "calib", label: "Speed calibration" },
+  { id: "tach", label: "Tachometer calibration" },
+  { id: "exit", label: "Exit" },
 ];
 function settingValue(id) {
   switch (id) {
     case "layout": return { classic: "Classic", sport: "Sport", touring: "Touring" }[ui.layout];
-    case "theme": return { auto: "Automatico", day: "Giorno", night: "Notte" }[ui.themeMode];
+    case "theme": return { auto: "Auto", day: "Day", night: "Night" }[ui.themeMode];
     case "bright": return (ui.settings.brOffset > 0 ? "+" : "") + ui.settings.brOffset + " %";
-    case "diag": return ui.settings.diag ? "Attiva" : "Nascosta";
-    case "calib": return `${fmtInt(P.wheelCircMm)} mm · ${P.wheelPpr} impulsi/giro`;
-    case "tach": return `${P.tachPpr} impulso/giro · rosso ${fmtInt(P.redline)}`;
+    case "diag": return ui.settings.diag ? "Shown" : "Hidden";
+    case "calib": return `${fmtInt(P.wheelCircMm)} mm · ${P.wheelPpr} pulses/rev`;
+    case "tach": return `${P.tachPpr} pulse/rev · red ${fmtInt(P.redline)}`;
     default: return "";
   }
 }
@@ -814,7 +814,7 @@ function button(btn, long) {
       else if (item.id === "theme") setThemeMode({ auto: "day", day: "night", night: "auto" }[ui.themeMode]);
       else if (item.id === "bright") ui.settings.brOffset = ui.settings.brOffset >= 20 ? -20 : ui.settings.brOffset + 10;
       else if (item.id === "diag") ui.settings.diag = !ui.settings.diag;
-      else if (item.id === "calib" || item.id === "tach") toast("Si modifica nel profilo /boot/tdm-dash.toml");
+      else if (item.id === "calib" || item.id === "tach") toast("Edit in the profile /boot/tdm-dash.toml");
       else if (item.id === "exit") setState("ride");
     }
     syncControls(); return;
@@ -822,7 +822,7 @@ function button(btn, long) {
   if (ui.state !== "ride") return;
   const w = activeWarnings(ui.t)[0];
   if (btn === "SET" && !long && w && w.sev === 2) {
-    warnState[w.id].snooze = ui.t + 300; toast("Avviso silenziato per 5 minuti"); return;
+    warnState[w.id].snooze = ui.t + 300; toast("Warning snoozed for 5 minutes"); return;
   }
   if (btn === "MODE" && !long) {
     const order = ["main", "trip", ...(ui.settings.diag ? ["diag"] : [])];
@@ -830,9 +830,9 @@ function button(btn, long) {
   } else if (btn === "SET" && long) {
     if (ui.screen === "trip") {
       const i = ui.tripSel; mcu.odo.tripUm[i] = 0; if (i === 0) { host.rideT = 0; host.maxKmh = 0; host.distStartM = 0; }
-      toast(i === 0 ? "Parziale A azzerato" : "Pieno registrato: parziale B azzerato");
+      toast(i === 0 ? "Trip A reset" : "Fill-up recorded");
     } else if (host.digits < 3) { setState("settings"); ui.setIdx = 0; ui.settingsIdle = 0; }
-    else toast("Impostazioni disponibili solo da fermi");
+    else toast("Settings only when stopped");
   } else if (btn === "SET" && !long && ui.screen === "trip") ui.tripSel = 1 - ui.tripSel;
   syncControls();
 }
@@ -926,7 +926,7 @@ function dialFace(kind, theme) {
     }
   }
   c.font = `500 13px ${FONT}`; c.fillStyle = T.dim; c.textAlign = "center"; c.textBaseline = "alphabetic";
-  c.fillText(kind === "speed" ? "km/h" : "×1000 giri/min", cx, cy - 52);
+  c.fillText(kind === "speed" ? "km/h" : "×1000 rpm", cx, cy - 52);
   dialCache.set(key, oc);
   return oc;
 }
@@ -1043,21 +1043,21 @@ function drawBottomStrip(c, vm, opts = {}) {
   label(c, "ODO", 22, base - 1, 13, T.dim, "left", 600);
   textCells(c, vm.odo == null ? "-----" : fmtInt(vm.odo), 60, base, 15, `600 24px ${FONT}`, T.ink, "left");
   label(c, "A", 166, base - 1, 13, T.dim, "left", 600);
-  textCells(c, vm.tripA == null ? "---,-" : fmtDec(vm.tripA, 1), 182, base, 14, `600 24px ${FONT}`, T.ink, "left");
+  textCells(c, vm.tripA == null ? "---.-" : fmtDec(vm.tripA, 1), 182, base, 14, `600 24px ${FONT}`, T.ink, "left");
   if (!opts.noTripB) {
-    label(c, "PIENO", 282, base - 1, 13, T.dim, "left", 600);
-    textCells(c, vm.tripB == null ? "---,-" : fmtDec(vm.tripB, 1), 330, base, 14, `600 24px ${FONT}`, T.ink, "left");
+    label(c, "FILL", 282, base - 1, 13, T.dim, "left", 600);
+    textCells(c, vm.tripB == null ? "---.-" : fmtDec(vm.tripB, 1), 330, base, 14, `600 24px ${FONT}`, T.ink, "left");
   }
   // battery
   const vOk = vm.vbat >= P.lowV && vm.vbat <= P.highV;
   icoBat(c, 676, 455, vOk ? T.dim : (vm.vbat > P.critHighV ? T.red : T.amber), 0.8);
-  textCells(c, vm.lost ? "--,-" : fmtDec(vm.vbat, 1), 744, base, 14, `600 24px ${FONT}`, vOk ? T.ink : (vm.vbat > P.critHighV ? T.red : T.amber), "right");
+  textCells(c, vm.lost ? "--.-" : fmtDec(vm.vbat, 1), 744, base, 14, `600 24px ${FONT}`, vOk ? T.ink : (vm.vbat > P.critHighV ? T.red : T.amber), "right");
   label(c, "V", 776, base, 16, T.dim, "right", 600);
   // info pills
   if (vm.infos.length) {
     const w = vm.infos[0];
     drawIcon(c, w.icon, 520, 455, T.amber, 0.8);
-    label(c, w.id === "fuel" ? `~${fmtInt(vm.range)} km` : "Freccia", 538, base - 2, 16, T.amber, "left", 600);
+    label(c, w.id === "fuel" ? `~${fmtInt(vm.range)} km` : "Turn signal", 538, base - 2, 16, T.amber, "left", 600);
   }
 }
 
@@ -1101,7 +1101,7 @@ function drawClassic(c, vm) {
   label(c, "km/h", 200, cy + 114, 14, T.dim, "center", 500);
   // rpm digits
   textCells(c, vm.lost ? "----" : fmtInt(vm.rpm), 600, cy + 88, 19, `600 34px ${FONT}`, vm.stale ? T.dim : T.ink);
-  label(c, "giri/min", 600, cy + 110, 14, T.dim, "center", 500);
+  label(c, "rpm", 600, cy + 110, 14, T.dim, "center", 500);
   if (vm.shift) { c.fillStyle = T.needle; c.beginPath(); c.arc(600, cy - 108, 7, 0, Math.PI * 2); c.fill(); }
   needle(c, 200, cy, 160, vm.speedF, T);
   needle(c, 600, cy, 160, vm.rpmF, T);
@@ -1128,7 +1128,7 @@ function drawSport(c, vm) {
     label(c, String(k), x, y + 7, 20, k * 1000 >= P.redline ? T.red : T.dim, "center", 600);
   }
   textCells(c, vm.lost ? "----" : fmtInt(vm.rpm), 400, 182, 18, `600 30px ${FONT}`, vm.stale ? T.dim : T.ink);
-  label(c, "giri/min", 400, 202, 13, T.dim, "center", 500);
+  label(c, "rpm", 400, 202, 13, T.dim, "center", 500);
   // giant speed
   textCells(c, vm.digits == null ? "---" : String(vm.digits), 396, 398, 112, `700 200px ${FONT}`, vm.stale ? T.dim : T.ink);
   label(c, "km/h", 400, 424, 16, T.dim, "center", 600);
@@ -1143,7 +1143,7 @@ function drawSport(c, vm) {
   icoFuel(c, 660, 300, T.dim, 0.8);
   label(c, range == null ? "--" : "~" + fmtInt(range), 742, 310, 28, vm.infos.some((w) => w.id === "fuel") ? T.amber : T.ink, "right", 600);
   label(c, "km", 770, 310, 14, T.dim, "right", 600);
-  label(c, "autonomia stimata", 770, 334, 12, T.dim, "right", 500);
+  label(c, "estimated range", 770, 334, 12, T.dim, "right", 500);
   drawBottomStrip(c, vm);
 }
 
@@ -1161,19 +1161,19 @@ function drawTouring(c, vm) {
   for (let k = 0; k <= 10; k += 2) label(c, String(k), 34 + 404 * k / 10, 350, 15, k * 1000 >= P.redline ? T.red : T.dim, k === 0 ? "left" : k === 10 ? "right" : "center", 600);
   label(c, "×1000", 236, 350, 13, T.dim, "center", 500);
   textCells(c, vm.lost ? "----" : fmtInt(vm.rpm), 438, 388, 15, `600 26px ${FONT}`, vm.stale ? T.dim : T.ink, "right");
-  label(c, "giri/min", 34, 386, 14, T.dim, "left", 500);
+  label(c, "rpm", 34, 386, 14, T.dim, "left", 500);
   // right column: trip data with hairlines
   c.fillStyle = T.faint; c.fillRect(478, 70, 2, 340);
   const rows = [
-    ["Parziale A", vm.tripA == null ? "---" : fmtDec(vm.tripA, 1), "km"],
-    ["Media", host.rideT > 5 ? fmtInt(((vm.tripA ?? 0) - (host.distStartM ?? 0) / 1000 + 0) / (host.rideT / 3600) || 0) : "--", "km/h"],
-    ["In sella", fmtDur(host.rideT), host.rideT >= 3600 ? "h" : "min"],
-    ["Autonomia", vm.range == null ? "--" : "~" + fmtInt(vm.range), "km"],
+    ["Trip A", vm.tripA == null ? "---" : fmtDec(vm.tripA, 1), "km"],
+    ["Average", host.rideT > 5 ? fmtInt(((vm.tripA ?? 0) - (host.distStartM ?? 0) / 1000 + 0) / (host.rideT / 3600) || 0) : "--", "km/h"],
+    ["Riding", fmtDur(host.rideT), host.rideT >= 3600 ? "h" : "min"],
+    ["Range", vm.range == null ? "--" : "~" + fmtInt(vm.range), "km"],
   ];
   rows.forEach(([k, v, u], i) => {
     const y = 104 + i * 66;
     label(c, k.toUpperCase(), 506, y - 22, 13, T.dim, "left", 600);
-    const warnFuel = k === "Autonomia" && vm.infos.some((w) => w.id === "fuel");
+    const warnFuel = k === "Range" && vm.infos.some((w) => w.id === "fuel");
     label(c, v, 700, y + 14, 34, warnFuel ? T.amber : T.ink, "right", 600);
     label(c, u, 708, y + 14, 15, T.dim, "left", 600);
   });
@@ -1189,60 +1189,60 @@ function drawTouring(c, vm) {
 // ---------------------------------------------------------------- other screens
 function drawTrip(c, vm) {
   const T = vm.T;
-  label(c, "VIAGGIO", 40, 92, 15, T.dim, "left", 600);
+  label(c, "TRIP", 40, 92, 15, T.dim, "left", 600);
   const cols = [
-    { k: "Parziale A", d: vm.tripA, extra: [["In sella", fmtDur(host.rideT)], ["Media", host.rideT > 5 ? fmtInt(((vm.tripA ?? 0) - (host.distStartM ?? 0) / 1000) / (host.rideT / 3600) || 0) + " km/h" : "--"], ["Massima", fmtInt(host.maxKmh) + " km/h"]] },
-    { k: "Dal pieno", d: vm.tripB, extra: [["Consumo stimato", fmtDec(P.lPer100, 1) + " l/100 km"], ["Benzina usata", "~" + fmtDec((vm.tripB ?? 0) * P.lPer100 / 100, 1) + " l"], ["Autonomia", vm.range == null ? "--" : "~" + fmtInt(vm.range) + " km"]] },
+    { k: "Trip A", d: vm.tripA, extra: [["Riding time", fmtDur(host.rideT)], ["Average", host.rideT > 5 ? fmtInt(((vm.tripA ?? 0) - (host.distStartM ?? 0) / 1000) / (host.rideT / 3600) || 0) + " km/h" : "--"], ["Top speed", fmtInt(host.maxKmh) + " km/h"]] },
+    { k: "Since fill-up", d: vm.tripB, extra: [["Est. consumption", fmtDec(P.lPer100, 1) + " l/100 km"], ["Fuel used", "~" + fmtDec((vm.tripB ?? 0) * P.lPer100 / 100, 1) + " l"], ["Range", vm.range == null ? "--" : "~" + fmtInt(vm.range) + " km"]] },
   ];
   cols.forEach((col, i) => {
     const x = 40 + i * 380, sel = ui.tripSel === i;
     c.fillStyle = sel ? T.panel : "transparent";
     if (sel) { c.fillRect(x - 16, 110, 352, 300); c.fillStyle = T.needle; c.fillRect(x - 16, 110, 4, 300); }
     label(c, col.k.toUpperCase(), x, 146, 16, sel ? T.ink : T.dim, "left", 600);
-    textCells(c, col.d == null ? "---,-" : fmtDec(col.d, 1), x, 222, 36, `600 72px ${FONT}`, T.ink, "left");
+    textCells(c, col.d == null ? "---.-" : fmtDec(col.d, 1), x, 222, 36, `600 72px ${FONT}`, T.ink, "left");
     label(c, "km", x + 300, 222, 18, T.dim, "right", 600);
     col.extra.forEach(([k, v], j) => {
       label(c, k, x, 274 + j * 40, 17, T.dim, "left", 500);
       label(c, v, x + 316, 274 + j * 40, 21, T.ink, "right", 600);
     });
   });
-  label(c, "SET: scegli · SET lungo: azzera · MODE: schermata successiva", 400, 452, 15, T.dim, "center", 500);
+  label(c, "SET: select · hold SET: reset · MODE: next screen", 400, 452, 15, T.dim, "center", 500);
 }
 
 function drawDiag(c, vm) {
   const T = vm.T, tel = host.lastTel;
-  label(c, "DIAGNOSTICA", 40, 92, 15, T.dim, "left", 600);
+  label(c, "DIAGNOSTICS", 40, 92, 15, T.dim, "left", 600);
   const ws = tel ? tel.wheel : null, is = tel ? tel.ign : null;
   const lines = [
-    ["Ruota", tel ? `${fmtDec(tel.wheelHz, 1)} Hz · ${ws.spanEdges} impulsi in ${fmtDec(ws.spanMs, 1)} ms` : "--"],
-    ["Accensione", tel ? `${fmtDec(is.spanMs ? is.spanEdges / is.spanMs * 1000 : 0, 1)} Hz · ${fmtInt(mcu.ign.rejected)} picchi scartati` : "--"],
-    ["Batteria", tel ? `${fmtDec(host.vbat, 2)} V · ADC ${tel.vbatRaw}` : "--"],
-    ["Acqua", host.coolR != null ? `${fmtDec(host.coolR, 1)} Ω → ${host.coolLo ? "sotto curva" : fmtDec(host.coolEma, 1) + " °C"}` : "sensore aperto"],
-    ["Luce", tel ? `ADC ${tel.lightRaw} · ${fmtInt(Math.round(host.lightN * 100))} % · retroill. ${fmtInt(Math.round(host.bright))} %` : "--"],
-    ["Ingressi", tel ? "N " + (tel.inputs & 1) + " · ABB " + ((tel.inputs >> 1) & 1) + " · SX " + ((tel.inputs >> 2) & 1) + " · DX " + ((tel.inputs >> 3) & 1) + " · LUCI " + ((tel.inputs >> 4) & 1) : "--"],
-    ["Collegamento", `${host.linkState === "ok" ? "attivo" : host.linkState === "stale" ? "in ritardo" : "perso"} · 50 Hz · CRC errati ${host.crcErr} · riconnessioni ${host.reconnects}`],
-    ["Avvio", `${fmtDec(host.bootMs / 1000, 2)} s dalla chiave al primo frame`],
-    ["Firmware", `Pico 0.1.0 · protocollo 1 · FRAM ok, seq ${fmtInt(mcu.framSeq)}`],
+    ["Wheel", tel ? `${fmtDec(tel.wheelHz, 1)} Hz · ${ws.spanEdges} pulses in ${fmtDec(ws.spanMs, 1)} ms` : "--"],
+    ["Ignition", tel ? `${fmtDec(is.spanMs ? is.spanEdges / is.spanMs * 1000 : 0, 1)} Hz · ${fmtInt(mcu.ign.rejected)} spikes rejected` : "--"],
+    ["Battery", tel ? `${fmtDec(host.vbat, 2)} V · ADC ${tel.vbatRaw}` : "--"],
+    ["Coolant", host.coolR != null ? `${fmtDec(host.coolR, 1)} Ω → ${host.coolLo ? "below the curve" : fmtDec(host.coolEma, 1) + " °C"}` : "sender open"],
+    ["Light", tel ? `ADC ${tel.lightRaw} · ${fmtInt(Math.round(host.lightN * 100))} % · backlight ${fmtInt(Math.round(host.bright))} %` : "--"],
+    ["Inputs", tel ? "N " + (tel.inputs & 1) + " · HB " + ((tel.inputs >> 1) & 1) + " · L " + ((tel.inputs >> 2) & 1) + " · R " + ((tel.inputs >> 3) & 1) + " · LIGHTS " + ((tel.inputs >> 4) & 1) : "--"],
+    ["Link", `${host.linkState === "ok" ? "ok" : host.linkState === "stale" ? "late" : "lost"} · 50 Hz · bad CRC ${host.crcErr} · reconnections ${host.reconnects}`],
+    ["Boot", `${fmtDec(host.bootMs / 1000, 2)} s from key to first frame`],
+    ["Firmware", `Pico 0.1.0 · protocol 1 · FRAM ok, seq ${fmtInt(mcu.framSeq)}`],
   ];
   lines.forEach(([k, v], i) => {
     const y = 132 + i * 32;
     label(c, k, 40, y, 17, T.dim, "left", 500);
     label(c, v, 210, y, 16, T.ink, "left", 500, MONO);
   });
-  label(c, "Gomma anteriore cambiata? Ricalibra la velocità (manuale, cap. 10)", 400, 452, 15, T.amber, "center", 500);
+  label(c, "Front tyre changed? Recalibrate the speed (manual, ch. 10)", 400, 452, 15, T.amber, "center", 500);
 }
 
 function drawSettings(c, vm) {
   const T = vm.T;
-  label(c, "IMPOSTAZIONI", 40, 92, 15, T.dim, "left", 600);
-  label(c, "solo da fermi", 760, 92, 13, T.dim, "right", 500);
+  label(c, "SETTINGS", 40, 92, 15, T.dim, "left", 600);
+  label(c, "only when stopped", 760, 92, 13, T.dim, "right", 500);
   SETTINGS_ITEMS.forEach((it, i) => {
     const y = 120 + i * 42, sel = i === ui.setIdx;
     if (sel) { c.fillStyle = T.panel; c.fillRect(24, y, 752, 38); c.fillStyle = T.needle; c.fillRect(24, y, 4, 38); }
     label(c, it.label, 44, y + 26, 20, sel ? T.ink : T.dim, "left", sel ? 600 : 500);
     label(c, settingValue(it.id), 756, y + 26, 19, sel ? T.ink : T.dim, "right", 500);
   });
-  label(c, "MODE: voce successiva · SET: cambia · SET lungo: esci", 400, 452, 15, T.dim, "center", 500);
+  label(c, "MODE: next item · SET: change · hold SET: exit", 400, 452, 15, T.dim, "center", 500);
 }
 
 function drawSplash(c) {
@@ -1252,7 +1252,7 @@ function drawSplash(c) {
   const w = 520 * Math.min(1, p * 1.6);
   c.beginPath(); c.moveTo(400 - w / 2, 268); c.lineTo(400 + w / 2, 268); c.stroke();
   label(c, "tdm·dash", 400, 248, 64, T.ink, "center", 600);
-  label(c, "profilo Yamaha TDM 850 (3VD) · v0.1", 400, 302, 16, T.dim, "center", 500);
+  label(c, "profile Yamaha TDM 850 (3VD) · v0.1", 400, 302, 16, T.dim, "center", 500);
 }
 
 // ---------------------------------------------------------------- overlays
@@ -1334,7 +1334,7 @@ function drawChart() {
   c.strokeStyle = chartColors.line; c.lineWidth = 1;
   for (let v = 0; v <= vmax; v += vmax > 120 ? 40 : 20) { c.beginPath(); c.moveTo(padL, Y(v)); c.lineTo(w - 6, Y(v)); c.stroke(); c.fillText(String(v), padL - 6, Y(v)); }
   c.textAlign = "center"; c.textBaseline = "alphabetic";
-  for (let s = 0; s <= 12; s += 3) c.fillText(s === 12 ? "ora" : `−${12 - s} s`, X(t0 + s), h - 3);
+  for (let s = 0; s <= 12; s += 3) c.fillText(s === 12 ? "now" : `−${12 - s} s`, X(t0 + s), h - 3);
   const line = (key, col, wdt, dash) => {
     c.strokeStyle = col; c.lineWidth = wdt; c.setLineDash(dash || []); c.beginPath(); let pen = false;
     for (const p of hist) { const v = p[key]; if (v == null) { pen = false; continue; } const x = X(p.t), y = Y(v); pen ? c.lineTo(x, y) : c.moveTo(x, y); pen = true; }
@@ -1386,25 +1386,25 @@ function reboot() {
 
 function updateStatus() {
   const parts = [];
-  const stName = { boot: "Avvio di Linux (schermo spento)", splash: "Splash", selftest: "Auto-test", ride: { main: "Guida", trip: "Viaggio", diag: "Diagnostica" }[ui.screen], settings: "Impostazioni" }[ui.state];
+  const stName = { boot: "Linux boot (screen off)", splash: "Splash", selftest: "Self-test", ride: { main: "Riding", trip: "Trip", diag: "Diagnostics" }[ui.screen], settings: "Settings" }[ui.state];
   if (ui.hang) {
     const off = ui.hangT > 2;
-    parts.push(`<b class="alert">App bloccata da ${fmtDec(ui.hangT, 1)} s</b>`);
-    parts.push(off ? "heartbeat assente: il Pico ha spento la retroilluminazione" : "il Pico attende l'heartbeat (2 s)");
-    parts.push(`riavvio dal watchdog tra ${fmtDec(Math.max(0, 10 - ui.hangT), 1)} s`);
+    parts.push(`<b class="alert">App frozen for ${fmtDec(ui.hangT, 1)} s</b>`);
+    parts.push(off ? "heartbeat missing: the Pico turned the backlight off" : "the Pico waits for the heartbeat (2 s)");
+    parts.push(`watchdog restart in ${fmtDec(Math.max(0, 10 - ui.hangT), 1)} s`);
   } else {
     parts.push(`<b>${stName}</b>`);
     if (ui.state === "ride" && ui.screen === "main") parts.push({ classic: "Classic", sport: "Sport", touring: "Touring" }[ui.layout]);
-    parts.push(`tema ${TH[host.theme].name.toLowerCase()}${ui.themeMode === "auto" ? " (auto)" : ""}`);
-    parts.push(`retroilluminazione ${Math.round(host.bright * mcu.backlight)} %`);
-    if (host.linkState !== "ok" && ui.state !== "boot") parts.push(`<span class="alert">USB ${host.linkState === "stale" ? "in ritardo" : "perso"}</span>`);
+    parts.push(`theme ${TH[host.theme].name.toLowerCase()}${ui.themeMode === "auto" ? " (auto)" : ""}`);
+    parts.push(`backlight ${Math.round(host.bright * mcu.backlight)} %`);
+    if (host.linkState !== "ok" && ui.state !== "boot") parts.push(`<span class="alert">USB ${host.linkState === "stale" ? "late" : "lost"}</span>`);
     parts.push(`${Math.round(fps)} fps`);
   }
   const html = parts.join("<span aria-hidden=\"true\">·</span>");
   if (statusEl.innerHTML !== html) statusEl.innerHTML = html;
   const cd = host.themeCountdown;
   const lux = Math.pow(10, ui.light / 20) - 1;
-  const lr = `${lux < 10 ? fmtDec(lux, 1) : fmtInt(lux)} lux · ${cd != null && cd > 0 ? `passaggio a ${host.theme === "day" ? "notte" : "giorno"} tra ${Math.ceil(cd)} s` : `tema ${TH[host.theme].name.toLowerCase()}`}`;
+  const lr = `${lux < 10 ? fmtDec(lux, 1) : fmtInt(lux)} lux · ${cd != null && cd > 0 ? `switching to ${host.theme === "day" ? "night" : "day"} in ${Math.ceil(cd)} s` : `theme ${TH[host.theme].name.toLowerCase()}`}`;
   if (lightReadout.textContent !== lr) lightReadout.textContent = lr;
 }
 
@@ -1433,7 +1433,7 @@ const selScreen = document.getElementById("selScreen");
 selScreen.addEventListener("change", () => {
   const v = selScreen.value;
   if (v === "settings") {
-    if (host.digits >= 3) { toast("Impostazioni disponibili solo da fermi"); syncControls(); return; }
+    if (host.digits >= 3) { toast("Settings only when stopped"); syncControls(); return; }
     setState("settings"); ui.setIdx = 0; ui.settingsIdle = 0;
   } else { if (ui.state === "settings") setState("ride"); ui.screen = v; }
 });
@@ -1441,7 +1441,7 @@ function syncControls() {
   selScreen.value = ui.state === "settings" ? "settings" : ui.screen;
 }
 const btnPlay = document.getElementById("btnPlay");
-function togglePause() { ui.paused = !ui.paused; btnPlay.textContent = ui.paused ? "Riprendi" : "Pausa"; }
+function togglePause() { ui.paused = !ui.paused; btnPlay.textContent = ui.paused ? "Resume" : "Pause"; }
 btnPlay.addEventListener("click", togglePause);
 document.getElementById("btnBoot").addEventListener("click", reboot);
 document.getElementById("btnLink").addEventListener("click", () => { ui.linkCut = simT + 4; });
@@ -1476,7 +1476,7 @@ window.addEventListener("keyup", (e) => { const k = e.key.toLowerCase(); if (k =
 // Palette swatches for the implementation notes
 function buildSwatches() {
   const box = document.getElementById("swatches"); box.innerHTML = "";
-  const names = { bg: "fondo", ink: "testo", dim: "secondario", needle: "lancette", red: "zona rossa", green: "frecce, folle", blue: "abbaglianti", amberBg: "attenzione", critBg: "critico" };
+  const names = { bg: "background", ink: "text", dim: "secondary", needle: "needles", red: "red zone", green: "turn signals, neutral", blue: "high beam", amberBg: "caution", critBg: "critical" };
   for (const [tk, T] of Object.entries(TH)) {
     const col = document.createElement("div");
     col.innerHTML = `<h3>${T.name}</h3>`;

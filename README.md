@@ -38,9 +38,9 @@ flowchart LR
 
 ## Documentazione
 
-- **[Manuale](docs/manuale/README.md)**: progettazione, costruzione, installazione, calibrazione, uso, diagnostica
-- **[Ricerca sull'impianto originale](docs/ricerca/impianto-originale.md)**, con le fonti
-- **[Scheda dei rilievi sulla moto](docs/ricerca/rilievi-sulla-moto.md)**
+- **[Manuale](docs/manual/README.md)**: progettazione, costruzione, installazione, calibrazione, uso, diagnostica
+- **[Ricerca sull'impianto originale](docs/research/original-wiring.md)**, con le fonti
+- **[Scheda dei rilievi sulla moto](docs/research/bike-measurements.md)**
 - **[Decisioni di architettura](docs/adr/README.md)**
 
 ## Struttura del repository
@@ -93,7 +93,7 @@ La toolchain Rust (1.97.1, la stessa di Buildroot 2026.08) e i target vengono in
 | M6 | Calibrazione (`tdmctl calibrate`), manuale (cap. 10, 12, 13) | Strumenti fatti; rilievi, montaggio e 500 km di prova da fare |
 
 Prossimi passi sulla moto:
-1. [rilievi](docs/ricerca/rilievi-sulla-moto.md)
+1. [rilievi](docs/research/bike-measurements.md)
 2. prova del display al banco con Raspberry Pi OS: tempi DPI e benchmark
 3. costruzione (capitoli 06–07)
 4. prova in parallelo (capitolo 08)
@@ -105,4 +105,4 @@ Codice MIT o Apache-2.0, immagine del sistema GPLv3 (per via di Slint), hardware
 
 Yamaha e TDM sono marchi dei rispettivi proprietari. Questo progetto non è affiliato né approvato da Yamaha Motor Co., Ltd.
 
-> **Avvertenza:** progetto sperimentale e non certificato. Leggi il capitolo [Introduzione e sicurezza](docs/manuale/00-introduzione-e-sicurezza.md) prima di montarlo su una moto.
+> **Avvertenza:** progetto sperimentale e non certificato. Leggi il capitolo [Introduzione e sicurezza](docs/manual/00-introduction-and-safety.md) prima di montarlo su una moto.

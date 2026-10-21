@@ -7,7 +7,7 @@ use std::time::Duration;
 use slint::ComponentHandle;
 use slint::platform::software_renderer::RepaintBufferType;
 use tdm_link::{SimSource, scenario};
-use tdm_logic::{Dash, Layout, Profile, Screen, ThemeMode};
+use tdm_logic::{Dash, Language, Layout, Profile, Screen, ThemeMode};
 
 use crate::app::App;
 use crate::headless::{self, Headless};
@@ -21,6 +21,7 @@ pub struct Shot {
     pub screen: Option<Screen>,
     pub settings: bool,
     pub at: f64,
+    pub language: Language,
 }
 
 const fn shot(
@@ -38,6 +39,7 @@ const fn shot(
         screen: None,
         settings: false,
         at,
+        language: Language::En,
     }
 }
 
@@ -46,29 +48,53 @@ pub fn catalogue() -> Vec<Shot> {
     use ThemeMode::*;
     vec![
         shot("01-splash", "warmup", Classic, Day, 0.45),
-        shot("02-autotest", "warmup", Classic, Day, 1.5),
-        shot("03-classic-giorno", "city", Classic, Day, 15.5),
-        shot("04-classic-notte", "city", Classic, Night, 15.5),
-        shot("05-sport-giorno", "mountain", Sport, Day, 9.0),
-        shot("06-sport-notte", "mountain", Sport, Night, 9.0),
-        shot("07-touring-giorno", "motorway", Touring, Day, 40.0),
-        shot("08-touring-notte", "motorway", Touring, Night, 40.0),
+        shot("02-self-test", "warmup", Classic, Day, 1.5),
+        shot("03-classic-day", "city", Classic, Day, 15.5),
+        shot("04-classic-night", "city", Classic, Night, 15.5),
+        shot("05-sport-day", "mountain", Sport, Day, 9.0),
+        shot("06-sport-night", "mountain", Sport, Night, 9.0),
+        shot("07-touring-day", "motorway", Touring, Day, 40.0),
+        shot("08-touring-night", "motorway", Touring, Night, 40.0),
         Shot {
             screen: Some(Screen::Trip),
-            ..shot("09-viaggio", "city", Classic, Day, 8.0)
+            ..shot("09-trip", "city", Classic, Day, 8.0)
         },
         Shot {
             screen: Some(Screen::Diag),
-            ..shot("10-diagnostica", "city", Classic, Day, 15.5)
+            ..shot("10-diagnostics", "city", Classic, Day, 15.5)
         },
         Shot {
             settings: true,
-            ..shot("11-impostazioni", "warmup", Classic, Day, 4.0)
+            ..shot("11-settings", "warmup", Classic, Day, 4.0)
         },
-        shot("12-avviso-attenzione", "overheat", Classic, Day, 47.0),
-        shot("13-avviso-critico", "regulator", Sport, Night, 40.0),
-        shot("14-usb-perso", "linkdrop", Classic, Day, 18.5),
-        shot("15-riscaldamento", "warmup", Touring, Day, 6.0),
+        shot("12-warning-caution", "overheat", Classic, Day, 47.0),
+        shot("13-warning-critical", "regulator", Sport, Night, 40.0),
+        shot("14-usb-lost", "linkdrop", Classic, Day, 18.5),
+        shot("15-warm-up", "warmup", Touring, Day, 6.0),
+        // the same screens with the Italian texts, to check they fit
+        Shot {
+            language: Language::It,
+            ..shot("it-07-touring-day", "motorway", Touring, Day, 40.0)
+        },
+        Shot {
+            language: Language::It,
+            screen: Some(Screen::Trip),
+            ..shot("it-09-trip", "city", Classic, Day, 8.0)
+        },
+        Shot {
+            language: Language::It,
+            screen: Some(Screen::Diag),
+            ..shot("it-10-diagnostics", "city", Classic, Day, 15.5)
+        },
+        Shot {
+            language: Language::It,
+            settings: true,
+            ..shot("it-11-settings", "warmup", Classic, Day, 4.0)
+        },
+        Shot {
+            language: Language::It,
+            ..shot("it-12-warning-caution", "overheat", Classic, Day, 47.0)
+        },
     ]
 }
 
@@ -79,6 +105,7 @@ fn render_shot(h: &Headless, ui: &AppWindow, s: &Shot) -> Vec<slint::Rgb8Pixel> 
     let mut dash = Dash::new(p.clone(), None);
     dash.set_layout(s.layout);
     dash.set_theme_mode(s.theme);
+    dash.set_language(s.language);
     let src = SimSource::new(&p, scenario(s.scenario).expect("scenario"), 11);
     let mut app = App::new(ui.clone_strong(), dash, Box::new(src));
     let dt = 1.0 / 60.0;
@@ -163,7 +190,7 @@ pub fn bench(o: &Options, frames: usize) {
             .unwrap_or_default()
     };
     println!(
-        "scenario {sc}, {} frame disegnati su {frames}: p50 {:.2} ms · p95 {:.2} ms · max {:.2} ms",
+        "scenario {sc}, {} frames drawn out of {frames}: p50 {:.2} ms · p95 {:.2} ms · max {:.2} ms",
         times.len(),
         pct(0.5).as_secs_f64() * 1e3,
         pct(0.95).as_secs_f64() * 1e3,
@@ -187,12 +214,12 @@ mod tests {
             let distinct: std::collections::HashSet<_> =
                 buf.iter().step_by(97).map(|p| (p.r, p.g, p.b)).collect();
             assert!(distinct.len() > 8, "{} looks blank", s.name);
-            if s.name == "13-avviso-critico" {
+            if s.name == "13-warning-critical" {
                 // critical band: red across the full width under the telltales
                 let p = buf[90 * headless::W + 700];
                 assert!(p.r > 120 && p.g < 60 && p.b < 60, "no critical band: {p:?}");
             }
-            if s.name == "04-classic-notte" {
+            if s.name == "04-classic-night" {
                 let p = buf[5 * headless::W + 5];
                 assert!(p.r < 20 && p.g < 20, "night background expected");
             }

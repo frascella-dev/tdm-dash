@@ -179,18 +179,18 @@ def build() -> list[Sheet]:
     sheets = []
 
     # 1 ----------------------------------------------------------------------
-    s = Sheet("power.kicad_sch", "1 Alimentazione", "Alimentazione e protezioni")
-    s.note(u(8), u(10), "Alimentazione e protezioni")
+    s = Sheet("power.kicad_sch", "1 Power", "Power supply and protection")
+    s.note(u(8), u(10), "Power supply and protection")
     s.note(
         u(8),
         u(14),
-        "+12V_KEY: +12 V sotto chiave dal cablaggio della moto (filo Br [DA VERIFICARE]).\n"
-        "Catena: fusibile 2 A → P-MOSFET contro l'inversione → TVS → filtro LC → buck 5 V.\n"
-        "Il Pico è alimentato attraverso D103 con 470 µF di riserva per salvare i km a chiave tolta.",
+        "+12V_KEY: switched +12 V from the bike harness (Br wire [TO VERIFY]).\n"
+        "Chain: 2 A fuse → reverse-polarity P-MOSFET → TVS → LC filter → 5 V buck.\n"
+        "The Pico is supplied through D103 with 470 µF of hold-up, to save the km when the key goes off.",
     )
-    s.add("J101", "Connector_Generic:Conn_01x06", "Superseal 1.5 6p (cablaggio)", u(20), u(50),
+    s.add("J101", "Connector_Generic:Conn_01x06", "Superseal 1.5 6p (harness)", u(20), u(50),
           p1="+12V_KEY", p2="GND", p3="BIKE_NEUTRAL", p4="BIKE_HIGH_BEAM", p5="BIKE_TURN_L", p6="BIKE_TURN_R")
-    s.add("J102", "Connector_Generic:Conn_01x04", "Superseal 1.5 4p (cablaggio)", u(20), u(80),
+    s.add("J102", "Connector_Generic:Conn_01x04", "Superseal 1.5 4p (harness)", u(20), u(80),
           p1="BIKE_TACH", p2="BIKE_COOLANT", p3="BIKE_ILLUM", p4="GND")
     two(s, "F101", "Device:Fuse", "2A", u(52), u(40), "+12V_KEY", "+12V_F")
     s.add("Q101", "Transistor_FET:IRF4905", "IRF4905", u(80), u(42), 90,
@@ -203,30 +203,30 @@ def build() -> list[Sheet]:
     two(s, "C102", "Device:C", "1uF 50V", u(156), u(58), "+12V_FILT", "GND", horizontal=False)
     s.add("U101", "Connector_Generic:Conn_01x05", "Pololu D36V28F5", u(190), u(46),
           p1="+12V_FILT", p2="GND", p3="+5V", p4=None, p5=None)
-    s.note(u(178), u(56), "Modulo buck 5 V 3,2 A, ingresso fino a 50 V.\n1 VIN · 2 GND · 3 VOUT · 4 EN · 5 PG")
+    s.note(u(178), u(56), "5 V 3.2 A buck module, input up to 50 V.\n1 VIN · 2 GND · 3 VOUT · 4 EN · 5 PG")
     diode(s, "D103", "Diode:1N5819", "1N5819", u(150), u(90), "+5V", "VSYS_PICO")
     two(s, "C103", "Device:C_Polarized", "470uF 10V", u(170), u(98), "VSYS_PICO", "GND", horizontal=False)
-    s.add("J103", "Connector_Generic:Conn_01x02", "5V al Pi Zero 2 W", u(196), u(88), p1="+5V", p2="GND")
+    s.add("J103", "Connector_Generic:Conn_01x02", "5V to Pi Zero 2 W", u(196), u(88), p1="+5V", p2="GND")
     s.flag(u(130), u(84), "+5V")
     s.flag(u(180), u(84), "VSYS_PICO")
     sheets.append(s)
 
     # 2 ----------------------------------------------------------------------
-    s = Sheet("inputs.kicad_sch", "2 Spie", "Ingressi delle spie (optoaccoppiatori)", "A3")
-    s.note(u(8), u(10), "Ingressi delle spie")
+    s = Sheet("inputs.kicad_sch", "2 Warning lights", "Warning light inputs (optocouplers)", "A3")
+    s.note(u(8), u(10), "Warning light inputs")
     s.note(
         u(8),
         u(14),
-        "Abbaglianti, frecce e illuminazione sono attivi a +12 V: 4,7 kΩ → LED dell'EL817 → massa.\n"
-        "La folle è attiva verso massa (il contatto del cambio chiude il filo a massa):\n"
-        "+12V_P → 3,3 kΩ → LED → filo della folle. Uscite attive basse con pull-up interno del Pico.\n"
-        "Colori dei fili e logica della folle [DA VERIFICARE] con i rilievi sulla moto.",
+        "High beam, turn signals and illumination are active at +12 V: 4.7 kΩ → EL817 LED → ground.\n"
+        "Neutral is active to ground (the gearbox switch grounds the wire):\n"
+        "+12V_P → 3.3 kΩ → LED → neutral wire. Outputs active low with the Pico's internal pull-up.\n"
+        "Wire colours and neutral logic [TO VERIFY] with the bike measurements.",
     )
     chans = [
-        ("HIGH_BEAM", "Abbaglianti"),
-        ("TURN_L", "Freccia sinistra"),
-        ("TURN_R", "Freccia destra"),
-        ("ILLUM", "Illuminazione"),
+        ("HIGH_BEAM", "High beam"),
+        ("TURN_L", "Left turn signal"),
+        ("TURN_R", "Right turn signal"),
+        ("ILLUM", "Illumination"),
     ]
     for i, (net, label) in enumerate(chans):
         k = i + 1
@@ -241,25 +241,25 @@ def build() -> list[Sheet]:
         two(s, f"C2{k}1", "Device:C", "100n", u(78), y + u(10), a, "GND", horizontal=False)
         s.add(f"U2{k}1", "Isolator:EL817", "EL817", u(104), y + u(2), p1=a, p2="GND", p4=net, p3="GND")
     y = u(40 + 4 * 34)
-    s.note(u(10), y - u(8), "Folle (attiva verso massa)")
+    s.note(u(10), y - u(8), "Neutral (active to ground)")
     two(s, "R251", "Device:R", "3.3k", u(44), y, "+12V_P", "NEUTRAL_LED")
     diode(s, "D251", "Diode:1N4148", "1N4148", u(64), y + u(10), "BIKE_NEUTRAL", "NEUTRAL_LED", vertical=True)
     s.parts[-1].rot = 270
     two(s, "C251", "Device:C", "100n", u(78), y + u(10), "NEUTRAL_LED", "BIKE_NEUTRAL", horizontal=False)
     s.add("U251", "Isolator:EL817", "EL817", u(104), y + u(2), p1="NEUTRAL_LED", p2="BIKE_NEUTRAL", p4="NEUTRAL", p3="GND")
-    s.note(u(150), u(40), "Uscite verso il Pico\nNEUTRAL → GP6\nHIGH_BEAM → GP7\nTURN_L → GP8\nTURN_R → GP9\nILLUM → GP10")
+    s.note(u(150), u(40), "Outputs to the Pico\nNEUTRAL → GP6\nHIGH_BEAM → GP7\nTURN_L → GP8\nTURN_R → GP9\nILLUM → GP10")
     sheets.append(s)
 
     # 3 ----------------------------------------------------------------------
-    s = Sheet("tach.kicad_sch", "3 Contagiri", "Contagiri (negativo bobina)")
-    s.note(u(8), u(10), "Contagiri")
+    s = Sheet("tach.kicad_sch", "3 Tachometer", "Tachometer (coil negative)")
+    s.note(u(8), u(10), "Tachometer")
     s.note(
         u(8),
         u(14),
-        "Il negativo della bobina ha picchi di alcune centinaia di volt a ogni scintilla.\n"
-        "1N4007 lascia passare solo i positivi, 2 × 22 kΩ 1 W limitano la corrente, lo zener\n"
-        "da 15 V e il 2,2 nF tagliano il picco; l'H11L1 (trigger di Schmitt) dà un fronte pulito.\n"
-        "Filo del contagiri e forma d'onda [DA VERIFICARE] con l'oscilloscopio.",
+        "The coil negative has spikes of a few hundred volts at every spark.\n"
+        "1N4007 passes only the positive ones, 2 × 22 kΩ 1 W limit the current, the 15 V\n"
+        "zener and the 2.2 nF clip the spike; the H11L1 (Schmitt trigger) gives a clean edge.\n"
+        "Tachometer wire and waveform [TO VERIFY] with the oscilloscope.",
     )
     diode(s, "D301", "Diode:1N4007", "1N4007", u(30), u(50), "BIKE_TACH", "TACH_1")
     two(s, "R301", "Device:R", "22k 1W", u(50), u(50), "TACH_1", "TACH_2")
@@ -270,20 +270,20 @@ def build() -> list[Sheet]:
     s.add("U301", "Isolator:H11L1", "H11L1", u(150), u(56), p1="TACH_LED", p2="GND", p4="IGN", p5="GND", p6="+3V3")
     two(s, "R304", "Device:R", "4.7k", u(176), u(44), "+3V3", "IGN", horizontal=False)
     two(s, "C302", "Device:C", "100n", u(190), u(44), "+3V3", "GND", horizontal=False)
-    s.note(u(170), u(70), "IGN → GP3, attivo basso")
+    s.note(u(170), u(70), "IGN → GP3, active low")
     sheets.append(s)
 
     # 4 ----------------------------------------------------------------------
-    s = Sheet("wheel.kicad_sch", "4 Ruota", "Sensore ruota (LJ12A3)")
-    s.note(u(8), u(10), "Sensore di velocità")
+    s = Sheet("wheel.kicad_sch", "4 Wheel sensor", "Wheel sensor (LJ12A3)")
+    s.note(u(8), u(10), "Speed sensor")
     s.note(
         u(8),
         u(14),
-        "LJ12A3-4-Z/BX induttivo NPN normalmente aperto: davanti a un bullone l'uscita va a massa.\n"
-        "+12V_P → 2,2 kΩ → LED dell'EL817 → uscita del sensore. Pull-up esterno da 4,7 kΩ per fronti veloci.\n"
-        "Colori del sensore: marrone +12 V, blu massa, nero segnale.",
+        "LJ12A3-4-Z/BX inductive NPN normally open: in front of a bolt the output goes to ground.\n"
+        "+12V_P → 2.2 kΩ → EL817 LED → sensor output. External 4.7 kΩ pull-up for fast edges.\n"
+        "Sensor colours: brown +12 V, blue ground, black signal.",
     )
-    s.add("J401", "Connector_Generic:Conn_01x03", "Deutsch DTM 3p (sensore)", u(24), u(52),
+    s.add("J401", "Connector_Generic:Conn_01x03", "Deutsch DTM 3p (sensor)", u(24), u(52),
           p1="+12V_P", p2="WHEEL_SIG", p3="GND")
     two(s, "C401", "Device:C", "100n", u(44), u(62), "+12V_P", "GND", horizontal=False)
     two(s, "R401", "Device:R", "2.2k", u(64), u(44), "+12V_P", "WHEEL_LED")
@@ -291,18 +291,18 @@ def build() -> list[Sheet]:
     s.parts[-1].rot = 270
     s.add("U401", "Isolator:EL817", "EL817", u(112), u(48), p1="WHEEL_LED", p2="WHEEL_SIG", p4="WHEEL", p3="GND")
     two(s, "R402", "Device:R", "4.7k", u(140), u(40), "+3V3", "WHEEL", horizontal=False)
-    s.note(u(132), u(64), "WHEEL → GP2, attivo basso")
+    s.note(u(132), u(64), "WHEEL → GP2, active low")
     sheets.append(s)
 
     # 5 ----------------------------------------------------------------------
-    s = Sheet("analog.kicad_sch", "5 Analogici", "Ingressi analogici")
-    s.note(u(8), u(10), "Ingressi analogici")
+    s = Sheet("analog.kicad_sch", "5 Analog inputs", "Analog inputs")
+    s.note(u(8), u(10), "Analog inputs")
     s.note(
         u(8),
         u(14),
-        "Batteria: partitore 100k/22k (18,3 V → 3,3 V), filtro 100 nF, clamp BAT54S verso 0 e 3,3 V.\n"
-        "Acqua: il sensore NTC va a massa nel motore; pull-up da 100 Ω verso 3,3 V, poi 1 kΩ e clamp.\n"
-        "Luce: modulo TEMT6000 alimentato a 3,3 V.",
+        "Battery: 100k/22k divider (18.3 V → 3.3 V), 100 nF filter, BAT54S clamp to 0 and 3.3 V.\n"
+        "Coolant: the NTC sender goes to ground in the engine; 100 Ω pull-up to 3.3 V, then 1 kΩ and clamp.\n"
+        "Light: TEMT6000 module supplied at 3.3 V.",
     )
     two(s, "R501", "Device:R", "100k", u(24), u(44), "+12V_P", "VBAT_SENSE", horizontal=False)
     two(s, "R502", "Device:R", "22k", u(24), u(64), "VBAT_SENSE", "GND", horizontal=False)
@@ -316,7 +316,7 @@ def build() -> list[Sheet]:
     s.add("D502", "Diode:BAT54S", "BAT54S", u(150), u(52), A="GND", K="+3V3", COM="COOLANT_SENSE")
     s.note(u(118), u(74), "COOLANT_SENSE → GP27 (ADC1)")
 
-    s.add("J501", "Connector_Generic:Conn_01x03", "TEMT6000 (modulo)", u(176), u(52),
+    s.add("J501", "Connector_Generic:Conn_01x03", "TEMT6000 (module)", u(176), u(52),
           p1="+3V3", p2="GND", p3="LIGHT_RAW")
     two(s, "R505", "Device:R", "1k", u(196), u(54), "LIGHT_RAW", "LIGHT_SENSE")
     two(s, "C503", "Device:C", "100n", u(212), u(64), "LIGHT_SENSE", "GND", horizontal=False)
@@ -325,14 +325,14 @@ def build() -> list[Sheet]:
     sheets.append(s)
 
     # 6 ----------------------------------------------------------------------
-    s = Sheet("mcu.kicad_sch", "6 MCU", "Pico, FRAM e pulsanti", "A3")
-    s.note(u(8), u(10), "Microcontrollore, memoria e pulsanti")
+    s = Sheet("mcu.kicad_sch", "6 MCU", "Pico, FRAM and buttons", "A3")
+    s.note(u(8), u(10), "Microcontroller, memory and buttons")
     s.note(
         u(8),
         u(14),
-        "Raspberry Pi Pico (o Pico 2): stessa piedinatura, stesso firmware.\n"
-        "FRAM MB85RC256V all'indirizzo 0x50 (A0–A2 a massa), I²C a 1 MHz.\n"
-        "Pulsanti MODE e SET verso massa, 1 kΩ + 100 nF contro le scariche e i rimbalzi.",
+        "Raspberry Pi Pico (or Pico 2): same pinout, same firmware.\n"
+        "FRAM MB85RC256V at address 0x50 (A0–A2 to ground), I²C at 1 MHz.\n"
+        "MODE and SET buttons to ground, 1 kΩ + 100 nF against discharges and bounce.",
     )
     gp = {
         2: "WHEEL", 3: "IGN", 4: "I2C_SDA", 5: "I2C_SCL", 6: "NEUTRAL", 7: "HIGH_BEAM", 8: "TURN_L",
@@ -348,9 +348,9 @@ def build() -> list[Sheet]:
     two(s, "R601", "Device:R", "2.2k", u(280), u(64), "+3V3", "I2C_SDA", horizontal=False)
     two(s, "R602", "Device:R", "2.2k", u(292), u(64), "+3V3", "I2C_SCL", horizontal=False)
     two(s, "C601", "Device:C", "100n", u(226), u(64), "+3V3", "GND", horizontal=False)
-    s.note(u(222), u(104), "FRAM su breakout (Adafruit 1895):\nil connettore porta VCC, GND, SDA, SCL.")
+    s.note(u(222), u(104), "FRAM on a breakout (Adafruit 1895):\nits header carries VCC, GND, SDA, SCL.")
 
-    s.add("J601", "Connector_Generic:Conn_01x03", "Pulsanti (contenitore)", u(230), u(140),
+    s.add("J601", "Connector_Generic:Conn_01x03", "Buttons (enclosure)", u(230), u(140),
           p1="BTN_MODE_SW", p2="BTN_SET_SW", p3="GND")
     s.add("SW601", "Switch:SW_Push", "MODE", u(210), u(160), p1="BTN_MODE_SW", p2="GND")
     s.add("SW602", "Switch:SW_Push", "SET", u(210), u(176), p1="BTN_SET_SW", p2="GND")
@@ -361,52 +361,52 @@ def build() -> list[Sheet]:
     sheets.append(s)
 
     # 7 ----------------------------------------------------------------------
-    s = Sheet("backlight.kicad_sch", "7 Retroilluminazione e Pi", "Retroilluminazione e collegamento al Pi")
-    s.note(u(8), u(10), "Retroilluminazione e USB verso il Pi")
+    s = Sheet("backlight.kicad_sch", "7 Backlight and Pi", "Backlight and link to the Pi")
+    s.note(u(8), u(10), "Backlight and USB to the Pi")
     s.note(
         u(8),
         u(14),
-        "Il Pico comanda il TPS61169 in PWM a 25 kHz (GP15). 100 kΩ verso massa: finché il\n"
-        "firmware non parte la retroilluminazione resta spenta (fail-dark).\n"
-        "Display Newhaven: LED 180 mA a 9,3 V. Pin del modulo e del display [DA VERIFICARE].\n"
-        "USB: solo D+, D− e massa. VBUS non collegato: il Pico si alimenta da VSYS.",
+        "The Pico drives the TPS61169 with 25 kHz PWM (GP15). 100 kΩ to ground: until the\n"
+        "firmware runs, the backlight stays off (fail-dark).\n"
+        "Newhaven display: LED 180 mA at 9.3 V. Module and display pins [TO VERIFY].\n"
+        "USB: only D+, D− and ground. VBUS not connected: the Pico is supplied from VSYS.",
     )
     two(s, "R701", "Device:R", "1k", u(30), u(50), "BL_PWM", "BL_CTRL")
     two(s, "R702", "Device:R", "100k", u(48), u(60), "BL_CTRL", "GND", horizontal=False)
     s.add("U701", "Connector_Generic:Conn_01x05", "TPS61169 (Adafruit 6354)", u(80), u(54),
           p1="+5V", p2="GND", p3="BL_CTRL", p4="BL_LED_A", p5="BL_LED_K")
     s.note(u(70), u(68), "1 VIN · 2 GND · 3 CTRL · 4 LED+ · 5 LED−")
-    s.add("J701", "Connector_Generic:Conn_01x02", "Retroilluminazione display", u(124), u(52),
+    s.add("J701", "Connector_Generic:Conn_01x02", "Display backlight", u(124), u(52),
           p1="BL_LED_A", p2="BL_LED_K")
-    s.add("J702", "Connector_Generic:Conn_01x04", "USB del Pico (TP2/TP3)", u(40), u(100),
+    s.add("J702", "Connector_Generic:Conn_01x04", "Pico USB (TP2/TP3)", u(40), u(100),
           p1=None, p2="USB_DM", p3="USB_DP", p4="GND")
-    s.add("J703", "Connector_Generic:Conn_01x04", "USB del Pi Zero 2 W", u(110), u(100),
+    s.add("J703", "Connector_Generic:Conn_01x04", "Pi Zero 2 W USB", u(110), u(100),
           p1=None, p2="USB_DM", p3="USB_DP", p4="GND")
-    s.note(u(24), u(116), "1 VBUS (non collegato) · 2 D− · 3 D+ · 4 GND\nDoppino intrecciato corto, ferrite sul cavo.")
-    s.note(u(150), u(96), "Il display si collega al Pi con l'Adafruit DPI Kippah\n(connettore FFC 40 poli, fuori da questa scheda).")
+    s.note(u(24), u(116), "1 VBUS (not connected) · 2 D− · 3 D+ · 4 GND\nShort twisted pair, ferrite on the cable.")
+    s.note(u(150), u(96), "The display connects to the Pi through the Adafruit DPI Kippah\n(40-pin FFC connector, off this board).")
     sheets.append(s)
 
     # 8 ----------------------------------------------------------------------
-    s = Sheet("leds.kicad_sch", "8 LED di backup", "LED di backup")
-    s.note(u(8), u(10), "LED di backup")
+    s = Sheet("leds.kicad_sch", "8 Backup LEDs", "Backup LEDs")
+    s.note(u(8), u(10), "Backup LEDs")
     s.note(
         u(8),
         u(14),
-        "Collegati direttamente alle linee a 12 V della moto: si accendono anche a elettronica\n"
-        "spenta. Le frecce usano una sola coppia di fili come la spia originale (Ch–Dg):\n"
-        "la freccia accesa alimenta il suo LED, l'altra linea va a massa attraverso le lampadine.\n"
-        "Il 1N4148 in serie protegge ogni LED dai 12 V inversi.",
+        "Wired straight to the bike's 12 V lines: they light up even with the electronics\n"
+        "off. The turn signals use one pair of wires like the original indicator (Ch–Dg):\n"
+        "the flashing side feeds its LED, the other line goes to ground through the bulbs.\n"
+        "The 1N4148 in series protects each LED from the reverse 12 V.",
     )
     two(s, "R801", "Device:R", "1.5k", u(30), u(44), "BIKE_TURN_L", "LED_L_D")
     diode(s, "D805", "Diode:1N4148", "1N4148", u(50), u(44), "LED_L_D", "LED_L_A")
-    s.add("D801", "Device:LED", "verde (freccia SX)", u(70), u(44), 180, p1="BIKE_TURN_R", p2="LED_L_A")
+    s.add("D801", "Device:LED", "green (left turn)", u(70), u(44), 180, p1="BIKE_TURN_R", p2="LED_L_A")
     two(s, "R802", "Device:R", "1.5k", u(30), u(64), "BIKE_TURN_R", "LED_R_D")
     diode(s, "D806", "Diode:1N4148", "1N4148", u(50), u(64), "LED_R_D", "LED_R_A")
-    s.add("D802", "Device:LED", "verde (freccia DX)", u(70), u(64), 180, p1="BIKE_TURN_L", p2="LED_R_A")
+    s.add("D802", "Device:LED", "green (right turn)", u(70), u(64), 180, p1="BIKE_TURN_L", p2="LED_R_A")
     two(s, "R803", "Device:R", "1.5k", u(120), u(44), "BIKE_HIGH_BEAM", "LED_HB_A")
-    s.add("D803", "Device:LED", "blu (abbaglianti)", u(140), u(44), 180, p1="GND", p2="LED_HB_A")
+    s.add("D803", "Device:LED", "blue (high beam)", u(140), u(44), 180, p1="GND", p2="LED_HB_A")
     two(s, "R804", "Device:R", "1.5k", u(120), u(64), "+12V_P", "LED_N_A")
-    s.add("D804", "Device:LED", "verde (folle)", u(140), u(64), 180, p1="BIKE_NEUTRAL", p2="LED_N_A")
+    s.add("D804", "Device:LED", "green (neutral)", u(140), u(64), 180, p1="BIKE_NEUTRAL", p2="LED_N_A")
     sheets.append(s)
     return sheets
 
@@ -613,7 +613,7 @@ class Writer:
             ["rev", Q(REV)],
             ["company", Q("tdm-dash · CERN-OHL-P-2.0")],
             ["comment", 1, Q(page_comment)],
-            ["comment", 2, Q("Generato da hardware/kicad/generate.py: non modificare a mano")],
+            ["comment", 2, Q("Generated by hardware/kicad/generate.py: do not edit by hand")],
         ]
 
     def sheet_file(self, sheet: Sheet) -> list:
@@ -659,7 +659,7 @@ class Writer:
             ["generator_version", Q("9.0")],
             ["uuid", uid("sheet", sheet.file)],
             ["paper", Q(sheet.paper)],
-            self.title_block(sheet.title, f"Foglio {page - 1} di {len(self.sheets)}"),
+            self.title_block(sheet.title, f"Sheet {page - 1} of {len(self.sheets)}"),
             ["lib_symbols", *[lib_syms[k] for k in sorted(lib_syms)]],
             *body,
             ["embedded_fonts", "no"],
@@ -706,7 +706,7 @@ class Writer:
                 "root/title",
                 u(20),
                 u(20),
-                "tdm-dash · modulo sensori (Pico) per Yamaha TDM 850 (3VD)",
+                "tdm-dash · sensor module (Pico) for the Yamaha TDM 850 (3VD)",
                 3.0,
             )
         )
@@ -715,9 +715,9 @@ class Writer:
                 "root/desc",
                 u(20),
                 u(28),
-                "Schema generato da hardware/kicad/generate.py. I colori dei fili e la piedinatura\n"
-                "del connettore originale sono [DA VERIFICARE]: vedi docs/ricerca/impianto-originale.md.\n"
-                "Capitolo 04 del manuale: spiegazione di ogni foglio e calcolo dei componenti.",
+                "Schematic generated by hardware/kicad/generate.py. The wire colours and the pinout\n"
+                "of the original connector are [TO VERIFY]: see docs/research/original-wiring.md.\n"
+                "Manual chapter 04: explanation of every sheet and component calculations.",
                 1.5,
             )
         )
@@ -728,7 +728,7 @@ class Writer:
             ["generator_version", Q("9.0")],
             ["uuid", self.root_uuid],
             ["paper", Q("A4")],
-            self.title_block("tdm-dash · modulo sensori", f"{len(self.sheets)} fogli"),
+            self.title_block("tdm-dash · sensor module", f"{len(self.sheets)} sheets"),
             ["lib_symbols"],
             *body,
             ["sheet_instances", ["path", Q("/"), ["page", Q("1")]]],
@@ -779,7 +779,7 @@ def main() -> int:
         json.dump(project_file(), f, indent=2)
         f.write("\n")
     nets = sorted(w.net_pins)
-    print(f"{len(sheets)} fogli, {sum(len(s.parts) for s in sheets)} componenti, {len(nets)} reti")
+    print(f"{len(sheets)} sheets, {sum(len(s.parts) for s in sheets)} parts, {len(nets)} nets")
     return 0
 
 

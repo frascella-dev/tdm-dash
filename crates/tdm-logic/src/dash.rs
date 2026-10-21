@@ -10,6 +10,7 @@ use tdm_proto::{
 use crate::conv::{self, Coolant};
 use crate::filters::{Ema, HystQuantizer, Median3, Spring};
 use crate::fmt;
+use crate::i18n::{self, Language, Msg, tr};
 use crate::profile::{Layout, NightSource, Profile, ThemeMode};
 use crate::warnings::{Cond, Icon, Severity, WarningId, Warnings};
 
@@ -172,19 +173,20 @@ impl ButtonState {
     }
 }
 
-const SETTINGS_ITEMS: [&str; 7] = [
-    "Layout di guida",
-    "Tema",
-    "Luminosità",
-    "Schermata diagnostica",
-    "Calibrazione velocità",
-    "Calibrazione contagiri",
-    "Esci",
+const SETTINGS_ITEMS: [Msg; 7] = [
+    Msg::SetLayout,
+    Msg::SetTheme,
+    Msg::SetBrightness,
+    Msg::SetDiagScreen,
+    Msg::SetSpeedCal,
+    Msg::SetTachCal,
+    Msg::SetExit,
 ];
 
 #[derive(Debug)]
 pub struct Dash {
     p: Profile,
+    lang: Language,
     config_error: Option<String>,
     state: UiState,
     state_t: f64,
@@ -261,6 +263,7 @@ impl Dash {
             } else {
                 Theme::Day
             },
+            lang: profile.display.language,
             p: profile,
             config_error,
             state: UiState::Splash,
@@ -335,6 +338,15 @@ impl Dash {
         self.layout = l;
     }
 
+    /// Language of the dashboard texts, overriding the profile.
+    pub fn set_language(&mut self, l: Language) {
+        self.lang = l;
+    }
+
+    pub fn language(&self) -> Language {
+        self.lang
+    }
+
     pub fn set_theme_mode(&mut self, m: ThemeMode) {
         self.theme_mode = m;
     }
@@ -371,8 +383,8 @@ impl Dash {
         self.state_t = 0.0;
     }
 
-    fn toast(&mut self, msg: &str, now: f64) {
-        self.toast = Some((msg.to_string(), now + 2.2));
+    fn toast(&mut self, msg: Msg, now: f64) {
+        self.toast = Some((tr(self.lang, msg).to_string(), now + 2.2));
     }
 
     pub fn on_event(&mut self, ev: LinkEvent, now: f64) {
@@ -464,9 +476,9 @@ impl Dash {
             McuMsg::Ack { cmd: c, status: s } => {
                 if s != status::OK {
                     let msg = match c {
-                        cmd::INIT_ODOMETER => "Contachilometri già impostato",
-                        cmd::RESET_TRIP => "Azzeramento non riuscito",
-                        _ => "Comando rifiutato dal modulo",
+                        cmd::INIT_ODOMETER => Msg::OdoAlreadySet,
+                        cmd::RESET_TRIP => Msg::TripResetFailed,
+                        _ => Msg::CommandRefused,
                     };
                     self.toast(msg, now);
                 }
@@ -656,7 +668,7 @@ impl Dash {
                     && w.id.severity() == Severity::Caution
                 {
                     self.warnings.snooze(w.id, now);
-                    self.toast("Avviso silenziato per 5 minuti", now);
+                    self.toast(Msg::WarningSnoozed, now);
                     return;
                 }
                 match (b, long) {
@@ -677,9 +689,9 @@ impl Dash {
                         }
                         self.toast(
                             if idx == 0 {
-                                "Parziale A azzerato"
+                                Msg::TripAReset
                             } else {
-                                "Pieno registrato"
+                                Msg::FillRecorded
                             },
                             now,
                         );
@@ -690,7 +702,7 @@ impl Dash {
                             self.set_idle = 0.0;
                             self.set_state(UiState::Settings);
                         } else {
-                            self.toast("Impostazioni disponibili solo da fermi", now);
+                            self.toast(Msg::SettingsOnlyStopped, now);
                         }
                     }
                     (Button::Set, false) if self.screen == Screen::Trip => {
@@ -733,7 +745,7 @@ impl Dash {
                 self.diag_enabled = !self.diag_enabled;
                 self.store_settings();
             }
-            4 | 5 => self.toast("Si modifica nel profilo /boot/tdm-dash.toml", now),
+            4 | 5 => self.toast(Msg::EditInProfile, now),
             _ => self.set_state(UiState::Ride),
         }
     }
@@ -981,6 +993,7 @@ impl Dash {
 
     fn view(&self, now: f64, link: LinkState) -> ViewModel {
         let p = &self.p;
+        let lang = self.lang;
         let selftest = self.state == UiState::SelfTest;
         let phase = match self.state {
             UiState::Splash => (self.state_t / SPLASH_S).min(1.0),
@@ -1009,7 +1022,7 @@ impl Dash {
         let rpm_text = if lost && !selftest {
             "----".into()
         } else {
-            fmt::int(((rpm_val / 50.0).round() * 50.0) as u64)
+            fmt::int(lang, ((rpm_val / 50.0).round() * 50.0) as u64)
         };
         let flash = (now * 4.0).fract() < 0.5;
         let tt = |m: &crate::profile::InputMap| selftest || (!lost && m.active(self.inputs));
@@ -1045,16 +1058,16 @@ impl Dash {
             m.map_or_else(
                 || {
                     if d > 0 {
-                        "---,-".into()
+                        fmt::blank(lang, 3, 1)
                     } else {
                         "-----".into()
                     }
                 },
                 |m| {
                     if d == 0 {
-                        fmt::int(m as u64 / 1000)
+                        fmt::int(lang, m as u64 / 1000)
                     } else {
-                        fmt::dec(m as f64 / 1000.0, d)
+                        fmt::dec(lang, m as f64 / 1000.0, d)
                     }
                 },
             )
@@ -1080,16 +1093,18 @@ impl Dash {
                 id: a.id,
                 severity: a.id.severity(),
                 icon: a.id.icon(),
-                title: a.id.title().into(),
-                detail: a.id.detail().into(),
+                title: a.id.title(lang).into(),
+                detail: a.id.detail(lang).into(),
             });
         let info = active
             .iter()
             .find(|a| a.id.severity() == Severity::Info)
             .map(|a| {
                 let text = match a.id {
-                    WarningId::FuelLow => format!("~{} km", fmt::int(range.unwrap_or(0.0) as u64)),
-                    _ => "Freccia".into(),
+                    WarningId::FuelLow => {
+                        format!("~{} km", fmt::int(lang, range.unwrap_or(0.0) as u64))
+                    }
+                    _ => tr(lang, Msg::TurnSignal).into(),
                 };
                 (a.id.icon(), text)
             });
@@ -1100,7 +1115,7 @@ impl Dash {
         let avg_text = if self.ride_t > 5.0 {
             format!(
                 "{} km/h",
-                fmt::int((dist_km / (self.ride_t / 3600.0)) as u64)
+                fmt::int(lang, (dist_km / (self.ride_t / 3600.0)) as u64)
             )
         } else {
             "--".into()
@@ -1142,22 +1157,23 @@ impl Dash {
             coolant_level,
             coolant_warn_frac: ((p.coolant.warn_c - p.coolant.gauge_min_c) / span).clamp(0.0, 1.0),
             vbat_text: if lost {
-                "--,-".into()
+                fmt::blank(lang, 2, 1)
             } else {
-                v.map_or("--,-".into(), |x| fmt::dec(x, 1))
+                v.map_or_else(|| fmt::blank(lang, 2, 1), |x| fmt::dec(lang, x, 1))
             },
             vbat_level,
             odo_text: km(odo.map(|o| o.odo_m), 0),
             trip_a_text: km(odo.map(|o| o.trip_m[0]), 1),
             trip_b_text: km(odo.map(|o| o.trip_m[1]), 1),
-            range_text: range.map_or("--".into(), |r| format!("~{}", fmt::int(r as u64))),
+            range_text: range.map_or("--".into(), |r| format!("~{}", fmt::int(lang, r as u64))),
             range_low: active.iter().any(|a| a.id == WarningId::FuelLow),
             ride_time_text: fmt::duration(self.ride_t),
             avg_text,
             max_text: format!("{} km/h", self.max_kmh),
-            fuel_used_text: fuel_used.map_or("--".into(), |l| format!("~{} l", fmt::dec(l, 1))),
+            fuel_used_text: fuel_used
+                .map_or("--".into(), |l| format!("~{} l", fmt::dec(lang, l, 1))),
             consumption_text: p.fuel.as_ref().map_or("--".into(), |f| {
-                format!("{} l/100 km", fmt::dec(f.l_per_100km, 1))
+                format!("{} l/100 km", fmt::dec(lang, f.l_per_100km, 1))
             }),
             warning: if selftest { None } else { warning },
             icon_coolant: if selftest {
@@ -1178,7 +1194,7 @@ impl Dash {
             settings_sel: self.set_idx,
             trip_sel: self.trip_sel,
             diag: self.diag_view(now, link),
-            diag_note: "Gomma anteriore cambiata? Ricalibra la velocità (manuale, cap. 10)".into(),
+            diag_note: tr(lang, Msg::DiagNote).into(),
             backlight: if self.first_frame {
                 self.bright / 100.0
             } else {
@@ -1189,10 +1205,11 @@ impl Dash {
 
     fn settings_view(&self) -> Vec<(String, String)> {
         let p = &self.p;
+        let lang = self.lang;
         SETTINGS_ITEMS
             .iter()
             .enumerate()
-            .map(|(i, label)| {
+            .map(|(i, &label)| {
                 let v = match i {
                     0 => match self.layout {
                         Layout::Classic => "Classic",
@@ -1200,37 +1217,40 @@ impl Dash {
                         Layout::Touring => "Touring",
                     }
                     .to_string(),
-                    1 => match self.theme_mode {
-                        ThemeMode::Auto => "Automatico",
-                        ThemeMode::Day => "Giorno",
-                        ThemeMode::Night => "Notte",
-                    }
+                    1 => tr(
+                        lang,
+                        match self.theme_mode {
+                            ThemeMode::Auto => Msg::ThemeAuto,
+                            ThemeMode::Day => Msg::ThemeDay,
+                            ThemeMode::Night => Msg::ThemeNight,
+                        },
+                    )
                     .to_string(),
                     2 => format!("{:+} %", self.brightness_offset),
-                    3 => if self.diag_enabled {
-                        "Attiva"
-                    } else {
-                        "Nascosta"
-                    }
+                    3 => tr(
+                        lang,
+                        if self.diag_enabled {
+                            Msg::Shown
+                        } else {
+                            Msg::Hidden
+                        },
+                    )
                     .to_string(),
-                    4 => format!(
-                        "{} mm · {} impulsi/giro",
-                        fmt::int(p.speed.wheel_circumference_mm as u64),
-                        p.speed.pulses_per_rev
+                    4 => i18n::speed_cal(
+                        lang,
+                        p.speed.wheel_circumference_mm,
+                        p.speed.pulses_per_rev,
                     ),
-                    5 => format!(
-                        "{} impulsi/giro · rosso {}",
-                        fmt::dec(p.tach.pulses_per_rev, 1),
-                        fmt::int(p.tach.redline_rpm as u64)
-                    ),
+                    5 => i18n::tach_cal(lang, p.tach.pulses_per_rev, p.tach.redline_rpm),
                     _ => String::new(),
                 };
-                (label.to_string(), v)
+                (tr(lang, label).to_string(), v)
             })
             .collect()
     }
 
     fn diag_view(&self, now: f64, link: LinkState) -> Vec<(String, String)> {
+        let lang = self.lang;
         let t = self.tel;
         let mut v = Vec::new();
         let hz = |s: &tdm_proto::PulseStats| {
@@ -1240,118 +1260,113 @@ impl Dash {
                 0.0
             }
         };
+        let label = |m: Msg| tr(lang, m).to_string();
         v.push((
-            "Ruota".into(),
+            label(Msg::DiagWheel),
             t.map_or("--".into(), |t| {
-                format!(
-                    "{} Hz · {} impulsi in {} ms",
-                    fmt::dec(hz(&t.wheel), 1),
+                i18n::diag_wheel(
+                    lang,
+                    hz(&t.wheel),
                     t.wheel.span_edges,
-                    fmt::dec(t.wheel.span_us as f64 / 1000.0, 1)
+                    t.wheel.span_us as f64 / 1000.0,
                 )
             }),
         ));
         v.push((
-            "Accensione".into(),
+            label(Msg::DiagIgnition),
             t.map_or("--".into(), |t| {
-                format!(
-                    "{} Hz · {} giri/min",
-                    fmt::dec(hz(&t.ign), 1),
-                    fmt::int(self.rpm_raw as u64)
-                )
+                i18n::diag_ignition(lang, hz(&t.ign), self.rpm_raw)
             }),
         ));
         v.push((
-            "Batteria".into(),
+            label(Msg::DiagBattery),
             t.map_or("--".into(), |t| {
                 format!(
                     "{} V · ADC {}",
-                    self.vbat().map_or("--".into(), |x| fmt::dec(x, 2)),
+                    self.vbat().map_or("--".into(), |x| fmt::dec(lang, x, 2)),
                     t.vbat_raw
                 )
             }),
         ));
         v.push((
-            "Acqua".into(),
+            label(Msg::DiagCoolant),
             match (self.coolant, self.coolant_ohm) {
-                (Some(Coolant::Fault), _) => "sensore aperto o in corto".into(),
-                (Some(Coolant::Low), Some(o)) => format!("{} Ω → sotto la curva", fmt::dec(o, 1)),
+                (Some(Coolant::Fault), _) => label(Msg::SensorFault),
+                (Some(Coolant::Low), Some(o)) => i18n::diag_below_curve(lang, o),
                 (Some(Coolant::Celsius(_)), Some(o)) => {
                     format!(
                         "{} Ω → {} °C",
-                        fmt::dec(o, 1),
-                        self.coolant_c().map_or("--".into(), |c| fmt::dec(c, 1))
+                        fmt::dec(lang, o, 1),
+                        self.coolant_c()
+                            .map_or("--".into(), |c| fmt::dec(lang, c, 1))
                     )
                 }
                 _ => "--".into(),
             },
         ));
         v.push((
-            "Luce".into(),
+            label(Msg::DiagLight),
             t.map_or("--".into(), |t| {
-                format!(
-                    "ADC {} · {} % · retroill. {} %",
+                i18n::diag_light(
+                    lang,
                     t.light_raw,
                     (self.light_n.unwrap_or(0.0) * 100.0).round(),
-                    self.bright.round()
+                    self.bright.round(),
                 )
             }),
         ));
         let bit = |m: &crate::profile::InputMap| m.active(self.inputs) as u8;
         let i = &self.p.inputs;
         v.push((
-            "Ingressi".into(),
-            format!(
-                "N {} · ABB {} · SX {} · DX {} · LUCI {} · MODE {} · SET {}",
-                bit(&i.neutral),
-                bit(&i.high_beam),
-                bit(&i.turn_left),
-                bit(&i.turn_right),
-                bit(&i.illumination),
-                bit(&i.btn_mode),
-                bit(&i.btn_set)
+            label(Msg::DiagInputs),
+            i18n::diag_inputs(
+                lang,
+                [
+                    bit(&i.neutral),
+                    bit(&i.high_beam),
+                    bit(&i.turn_left),
+                    bit(&i.turn_right),
+                    bit(&i.illumination),
+                    bit(&i.btn_mode),
+                    bit(&i.btn_set),
+                ],
             ),
         ));
-        let ls = match link {
-            LinkState::Ok => "attivo",
-            LinkState::Stale => "in ritardo",
-            LinkState::Lost => "perso",
-        };
+        let ls = tr(
+            lang,
+            match link {
+                LinkState::Ok => Msg::LinkOk,
+                LinkState::Stale => Msg::LinkStale,
+                LinkState::Lost => Msg::LinkLost,
+            },
+        );
         v.push((
-            "Collegamento".into(),
-            format!(
-                "{ls} · {} frame · {} persi · riconnessioni {}",
-                self.frames, self.seq_gaps, self.reconnects
-            ),
+            label(Msg::DiagLink),
+            i18n::diag_link(lang, ls, self.frames, self.seq_gaps, self.reconnects),
         ));
         v.push((
-            "Avvio".into(),
+            label(Msg::DiagBoot),
             self.hello
                 .and_then(|h| h.first_backlight_ms)
-                .map_or("--".into(), |ms| {
-                    format!(
-                        "{} s dalla chiave al primo frame",
-                        fmt::dec(ms as f64 / 1000.0, 2)
-                    )
-                }),
+                .map_or("--".into(), |ms| i18n::diag_boot(lang, ms as f64 / 1000.0)),
         ));
         v.push((
-            "Firmware".into(),
-            self.hello.map_or("in attesa del modulo".into(), |h| {
-                let odo = match h.odo_status {
-                    OdoStatus::Ok => "FRAM ok",
-                    OdoStatus::Blank => "FRAM vuota",
-                    OdoStatus::Corrupt => "FRAM corrotta",
-                    OdoStatus::Missing => "FRAM assente",
-                };
-                format!(
-                    "Pico {}.{}.{} · protocollo {} · {odo}",
-                    h.fw[0], h.fw[1], h.fw[2], h.proto
-                )
+            label(Msg::DiagFirmware),
+            self.hello.map_or(label(Msg::WaitingModule), |h| {
+                let fram = tr(
+                    lang,
+                    match h.odo_status {
+                        OdoStatus::Ok => Msg::FramOk,
+                        OdoStatus::Blank => Msg::FramBlank,
+                        OdoStatus::Corrupt => Msg::FramCorrupt,
+                        OdoStatus::Missing => Msg::FramMissing,
+                    },
+                );
+                i18n::diag_firmware(lang, h.fw, h.proto, fram)
             }),
         ));
         if let Some(e) = &self.config_error {
-            v.push(("Profilo".into(), e.clone()));
+            v.push((label(Msg::DiagProfile), e.clone()));
         }
         let _ = now;
         v
@@ -1430,8 +1445,13 @@ mod tests {
     }
 
     fn connected() -> (Dash, f64) {
+        connected_in(Language::En)
+    }
+
+    fn connected_in(lang: Language) -> (Dash, f64) {
         let p = Profile::builtin();
         let mut d = Dash::new(p.clone(), None);
+        d.set_language(lang);
         d.tick(0.0);
         d.on_event(LinkEvent::Up("sim".into()), 0.0);
         assert_eq!(d.tick(0.01).state, UiState::Splash);
@@ -1484,16 +1504,44 @@ mod tests {
     }
 
     #[test]
+    fn texts_follow_the_language() {
+        for (lang, title, odo) in [
+            (
+                Language::En,
+                "Sensor module link lost",
+                "Odometer already set",
+            ),
+            (
+                Language::It,
+                "Collegamento con il modulo sensori perso",
+                "Contachilometri già impostato",
+            ),
+        ] {
+            let (mut d, mut t) = connected_in(lang);
+            run(&mut d, &mut t, 4.0, 60.0, 0);
+            d.on_event(
+                LinkEvent::Msg(McuMsg::Ack {
+                    cmd: cmd::INIT_ODOMETER,
+                    status: status::REFUSED,
+                }),
+                t,
+            );
+            assert_eq!(d.tick(t).toast.as_deref(), Some(odo));
+            t += 1.2;
+            let vm = d.tick(t);
+            assert_eq!(vm.warning.unwrap().title, title);
+            assert_eq!(vm.diag[0].0, tr(lang, Msg::DiagWheel));
+        }
+    }
+
+    #[test]
     fn settings_only_when_stationary() {
         let (mut d, mut t) = connected();
         run(&mut d, &mut t, 3.0, 50.0, 0);
         run(&mut d, &mut t, 1.2, 50.0, input::BTN_SET);
         let vm = run(&mut d, &mut t, 0.1, 50.0, 0);
         assert_eq!(vm.state, UiState::Ride);
-        assert_eq!(
-            vm.toast.as_deref(),
-            Some("Impostazioni disponibili solo da fermi")
-        );
+        assert_eq!(vm.toast.as_deref(), Some("Settings only when stopped"));
         run(&mut d, &mut t, 3.0, 0.0, 0);
         let vm = run(&mut d, &mut t, 1.2, 0.0, input::BTN_SET);
         assert_eq!(vm.state, UiState::Settings);

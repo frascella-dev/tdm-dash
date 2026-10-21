@@ -5,7 +5,7 @@
 ################################################################################
 
 # Built from the checkout this external tree belongs to, so an image always
-# matches the commit it was made from (docs/adr/0011-immagine-dal-checkout.md).
+# matches the commit it was made from (docs/adr/0011-image-from-checkout.md).
 TDM_DASH_VERSION = $(shell git -C $(BR2_EXTERNAL_TDMDASH_PATH) describe --always --dirty 2>/dev/null || echo local)
 TDM_DASH_SITE = $(realpath $(BR2_EXTERNAL_TDMDASH_PATH)/../..)
 TDM_DASH_SITE_METHOD = local

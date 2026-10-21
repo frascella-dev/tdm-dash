@@ -6,6 +6,8 @@ use std::path::Path;
 use serde::Deserialize;
 use tdm_proto::McuConfig;
 
+use crate::i18n::Language;
+
 /// The TDM 850 3VD profile, compiled in as the last fallback.
 pub const BUILTIN_TOML: &str = include_str!("../../../profiles/yamaha-tdm850-3vd.toml");
 
@@ -147,6 +149,9 @@ pub struct Display {
     pub brightness_max_pct: f64,
     pub rotate_180: bool,
     pub selftest: bool,
+    /// Language of the dashboard texts; English when absent.
+    #[serde(default)]
+    pub language: Language,
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
@@ -317,6 +322,15 @@ mod tests {
             }
         }
         assert!(n >= 2);
+    }
+
+    #[test]
+    fn language_defaults_to_english() {
+        assert_eq!(Profile::builtin().display.language, Language::It);
+        let t = BUILTIN_TOML.replace("language = \"it\"", "");
+        assert_eq!(Profile::parse(&t).unwrap().display.language, Language::En);
+        let t = BUILTIN_TOML.replace("language = \"it\"", "language = \"de\"");
+        assert!(Profile::parse(&t).is_err());
     }
 
     #[test]

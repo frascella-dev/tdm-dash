@@ -29,7 +29,7 @@ jobs:
         run: |
           mkdir -p _site
           {
-            echo '<!doctype html><html lang="it"><head><meta charset="utf-8">'
+            echo '<!doctype html><html lang="en"><head><meta charset="utf-8">'
             echo '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
             echo '</head><body>'
             cat design/index.html

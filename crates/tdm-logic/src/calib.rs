@@ -13,11 +13,11 @@ pub const MIN_DISTANCE_KM: f64 = 5.0;
 
 fn ratio_ok(r: f64, what: &str) -> Result<f64, String> {
     if !r.is_finite() || r <= 0.0 {
-        return Err(format!("{what}: valori non validi"));
+        return Err(format!("{what}: invalid values"));
     }
     if (r - 1.0).abs() > MAX_CORRECTION {
         return Err(format!(
-            "{what}: correzione del {:+.1} %, oltre il ±{:.0} %: controlla le misure",
+            "{what}: correction of {:+.1} %, beyond ±{:.0} %: check the measurements",
             (r - 1.0) * 100.0,
             MAX_CORRECTION * 100.0
         ));
@@ -31,10 +31,10 @@ fn ratio_ok(r: f64, what: &str) -> Result<f64, String> {
 pub fn wheel_circumference(current_mm: f64, gps_km: f64, trip_km: f64) -> Result<f64, String> {
     if gps_km < MIN_DISTANCE_KM {
         return Err(format!(
-            "servono almeno {MIN_DISTANCE_KM:.0} km misurati col GPS"
+            "at least {MIN_DISTANCE_KM:.0} km measured with the GPS are needed"
         ));
     }
-    let r = ratio_ok(gps_km / trip_km, "circonferenza")?;
+    let r = ratio_ok(gps_km / trip_km, "circumference")?;
     Ok(current_mm * r)
 }
 
@@ -48,13 +48,13 @@ pub fn tach_pulses_per_rev(
     shown_rpm: f64,
 ) -> Result<(f64, f64), String> {
     if reference_rpm <= 0.0 || shown_rpm <= 0.0 {
-        return Err("giri: valori non validi".into());
+        return Err("rpm: invalid values".into());
     }
     // shown = f * 60 / current, reference = f * 60 / exact
     let exact = current * shown_rpm / reference_rpm;
     let snapped = (exact * 2.0).round() / 2.0;
     if snapped <= 0.0 {
-        return Err("giri: il risultato è zero, controlla le misure".into());
+        return Err("rpm: the result is zero, check the measurements".into());
     }
     Ok((exact, snapped))
 }
@@ -62,7 +62,7 @@ pub fn tach_pulses_per_rev(
 /// Battery divider ratio from the voltage shown and the one measured with a
 /// multimeter on the battery terminals at the same moment.
 pub fn vbat_divider(current: f64, actual_v: f64, shown_v: f64) -> Result<f64, String> {
-    let r = ratio_ok(actual_v / shown_v, "tensione")?;
+    let r = ratio_ok(actual_v / shown_v, "voltage")?;
     Ok(current * r)
 }
 
@@ -73,7 +73,7 @@ pub fn coolant_curve(points: &[(f64, f64)]) -> Result<Vec<(f64, f64)>, String> {
     let mut by_temp: Vec<(f64, f64, u32)> = Vec::new();
     for &(t, ohm) in points {
         if !(t.is_finite() && ohm.is_finite()) || ohm <= 0.0 {
-            return Err(format!("misura non valida: {t} °C, {ohm} Ω"));
+            return Err(format!("invalid measurement: {t} °C, {ohm} Ω"));
         }
         match by_temp.iter_mut().find(|e| (e.0 - t).abs() < 0.05) {
             Some(e) => {
@@ -84,7 +84,7 @@ pub fn coolant_curve(points: &[(f64, f64)]) -> Result<Vec<(f64, f64)>, String> {
         }
     }
     if by_temp.len() < 3 {
-        return Err("servono almeno 3 temperature diverse".into());
+        return Err("at least 3 different temperatures are needed".into());
     }
     by_temp.sort_by(|a, b| a.0.total_cmp(&b.0));
     let curve: Vec<(f64, f64)> = by_temp
@@ -93,7 +93,7 @@ pub fn coolant_curve(points: &[(f64, f64)]) -> Result<Vec<(f64, f64)>, String> {
         .collect();
     if let Some(w) = curve.windows(2).find(|w| w[1].0 >= w[0].0) {
         return Err(format!(
-            "la resistenza deve scendere al salire della temperatura: {:.1} Ω a {} °C, {:.1} Ω a {} °C",
+            "the resistance must fall as the temperature rises: {:.1} Ω at {} °C, {:.1} Ω at {} °C",
             w[0].0, w[0].1, w[1].0, w[1].1
         ));
     }
@@ -121,11 +121,11 @@ pub fn parse_measurements(text: &str) -> Result<Vec<(f64, f64)>, String> {
         match fields.as_slice() {
             [t, r] => match (num(t), num(r)) {
                 (Ok(t), Ok(r)) => out.push((t, r)),
-                _ => return Err(format!("riga {}: numeri non validi: {raw}", n + 1)),
+                _ => return Err(format!("line {}: invalid numbers: {raw}", n + 1)),
             },
             _ => {
                 return Err(format!(
-                    "riga {}: servono due valori (°C e ohm): {raw}",
+                    "line {}: two values needed (°C and ohm): {raw}",
                     n + 1
                 ));
             }

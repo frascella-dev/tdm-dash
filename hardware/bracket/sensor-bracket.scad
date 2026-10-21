@@ -10,18 +10,18 @@
 //
 // SAFETY: under a brake caliper bolt only the 3 mm aluminium plate is
 // allowed. A printed part creeps under the bolt load and the bolt loosens:
-// print it only to check the fit. All dimensions marked [DA VERIFICARE] come
-// from the measurements on the bike (docs/ricerca/rilievi-sulla-moto.md).
+// print it only to check the fit. All dimensions marked [TO VERIFY] come
+// from the measurements on the bike (docs/research/bike-measurements.md).
 
 out = "3d";
 
 t = 3.0;               // plate thickness (aluminium 5754/6082)
-bolt_d = 10.5;         // caliper bolt clearance hole (M10) [DA VERIFICARE]
+bolt_d = 10.5;         // caliper bolt clearance hole (M10) [TO VERIFY]
 second_bolt = true;    // use the second caliper bolt against rotation
-bolt_pitch = 83.0;     // distance between the caliper bolts [DA VERIFICARE]
+bolt_pitch = 83.0;     // distance between the caliper bolts [TO VERIFY]
 sensor_d = 12.3;       // M12x1 sensor body
-reach = 48.0;          // first bolt to sensor axis, at the middle of the slot [DA VERIFICARE]
-angle = 35.0;          // direction of the sensor arm from the bolt line [DA VERIFICARE]
+reach = 48.0;          // first bolt to sensor axis, at the middle of the slot [TO VERIFY]
+angle = 35.0;          // direction of the sensor arm from the bolt line [TO VERIFY]
 slot = 8.0;            // radial adjustment of the sensor (+/- slot/2)
 margin = 7.0;          // material around the holes
 

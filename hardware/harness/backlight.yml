@@ -1,0 +1,54 @@
+# Display backlight: TPS61169 breakout -> backlight LED of the Newhaven panel.
+#
+# The panel's 40-pin FFC goes into the Adafruit DPI Kippah, which has its own
+# (not dimmable) backlight driver on the LED pins. How the TPS61169 output
+# reaches the LED pins (cut traces or pads on the Kippah) is [TO VERIFY]
+# on the boards in hand, see docs/manual/03-bill-of-materials.md, row 4.
+
+metadata:
+  title: Display backlight
+  description: TPS61169 driver dimmed by the Pico with PWM
+
+options:
+  fontname: DejaVu Sans
+  bgcolor: WH
+  bgcolor_node: WH
+  bgcolor_connector: WH
+  bgcolor_cable: WH
+
+connectors:
+  U701:
+    type: TPS61169 (Adafruit 6354)
+    subtype: LED output
+    pinlabels: [LED+, LED-]
+  J701:
+    type: Terminal J701 on the perfboard
+    subtype: 2-pin
+    pinlabels: [BL_LED_A, BL_LED_K]
+  X1:
+    type: Newhaven NHD-7.0-800480AF-ASXP
+    subtype: backlight LEDs, through the Kippah [TO VERIFY]
+    notes: 180 mA at 9.3 V. FFC connector pins [TO VERIFY] on the datasheet
+    pinlabels: [LED-A (anode), LED-K (cathode)]
+
+cables:
+  W1:
+    type: Pair
+    gauge: 0.25 mm2
+    length: 0.1
+    colors: [RD, BK]
+  W2:
+    type: Pair
+    gauge: 0.25 mm2
+    length: 0.15
+    colors: [RD, BK]
+
+connections:
+  -
+    - U701: [1, 2]
+    - W1: [1, 2]
+    - J701: [1, 2]
+  -
+    - J701: [1, 2]
+    - W2: [1, 2]
+    - X1: [1, 2]

@@ -1,17 +1,17 @@
-# Contribuire
+# Contributing
 
-Grazie per l'interesse! Contributi benvenuti, in particolare:
-- **misure sulla moto:** piedinature, forme d'onda, curve dei sensori, con foto
-- **profili per altre moto** in `profiles/`
-- correzioni al manuale
+Thanks for your interest! Contributions are welcome, in particular:
+- **measurements on the bike:** pinouts, waveforms, sensor curves, with photos
+- **profiles for other bikes** in `profiles/`
+- corrections to the manual
 
-## Regole
+## Rules
 
-- **Lingua:** documentazione in italiano; codice, commenti e messaggi di commit in inglese.
-- **Diagrammi:** Mermaid dentro Markdown. Gli schemi elettrici solo in KiCad (`hardware/kicad/`), i cablaggi in WireViz (`hardware/harness/`).
-- **Dati sull'impianto originale:** indica sempre la fonte e la marcatura ([VERIFICATO], [DA VERIFICARE], [IPOTESI]) come in [`docs/ricerca/impianto-originale.md`](docs/ricerca/impianto-originale.md).
-- **Decisioni di architettura:** un nuovo ADR in `docs/adr/`.
-- **Prima di una PR:**
+- **Language:** documentation, code, comments and commit messages in English.
+- **Diagrams:** Mermaid inside Markdown. Schematics only in KiCad (`hardware/kicad/`), wiring harnesses in WireViz (`hardware/harness/`).
+- **Facts about the original wiring:** always give the source and the tag ([VERIFIED], [TO VERIFY], [HYPOTHESIS]) as in [`docs/research/original-wiring.md`](docs/research/original-wiring.md).
+- **Architecture decisions:** a new ADR in `docs/adr/`.
+- **Before a PR:**
 
   ```sh
   cargo fmt --all
@@ -19,12 +19,12 @@ Grazie per l'interesse! Contributi benvenuti, in particolare:
   cargo test --workspace
   ```
 
-- **Protocollo:** varianti e campi si aggiungono solo in coda; una modifica incompatibile incrementa `PROTO_VERSION`.
+- **Protocol:** variants and fields are only appended at the end; an incompatible change bumps `PROTO_VERSION`.
 
-## Profili per altre moto
+## Profiles for other bikes
 
-1. Copia `profiles/yamaha-tdm850-3vd.toml` in `profiles/<marca>-<modello>-<codice>.toml`.
-2. Modifica circonferenza della ruota, impulsi per giro, zona rossa, curva del sensore della temperatura e ingressi.
-3. Aggiungi nella PR le fonti o le misure usate.
+1. Copy `profiles/yamaha-tdm850-3vd.toml` to `profiles/<make>-<model>-<code>.toml`.
+2. Edit the wheel circumference, pulses per revolution, red line, coolant sender curve and inputs.
+3. Add the sources or measurements you used to the PR.
 
-I test verificano automaticamente che ogni profilo sia valido.
+The tests automatically check that every profile is valid.

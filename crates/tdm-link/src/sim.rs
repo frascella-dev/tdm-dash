@@ -86,8 +86,8 @@ pub fn scenarios() -> Vec<Scenario> {
     vec![
         Scenario {
             id: "city",
-            name: "Città",
-            note: "Semafori, folle da fermi, frecce alle svolte.",
+            name: "City",
+            note: "Traffic lights, neutral when stopped, turn signals at corners.",
             legs: vec![
                 leg(0.0, 2.0, 3.0, 5.0, None),
                 leg(48.0, 2.2, 3.0, 7.0, None),
@@ -102,8 +102,8 @@ pub fn scenarios() -> Vec<Scenario> {
         },
         Scenario {
             id: "mountain",
-            name: "Passo di montagna",
-            note: "Allunghi fino alla zona rossa: luce di cambiata sopra i 7500.",
+            name: "Mountain pass",
+            note: "Pulls up to the red zone: shift light above 7500.",
             upshift_rpm: 7900.0,
             downshift_rpm: 4800.0,
             coolant_moving: 92.0,
@@ -123,8 +123,8 @@ pub fn scenarios() -> Vec<Scenario> {
         },
         Scenario {
             id: "motorway",
-            name: "Autostrada",
-            note: "Crociera a 130 con sorpassi; l'autonomia stimata scende sotto la riserva.",
+            name: "Motorway",
+            note: "Cruising at 130 with overtakes; the estimated range drops below the reserve.",
             upshift_rpm: 5500.0,
             downshift_rpm: 3000.0,
             coolant_moving: 84.0,
@@ -140,8 +140,8 @@ pub fn scenarios() -> Vec<Scenario> {
         },
         Scenario {
             id: "warmup",
-            name: "Riscaldamento a freddo",
-            note: "Al minimo dopo una notte all'aperto: l'acqua parte da 14 °C.",
+            name: "Cold warm-up",
+            note: "Idling after a night outdoors: the coolant starts at 14 °C.",
             coolant_moving: 82.0,
             coolant_stopped: 82.0,
             coolant_start: Some(14.0),
@@ -151,8 +151,8 @@ pub fn scenarios() -> Vec<Scenario> {
         },
         Scenario {
             id: "nocharge",
-            name: "Ricarica guasta",
-            note: "Lo statore non carica: prima \"non in carica\", poi \"batteria bassa\".",
+            name: "Charging fault",
+            note: "The stator does not charge: first \"not charging\", then \"battery low\".",
             upshift_rpm: 5200.0,
             downshift_rpm: 3100.0,
             battery: Battery::NotCharging,
@@ -166,8 +166,8 @@ pub fn scenarios() -> Vec<Scenario> {
         },
         Scenario {
             id: "regulator",
-            name: "Regolatore guasto",
-            note: "Il regolatore non limita più: oltre 15 V e poi 15,5 V.",
+            name: "Faulty regulator",
+            note: "The regulator no longer limits: above 15 V, then 15.5 V.",
             upshift_rpm: 5200.0,
             downshift_rpm: 3000.0,
             battery: Battery::Overcharging,
@@ -180,8 +180,8 @@ pub fn scenarios() -> Vec<Scenario> {
         },
         Scenario {
             id: "overheat",
-            name: "Coda d'estate",
-            note: "Incolonnati sotto il sole: l'acqua supera 105 °C e poi 112 °C.",
+            name: "Summer traffic jam",
+            note: "Queuing in the sun: the coolant passes 105 °C, then 112 °C.",
             upshift_rpm: 3800.0,
             downshift_rpm: 2100.0,
             coolant_moving: 99.0,
@@ -198,8 +198,8 @@ pub fn scenarios() -> Vec<Scenario> {
         },
         Scenario {
             id: "linkdrop",
-            name: "Collegamento instabile",
-            note: "Ogni 20 s il cavo USB si interrompe per 4 s.",
+            name: "Unstable link",
+            note: "Every 20 s the USB cable drops out for 4 s.",
             upshift_rpm: 4500.0,
             downshift_rpm: 2400.0,
             link_drop: Some((20.0, 4.0)),
@@ -565,6 +565,7 @@ mod tests {
         let p = Profile::builtin();
         let mut sim = SimMcu::new(&p, scenario(sc).unwrap(), 7);
         let mut d = Dash::new(p, None);
+        d.set_language(tdm_logic::Language::En);
         d.on_event(LinkEvent::Up("sim".into()), 0.0);
         let mut vm = d.tick(0.0);
         let dt = 1.0 / 60.0;
@@ -599,7 +600,7 @@ mod tests {
             sim.backlight_permille() > 0,
             "UI heartbeat keeps the backlight on"
         );
-        assert!(vm.odo_text.starts_with("48 2"));
+        assert!(vm.odo_text.starts_with("48,2"));
     }
 
     #[test]
