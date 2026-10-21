@@ -120,5 +120,7 @@ jobs:
         if: failure()
         run: |
           esc() { sed -e 's/%/%25/g' -e 's/\r//g' | awk '{printf "%s%%0A", $0}'; }
-          echo "::error title=End of the build log::$(tail -n 60 build.log 2>/dev/null | cut -c1-300 | esc)"
+          # annotations are cut at a few KB: the error lines first, then the end of the log
+          echo "::error title=Errors in the build log::$(grep -iE 'error|\*\*\*|no space|could not|failed' build.log 2>/dev/null | tail -n 15 | cut -c1-200 | esc)"
+          echo "::error title=End of the build log::$(tail -n 20 build.log 2>/dev/null | cut -c1-200 | esc)"
           echo "::error title=Free space::$( (df -h / /mnt || df -h /) 2>&1 | esc)"
