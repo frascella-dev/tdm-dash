@@ -1,6 +1,6 @@
 # 11 · Usage
 
-How to read the dashboard, how to use the MODE and SET keys and what the warnings mean. The images are captured from the real software (`tdm-dash --screenshot`), at the display resolution (800×480). The dashboard texts are in English or Italian depending on `language` in the profile (chapter 09).
+How to read the dashboard, how to use the MODE and SET keys and what the warnings mean. The images are captured from the real software (`tdm-dash --screenshot`), at the resolution of the reference display (800×480). The screens of elongated bar displays and other sizes are in [`design/screenshots/`](../../design/screenshots/) ([chapter 09](09-software.md#other-displays)). The dashboard texts are in English or Italian depending on `language` in the profile (chapter 09).
 
 ## Power-on
 
@@ -154,6 +154,7 @@ The same software runs on a Linux PC, with a bike simulator in place of the Pico
 ```sh
 cargo run -p tdm-dash                                # city scenario
 cargo run -p tdm-dash -- --source sim:mountain --layout sport
+cargo run -p tdm-dash -- --size 1280x400                # an elongated bar display
 cargo run -p tdm-link --bin tdmctl -- scenarios      # list of scenarios
 ```
 

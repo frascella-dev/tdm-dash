@@ -28,7 +28,8 @@ cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
 cargo build -p tdm-proto -p tdm-core --target thumbv6m-none-eabi   # no_std check
 cargo clippy -p tdm-dash --no-default-features --features kms --all-targets -- -D warnings
-cargo run --release -p tdm-dash --no-default-features -- --screenshot design/screenshots   # refresh reference screens (English + it-* checks)
+cargo run --release -p tdm-dash --no-default-features -- --screenshot design/screenshots   # refresh reference screens for every panel size (English + it-* checks)
+cargo run -p tdm-dash -- --size 1280x400   # simulator on another panel size
 cargo build --release --target aarch64-unknown-linux-gnu -p tdm-dash --no-default-features --features kms  # needs gcc-aarch64-linux-gnu
 python3 tools/check_mermaid.py --mmdc <path-to-mmdc> [--chrome <chromium>]
 docker run --rm -u 0 -v "$PWD":/w -w /w kicad/kicad:9.0.9 sh -c 'python3 hardware/kicad/generate.py && hardware/kicad/export.sh'   # schematic: regenerate, ERC, pin check, export
@@ -48,7 +49,8 @@ PUPPETEER_SKIP_DOWNLOAD=1 npm i --prefix "$SCRATCH/mmdc" @mermaid-js/mermaid-cli
 - `tdm-logic`: profile, conversions, filters, warnings, calibration (`calib`, behind `tdmctl calibrate`), `Dash` state machine → `ViewModel`.
 - `tdm-link`: `SimMcu` vehicle simulator, serial/replay sources, `tdmctl`.
 - `tdm-dash`: Slint UI (`ui/dash.slint`), platforms `desktop`, `kms`, headless screenshots/bench.
-- All font sizes used in `ui/dash.slint` must be listed in `crates/tdm-dash/build.rs` (`FONT_SIZES`), and any non-ASCII character that only appears in Rust strings (Italian texts included) must be added to the hidden `Text` in `dash.slint`, or the software renderer cannot draw it.
+- Glyphs are signed distance fields drawn at any size; keep the smallest and largest font size of `ui/dash.slint` in `FONT_SIZES` (`crates/tdm-dash/build.rs`). Any non-ASCII character that only appears in Rust strings (Italian texts included) must be added to the hidden `Text` in `dash.slint`, or the software renderer cannot draw it.
+- Two layout families (docs/adr/0013): `wide` (800×480 canvas, mirrors `design/index.html`) and `bar` (elongated panels). Every screen change must work in both: check the screenshots of every size in `design/screenshots/`, in English and Italian.
 
 ## Hardware and OS
 

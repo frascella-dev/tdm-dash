@@ -162,6 +162,26 @@ The timings come from the datasheet. The sync and clock polarities are the overl
 - if the image "flickers" or the colors are wrong, add `,pixclk-invert` to the second line
 - if the image is shifted, try `hsync-invert,vsync-invert`
 
+### Other displays
+
+The interface adapts to the panel ([ADR 0013](../adr/0013-other-displays-and-bars.md)):
+- **Panels up to 2.2 times wider than tall** (800×480, 1024×600, 1280×720, 1280×800, 1024×768) use the usual layouts, scaled.
+- **Elongated bars** (1280×400, 1920×480, 1920×720) get dedicated versions of Classic, Sport and Touring.
+
+The program reads the size from the panel's preferred mode. The reference screens for each size are in [`design/screenshots/`](../../design/screenshots/).
+
+| Panel | What to change |
+|---|---|
+| Another DPI panel | The timings of the `vc4-kms-dpi-generic` line, from the panel datasheet |
+| HDMI panel (most bars) | In `config.txt`, replace the two display lines with `dtoverlay=vc4-kms-v3d,noaudio`. If the panel does not announce its mode, or is not detected at boot, add for example `video=HDMI-A-1:1280x400@60D` to `cmdline.txt` (`D` forces the output on) |
+| Bar that is natively portrait (400×1280, 480×1920) | As for HDMI, plus `rotation = 90` (or `270`, depending on the mounting) in the profile |
+
+The examples are commented in `config.txt`. Two limits:
+- **Fail-dark:** on HDMI panels the backlight is driven by the panel's own board, not by the Pico, so the fail-dark protection of chapter 11 does not work. If the program hangs, the last frame stays on screen until the watchdog reboots the Pi (10 s).
+- **More pixels, more drawing work:** `tdm-dash --bench 600 --size 1920x480` measures the drawing time per frame. Run it on the Pi with the panel you want to use before riding with it.
+
+Square or round panels, DSI panels and portrait mounting are not supported.
+
 ### Development image
 
 1. Rename `wpa_supplicant.conf.example` to `wpa_supplicant.conf` on the TDMBOOT partition and write your network name and password in it.
@@ -205,6 +225,8 @@ The TDM 850 profile is [`profiles/yamaha-tdm850-3vd.toml`](../../profiles/yamaha
 | `[inputs]` | channels | Which Pico input corresponds to which indicator; `invert = true` inverts the logic |
 | `[display]` | `layout`, `theme` | Default layout and theme |
 | | `language` | Language of the dashboard texts: `"en"` (default) or `"it"`. The TDM 850 profile ships with `"it"` |
+| | `rotation` | Clockwise rotation of the picture: `0` (default), `90`, `180`, `270`. The older `rotate_180 = true` still means `180` |
+| | `form`, `scale` | Optional: force the `wide` or `bar` layouts (default `auto`, from the panel shape) and the UI scale (default from the panel size) |
 | `[fuel]` | `tank_l`, `l_per_100km` | For the range estimate |
 
 To try a profile on the PC before copying it to the SD card:

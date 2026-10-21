@@ -377,24 +377,22 @@ mod tests {
         let d = Profile::builtin().display;
         assert_eq!((d.rotation(), d.form, d.scale), (0, Form::Auto, None));
         let with = |old: &str, new: &str| Profile::parse(&BUILTIN_TOML.replace(old, new));
-        let p = with("rotate_180 = false", "rotate_180 = true").unwrap();
+        let r0 = "rotation = 0 ";
+        let p = with(r0, "rotate_180 = true ").unwrap();
         assert_eq!(p.display.rotation(), 180);
-        let p = with(
-            "rotate_180 = false",
-            "rotation = 90\nform = \"bar\"\nscale = 1.5",
-        )
-        .unwrap();
+        let p = with(r0, "rotation = 90\nform = \"bar\"\nscale = 1.5 ").unwrap();
         assert_eq!((p.display.rotation(), p.display.form), (90, Form::Bar));
         assert_eq!(p.display.scale, Some(1.5));
-        // older profiles without the line still load
+        // older profiles, with rotate_180 or without either key, still load
         assert_eq!(
-            with("rotate_180 = false", "").unwrap().display.rotation(),
+            with(r0, "rotate_180 = false ").unwrap().display.rotation(),
             0
         );
-        assert!(with("rotate_180 = false", "rotation = 45").is_err());
-        assert!(with("rotate_180 = false", "rotate_180 = true\nrotation = 90").is_err());
-        assert!(with("rotate_180 = false", "scale = 9.0").is_err());
-        assert!(with("rotate_180 = false", "form = \"round\"").is_err());
+        assert_eq!(with(r0, "").unwrap().display.rotation(), 0);
+        assert!(with(r0, "rotation = 45 ").is_err());
+        assert!(with(r0, "rotate_180 = true\nrotation = 90 ").is_err());
+        assert!(with(r0, "scale = 9.0 ").is_err());
+        assert!(with(r0, "form = \"round\" ").is_err());
     }
 
     #[test]

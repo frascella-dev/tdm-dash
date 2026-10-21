@@ -54,7 +54,10 @@ flowchart TB
 ## Customizing
 
 - **Another bike:** add the profile in `profiles/` and set `BR2_PACKAGE_TDM_DASH_PROFILE` (`make -C os release-menuconfig`, *External options* menu). Editing `tdm-dash.toml` on an already written card also works.
-- **Another DPI display:** change the timings of the `vc4-kms-dpi-generic` line in `board/zero2w/config.txt`, or directly on the card.
+- **Another display:** the dashboard adapts to the panel size, elongated bars included ([ADR 0013](../docs/adr/0013-other-displays-and-bars.md)).
+  - For another DPI panel, change the timings of the `vc4-kms-dpi-generic` line in `board/zero2w/config.txt`, or directly on the card.
+  - For an HDMI panel, use the commented lines in the same file.
+  - Details in [chapter 09](../docs/manual/09-software.md#other-displays).
 - **Updating Buildroot:** move the submodule to a new tag and compare the defconfigs with `raspberrypizero2w_64_defconfig` of that version. 2027.02 will be the next long-term release.
 
 ## Licenses
