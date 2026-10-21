@@ -4,7 +4,9 @@ CONFIG_DRM=y
 CONFIG_SND=y
 CONFIG_SND_SOC=y
 CONFIG_DRM_VC4=y
-# the DPI panel (compatible "panel-dpi" in vc4-kms-dpi-generic)
+# the DPI panel (compatible "panel-dpi" in vc4-kms-dpi-generic); it depends
+# on the backlight class, a module in bcm2711_defconfig
+CONFIG_BACKLIGHT_CLASS_DEVICE=y
 CONFIG_DRM_PANEL_SIMPLE=y
 CONFIG_USB_DWC2=y
 CONFIG_USB_ACM=y
