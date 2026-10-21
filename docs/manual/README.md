@@ -24,7 +24,7 @@ The manual grows together with the project: each milestone adds or updates the c
 
 ## Conventions
 
-- **Diagrams:** they are written in [Mermaid](https://mermaid.js.org/) inside the Markdown files, so GitHub shows them directly and they stay editable as text. The real schematics come from KiCad (`hardware/kicad/`), the wiring harnesses from WireViz (`hardware/harness/`); the generated SVG images are in `hardware/exports/`.
+- **Diagrams:** they are written in [Mermaid](https://mermaid.js.org/) inside the Markdown files, so GitHub shows them directly and they stay editable as text. The real schematics come from KiCad (`hardware/kicad/`), the wiring harnesses from WireViz (`hardware/harness/`), the dimensioned drawings from `hardware/drawings/`; the generated SVG images (and PDFs to print) are in `hardware/exports/`.
 - **Data status:** for the original wiring, the markers of the [research](../research/original-wiring.md) are used: **[VERIFIED]**, **[TO VERIFY]**, **[HYPOTHESIS]**.
 - **Notices:**
 

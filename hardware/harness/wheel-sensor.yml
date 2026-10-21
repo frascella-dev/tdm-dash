@@ -2,7 +2,8 @@
 #
 # The sensor's own lead colors (brown +V, blue 0 V, black output) come from
 # its datasheet; the extension cable is a shielded 3-core, shield grounded at
-# the board end only.
+# the board end only. X1 and X2 are the DTM pair near the fork yoke; J401 is
+# the terminal of the schematic (sheet 4).
 
 metadata:
   title: LJ12A3 wheel sensor → tdm-dash
@@ -15,23 +16,27 @@ options:
   bgcolor_connector: WH
   bgcolor_cable: WH
 
+tweak:  # same look in every harness: columns 1 inch apart instead of 2
+  override:
+    graph:
+      ranksep: "1"
+
 connectors:
   S1:
     type: LJ12A3-4-Z/BX
     subtype: inductive NPN NO, 6–36 V
     pinlabels: [+V, OUT, 0V]
   X1:
-    type: Deutsch DTM
-    subtype: 3-pin male (DTM04-3P)
-    notes: Near the fork yoke, held with a cable tie
+    type: Deutsch DTM04-3P, male
+    subtype: mates X2
+    notes: Near the fork yoke, cable-tied
     pinlabels: [+12V, SIG, GND]
   X2:
-    type: Deutsch DTM
-    subtype: 3-pin female (DTM06-3S + W3S)
+    type: Deutsch DTM06-3S + W3S, female
+    subtype: mates X1
     pinlabels: [+12V, SIG, GND]
-  X3:
-    type: Terminal J401 on the perfboard
-    subtype: 3-pin
+  J401:
+    type: Terminal on the perfboard
     pinlabels: [+12V_P, WHEEL_SIG, GND]
 
 cables:
@@ -40,24 +45,24 @@ cables:
     gauge: 0.34 mm2
     length: 1.0
     colors: [BN, BK, BU]
-    notes: Shorten, leaving slack for the full fork travel and steering lock
+    notes: "Shorten, leaving slack for the fork\ntravel and the steering lock"
   W2:
     type: Shielded 3-core cable
     gauge: 0.34 mm2
     length: 1.2
     colors: [RD, WH, BK]
     shield: true
-    notes: Shield grounded at the dashboard end only
+    notes: Shield grounded at J401 only
 
-connections:
+connections:  # listed bottom-up: Graphviz stacks the two runs in reverse order
+  -
+    - X2: [1, 2, 3]
+    - W2: [1, 2, 3]
+    - J401: [1, 2, 3]
+  -
+    - W2: [s]
+    - J401: [3]
   -
     - S1: [1, 2, 3]
     - W1: [1, 2, 3]
     - X1: [1, 2, 3]
-  -
-    - X2: [1, 2, 3]
-    - W2: [1, 2, 3]
-    - X3: [1, 2, 3]
-  -
-    - W2: [s]
-    - X3: [3]

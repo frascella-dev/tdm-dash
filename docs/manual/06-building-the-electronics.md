@@ -19,9 +19,9 @@ The sensor module is built on a **9 × 7 cm double-sided perfboard** (30 × 24 h
 
 ## Layout
 
-![Perfboard layout](../../hardware/perfboard/layout.svg)
+![Perfboard layout](../../hardware/exports/drawings/perfboard.svg)
 
-The board is divided into zones, one per schematic sheet; the drawing comes from [`hardware/perfboard/layout.py`](../../hardware/perfboard/layout.py). Rules:
+The board is divided into zones, one per schematic sheet, on the real hole grid: columns 1–30 and rows A–X, as printed around the board. The legend lists the parts of each zone; the parts that are not soldered on the board (the harness fuse, the TPS61169 breakout, the buttons, the light sensor and the backup LEDs) are listed under the plan. The drawing comes from [`hardware/drawings/perfboard.py`](../../hardware/drawings/perfboard.py); the [PDF](../../hardware/exports/drawings/perfboard.pdf) prints at 2:1, twice the real size. Rules:
 
 - **Star ground:** a wide ground track (doubled 0.5 mm wire) along the bottom edge. Each zone's ground reaches it with its own wire.
 - **Tachometer high voltage:** D301, R301 and R302 sit in a corner, away from the other tracks. The 1 W resistors must be mounted **raised 3–4 mm** off the board, with at least 3 mm between the leads of different inputs.
@@ -129,7 +129,7 @@ To test it you need a **coil simulator**:
 
 ### 7 · Backlight and USB (zone 8)
 
-Fit R701, R702, J701 and connect the TPS61169 breakout (chapter 05). Without the display, leave the breakout **disconnected from the LEDs**: a constant-current boost converter with no load raises its voltage to the maximum.
+Fit R701, R702 and J701, then wire J701 to the TPS61169 breakout (U701), which sits next to the Kippah, off the board (chapter 05). Without the display, leave the breakout **disconnected from the LEDs**: a constant-current boost converter with no load raises its voltage to the maximum.
 
 - The Pico turns the backlight on only when the Pi is drawing and sends it the brightness, so the PWM is tested in the final acceptance test. Between GP15 and ground, the multimeter on DC volts reads the PWM average: 0 V with the screen off, up to 3.3 V at maximum brightness.
 - Solder the USB twisted pair to the Pico's TP2/TP3 pads, as in chapter 05.

@@ -18,13 +18,15 @@ jobs:
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Schematic matches generate.py
         run: |
-          python3 hardware/kicad/generate.py --symbols /usr/share/kicad/symbols
+          python3 hardware/kicad/generate.py
           git diff --exit-code -- hardware/kicad
-      - name: ERC, firmware cross-check, PDF and SVG
+      - name: ERC, netlist and firmware checks, layout check, PDF and SVG
         run: hardware/kicad/export.sh
       - name: Committed SVG exports are up to date
         run: git diff --exit-code -- 'hardware/exports/kicad/*.svg'
+      # kept even when a check fails, to look at the drawing
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: schematic
           path: hardware/exports/kicad/
@@ -43,6 +45,31 @@ jobs:
         with:
           name: cad
           path: hardware/exports/cad/
+
+  drawings:
+    name: Dimensioned drawings (Python)
+    needs: cad
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # the bracket drawing takes its outline from the OpenSCAD export
+      - uses: actions/download-artifact@v4
+        with:
+          name: cad
+          path: fresh-cad
+      - name: Committed bracket outline matches the .scad
+        run: |
+          cmp fresh-cad/sensor-bracket.svg hardware/exports/cad/sensor-bracket.svg
+          cmp fresh-cad/sensor-bracket.dxf hardware/exports/cad/sensor-bracket.dxf
+      - name: Drawings match generate.py (text overlaps are refused)
+        run: |
+          python3 hardware/drawings/generate.py
+          git diff --exit-code -- hardware/exports/drawings
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: drawings
+          path: hardware/exports/drawings/
 
   harness:
     name: Wiring harnesses (WireViz)

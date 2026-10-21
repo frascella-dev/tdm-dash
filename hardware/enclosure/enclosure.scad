@@ -1,10 +1,11 @@
 // tdm-dash enclosure for the Newhaven NHD-7.0-800480AF-ASXP (7", 800x480).
 //
 // Three printed parts, chosen with -D part="...":
-//   front  - bezel with the window pocket, printed face down (black ASA)
-//   rear   - shell for Pi Zero 2 W + Kippah and the perfboard (light ASA)
-//   visor  - sun visor screwed on top (black ASA)
-//   all    - assembly preview (not for printing)
+//   front    - bezel with the window pocket, printed face down (black ASA)
+//   rear     - shell for Pi Zero 2 W + Kippah and the perfboard (light ASA)
+//   visor    - sun visor screwed on top (black ASA)
+//   all      - assembly preview (not for printing)
+//   exploded - the same, pulled apart along the assembly order
 //
 //   openscad -D 'part="front"' -o front.stl enclosure.scad
 //
@@ -172,14 +173,34 @@ module visor() {
 
 // ---------------------------------------------------------------- output
 
+// The display, window and foam, for the previews only. The active area is
+// opaque and stands 0.05 mm proud of the module, so the two faces never
+// share a plane (no z-fighting stripes in the renders).
 module panel_ghost() {
     color("#222") translate([0, 0, -bezel_d]) linear_extrude(panel_t) square([panel_w, panel_h], center = true);
-    color("#4af", 0.6) translate([aa_dx, aa_dy, -bezel_d + panel_t]) linear_extrude(0.2) square([aa_w, aa_h], center = true);
+    color("#2b4d6e") translate([aa_dx, aa_dy, -bezel_d + panel_t + 0.05]) linear_extrude(0.2) square([aa_w, aa_h], center = true);
+}
+
+module window_ghost() {
+    color("#9cc4e4", 0.45) translate([0, 0, -front_t - window_t]) linear_extrude(window_t)
+        square([inner_w - 0.4, inner_h - 0.4], center = true);
+    color("#555") translate([0, 0, -front_t - window_t - foam_t]) linear_extrude(foam_t) difference() {
+        square([inner_w - 0.4, inner_h - 0.4], center = true);
+        square([aa_w + 2, aa_h + 2], center = true);
+    }
 }
 
 if (part == "front") rotate([180, 0, 0]) front();               // face down on the bed
-else if (part == "rear") translate([0, 0, bezel_d + depth]) rear();  // open side up
+else if (part == "rear") color("#ddd") translate([0, 0, bezel_d + depth]) rear();  // open side up
 else if (part == "visor") rotate([90, 0, 0]) translate([0, -outer_h / 2 - visor_t, 0]) visor();  // top face down
+else if (part == "exploded") {
+    // bezel, window and foam, display, shell; the visor lifted off the top
+    color("#333") translate([0, 0, 90]) front();
+    translate([0, 0, 60]) window_ghost();
+    translate([0, 0, 30]) panel_ghost();
+    color("#ddd") rear();
+    color("#333") translate([0, 30, 0]) visor();
+}
 else {
     color("#333") front();
     color("#ddd") rear();

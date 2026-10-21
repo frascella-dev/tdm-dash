@@ -1,10 +1,13 @@
 # Adapter harness: original cluster connectors of the 3VD -> tdm-dash board.
 #
-# The bike side is the plug of a used cluster cord set (3VD-83509-00) or the
-# matching connector, so the original loom is never cut. Its pin numbers and
-# wire colors are NOT known yet: the colors below are the Yamaha convention
-# and stay [TO VERIFY] until the measurements of
+# The bike side (X1) is the plug of a used cluster cord set (3VD-83509-00) or
+# the matching connector, so the original loom is never cut. Its pin numbers
+# and wire colors are NOT known yet: the colors below are the Yamaha
+# convention and stay [TO VERIFY] until the measurements of
 # docs/research/bike-measurements.md are done. The adapter wires are ours.
+#
+# P101 and P102 are the harness plugs that mate J101 and J102 of the
+# schematic (sheet 1); their pin labels are the schematic nets.
 
 metadata:
   title: 3VD cluster adapter harness → tdm-dash
@@ -17,13 +20,16 @@ options:
   bgcolor_connector: WH
   bgcolor_cable: WH
 
+tweak:  # same look in every harness: columns 1 inch apart instead of 2
+  override:
+    graph:
+      ranksep: "1"
+
 connectors:
   X1:
-    type: Original cluster connectors (bike side)
-    subtype: pinout [TO VERIFY]
-    notes: >-
-      Provisional pin numbers: the original connector is measured with a multimeter.
-      In brackets the likely Yamaha color [TO VERIFY].
+    type: Original cluster connectors
+    subtype: bike side, pinout [TO VERIFY]
+    notes: "Provisional pin numbers, to measure.\nIn brackets: likely Yamaha color [TO VERIFY]"
     pinlabels:
       - +12V key (Br?)
       - Ground (B?)
@@ -34,15 +40,13 @@ connectors:
       - Tachometer (O or Gy?)
       - Coolant sender (?)
       - Illumination (L?)
-  X2:
-    type: Superseal 1.5
-    subtype: 6-pin, female (harness side)
-    notes: Mates with J101 of the dashboard
+  P101:
+    type: Superseal 1.5, female
+    subtype: mates J101
     pinlabels: [+12V_KEY, GND, BIKE_NEUTRAL, BIKE_HIGH_BEAM, BIKE_TURN_L, BIKE_TURN_R]
-  X3:
-    type: Superseal 1.5
-    subtype: 4-pin, female (harness side)
-    notes: Mates with J102 of the dashboard
+  P102:
+    type: Superseal 1.5, female
+    subtype: mates J102
     pinlabels: [BIKE_TACH, BIKE_COOLANT, BIKE_ILLUM, GND]
 
 cables:
@@ -51,20 +55,20 @@ cables:
     gauge: 0.5 mm2
     length: 0.3
     colors: [RD, BK, TQ, YE, BN, GN]
-    notes: Adapter wires (our color choice). 2 A inline fuse on the red wire, close to X1
+    notes: "Our color choice.\n2 A inline fuse on the red wire, close to X1"
   W2:
     type: FLRY-B
     gauge: 0.5 mm2
     length: 0.3
     colors: [OG, VT, BU, BK]
-    notes: The tachometer wire carries spikes of hundreds of volts, FLRY insulation ≥ 600 V
+    notes: "Tachometer: spikes of hundreds of volts,\nFLRY insulation ≥ 600 V"
 
 connections:
   -
     - X1: [1, 2, 3, 4, 5, 6]
     - W1: [1, 2, 3, 4, 5, 6]
-    - X2: [1, 2, 3, 4, 5, 6]
+    - P101: [1, 2, 3, 4, 5, 6]
   -
     - X1: [7, 8, 9, 2]
     - W2: [1, 2, 3, 4]
-    - X3: [1, 2, 3, 4]
+    - P102: [1, 2, 3, 4]

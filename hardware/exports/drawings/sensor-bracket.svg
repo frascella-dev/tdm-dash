@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="297mm" height="210mm" viewBox="0 0 297 210" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif">
+<title>tdm-dash · sensor bracket, 1:1</title>
+<rect width="297" height="210" fill="#ffffff"/>
+<path d="M 10 10 L 287 10 L 287 200 L 10 200 Z" fill="none" stroke="#840000" stroke-width="0.3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 14 14 L 283 14 L 283 196 L 14 196 Z" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 60 10 L 60 14" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 60 196 L 60 200" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 110 10 L 110 14" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 110 196 L 110 200" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 160 10 L 160 14" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 160 196 L 160 200" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 210 10 L 210 14" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 210 196 L 210 200" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 260 10 L 260 14" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 260 196 L 260 200" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="35" y="12.648" font-size="1.8" fill="#840000" text-anchor="middle">1</text>
+<text x="35" y="198.648" font-size="1.8" fill="#840000" text-anchor="middle">1</text>
+<text x="85" y="12.648" font-size="1.8" fill="#840000" text-anchor="middle">2</text>
+<text x="85" y="198.648" font-size="1.8" fill="#840000" text-anchor="middle">2</text>
+<text x="135" y="12.648" font-size="1.8" fill="#840000" text-anchor="middle">3</text>
+<text x="135" y="198.648" font-size="1.8" fill="#840000" text-anchor="middle">3</text>
+<text x="185" y="12.648" font-size="1.8" fill="#840000" text-anchor="middle">4</text>
+<text x="185" y="198.648" font-size="1.8" fill="#840000" text-anchor="middle">4</text>
+<text x="235" y="12.648" font-size="1.8" fill="#840000" text-anchor="middle">5</text>
+<text x="235" y="198.648" font-size="1.8" fill="#840000" text-anchor="middle">5</text>
+<text x="285" y="12.648" font-size="1.8" fill="#840000" text-anchor="middle">6</text>
+<text x="285" y="198.648" font-size="1.8" fill="#840000" text-anchor="middle">6</text>
+<path d="M 10 60 L 14 60" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 283 60 L 287 60" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 10 110 L 14 110" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 283 110 L 287 110" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 10 160 L 14 160" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 283 160 L 287 160" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="12" y="35.648" font-size="1.8" fill="#840000" text-anchor="middle">A</text>
+<text x="285" y="35.648" font-size="1.8" fill="#840000" text-anchor="middle">A</text>
+<text x="12" y="85.648" font-size="1.8" fill="#840000" text-anchor="middle">B</text>
+<text x="285" y="85.648" font-size="1.8" fill="#840000" text-anchor="middle">B</text>
+<text x="12" y="135.648" font-size="1.8" fill="#840000" text-anchor="middle">C</text>
+<text x="285" y="135.648" font-size="1.8" fill="#840000" text-anchor="middle">C</text>
+<text x="12" y="185.648" font-size="1.8" fill="#840000" text-anchor="middle">D</text>
+<text x="285" y="185.648" font-size="1.8" fill="#840000" text-anchor="middle">D</text>
+<path d="M 163 166 L 283 166 L 283 196 L 163 196 Z" fill="none" stroke="#840000" stroke-width="0.3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 163 188 L 283 188" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 163 177 L 283 177" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 163 171 L 283 171" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 197 188 L 197 196" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 219 188 L 219 196" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 259 188 L 259 196" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="164.5" y="190.104" font-size="1.4" fill="#840000">SCALE</text>
+<text x="164.5" y="194.1" font-size="2.5" fill="#840000" font-weight="bold">1:1</text>
+<text x="198.5" y="190.104" font-size="1.4" fill="#840000">REV</text>
+<text x="198.5" y="194.1" font-size="2.5" fill="#840000" font-weight="bold">0.2</text>
+<text x="220.5" y="190.104" font-size="1.4" fill="#840000">DATE</text>
+<text x="220.5" y="194.1" font-size="2.5" fill="#840000" font-weight="bold">2026-10-21</text>
+<text x="260.5" y="190.104" font-size="1.4" fill="#840000">SIZE</text>
+<text x="260.5" y="194.1" font-size="2.5" fill="#840000" font-weight="bold">A4</text>
+<text x="164.5" y="183.796" font-size="3.6" fill="#840000" font-weight="bold">Sensor bracket</text>
+<text x="164.5" y="175.008" font-size="2.8" fill="#840000" font-weight="bold">tdm-dash</text>
+<text x="185" y="174.702" font-size="1.95" fill="#840000">mechanical parts · Yamaha TDM 850 (3VD)</text>
+<text x="281.5" y="174.702" font-size="1.95" fill="#840000" text-anchor="end">CERN-OHL-P-2.0</text>
+<text x="164.5" y="169.004" font-size="1.4" fill="#840000">github.com/frascella-dev/tdm-dash · generated by hardware/drawings/generate.py from hardware/bracket/sensor-bracket.scad, do not edit by hand</text>
+<path d="M 150.201 128.191 L 151.39 128.015 L 152.556 127.722 L 153.688 127.317 L 154.775 126.803 L 155.806 126.186 L 156.771 125.469 L 157.662 124.662 L 158.469 123.771 L 159.185 122.806 L 159.803 121.775 L 160.317 120.688 L 160.722 119.556 L 161.015 118.39 L 161.191 117.201 L 161.25 116 L 161.191 114.799 L 161.015 113.61 L 160.722 112.444 L 160.317 111.312 L 159.803 110.225 L 159.185 109.194 L 158.469 108.229 L 157.662 107.338 L 156.771 106.531 L 155.806 105.814 L 154.775 105.197 L 153.688 104.683 L 152.556 104.278 L 151.39 103.985 L 150.201 103.809 L 149 103.75 L 106.28 103.75 L 109.585 101.534 L 116.138 96.946 L 117.158 96.155 L 118.095 95.267 L 118.941 94.293 L 119.686 93.239 L 120.326 92.118 L 120.852 90.94 L 121.26 89.716 L 121.546 88.457 L 121.708 87.177 L 121.743 85.887 L 121.651 84.6 L 121.434 83.328 L 121.093 82.083 L 120.632 80.878 L 120.055 79.724 L 119.368 78.632 L 118.577 77.612 L 117.689 76.675 L 116.714 75.829 L 115.661 75.084 L 114.54 74.444 L 113.362 73.918 L 112.138 73.51 L 110.879 73.224 L 109.599 73.062 L 108.309 73.027 L 107.022 73.119 L 105.75 73.336 L 104.505 73.677 L 103.3 74.138 L 102.145 74.715 L 101.053 75.402 L 94.5 79.991 L 59.194 105.814 L 58.229 106.531 L 57.338 107.338 L 56.531 108.229 L 55.815 109.194 L 55.197 110.225 L 54.682 111.312 L 54.278 112.444 L 53.985 113.61 L 53.809 114.799 L 53.75 116 L 53.809 117.201 L 53.985 118.39 L 54.278 119.556 L 54.682 120.688 L 55.197 121.775 L 55.815 122.806 L 56.531 123.771 L 57.338 124.662 L 58.229 125.469 L 59.194 126.186 L 60.225 126.803 L 61.312 127.317 L 62.444 127.722 L 63.61 128.015 L 64.799 128.191 L 66 128.25 L 149 128.25 Z M 101.573 96.895 L 100.975 96.819 L 100.386 96.685 L 99.814 96.495 L 99.263 96.248 L 98.738 95.95 L 98.246 95.601 L 97.79 95.205 L 97.375 94.767 L 97.005 94.29 L 96.683 93.779 L 96.413 93.239 L 96.198 92.676 L 96.038 92.094 L 95.937 91.499 L 95.894 90.897 L 95.911 90.293 L 95.986 89.695 L 96.12 89.106 L 96.311 88.534 L 96.557 87.983 L 96.856 87.458 L 97.205 86.966 L 97.6 86.51 L 98.038 86.095 L 98.515 85.725 L 105.068 81.136 L 105.579 80.815 L 106.119 80.545 L 106.683 80.329 L 107.265 80.17 L 107.86 80.068 L 108.462 80.025 L 109.065 80.042 L 109.664 80.118 L 110.252 80.251 L 110.825 80.442 L 111.376 80.688 L 111.9 80.987 L 112.393 81.336 L 112.849 81.731 L 113.264 82.17 L 113.634 82.647 L 113.955 83.157 L 114.225 83.697 L 114.441 84.261 L 114.6 84.843 L 114.702 85.438 L 114.744 86.04 L 114.728 86.643 L 114.653 87.242 L 114.519 87.831 L 114.328 88.403 L 114.082 88.954 L 113.783 89.478 L 113.434 89.971 L 113.038 90.427 L 112.6 90.842 L 112.123 91.212 L 105.57 95.8 L 105.059 96.122 L 104.52 96.392 L 103.956 96.608 L 103.374 96.767 L 102.779 96.868 L 102.177 96.911 Z M 65.485 121.225 L 64.976 121.149 L 64.476 121.024 L 63.991 120.85 L 63.525 120.63 L 63.083 120.365 L 62.669 120.058 L 62.288 119.712 L 61.942 119.331 L 61.635 118.917 L 61.37 118.475 L 61.15 118.009 L 60.976 117.524 L 60.851 117.024 L 60.775 116.515 L 60.75 116 L 60.775 115.485 L 60.851 114.976 L 60.976 114.476 L 61.15 113.991 L 61.37 113.525 L 61.635 113.083 L 61.942 112.669 L 62.288 112.288 L 62.669 111.942 L 63.083 111.635 L 63.525 111.37 L 63.991 111.15 L 64.476 110.976 L 64.976 110.851 L 65.485 110.775 L 66 110.75 L 66.515 110.775 L 67.024 110.851 L 67.524 110.976 L 68.009 111.15 L 68.475 111.37 L 68.917 111.635 L 69.331 111.942 L 69.712 112.288 L 70.058 112.669 L 70.365 113.083 L 70.63 113.525 L 70.85 113.991 L 71.024 114.476 L 71.149 114.976 L 71.225 115.485 L 71.25 116 L 71.225 116.515 L 71.149 117.024 L 71.024 117.524 L 70.85 118.009 L 70.63 118.475 L 70.365 118.917 L 70.058 119.331 L 69.712 119.712 L 69.331 120.058 L 68.917 120.365 L 68.475 120.63 L 68.009 120.85 L 67.524 121.024 L 67.024 121.149 L 66.515 121.225 L 66 121.25 Z M 148.485 121.225 L 147.976 121.149 L 147.476 121.024 L 146.991 120.85 L 146.525 120.63 L 146.083 120.365 L 145.669 120.058 L 145.288 119.712 L 144.942 119.331 L 144.635 118.917 L 144.37 118.475 L 144.15 118.009 L 143.976 117.524 L 143.851 117.024 L 143.775 116.515 L 143.75 116 L 143.775 115.485 L 143.851 114.976 L 143.976 114.476 L 144.15 113.991 L 144.37 113.525 L 144.635 113.083 L 144.942 112.669 L 145.288 112.288 L 145.669 111.942 L 146.083 111.635 L 146.525 111.37 L 146.991 111.15 L 147.476 110.976 L 147.976 110.851 L 148.485 110.775 L 149 110.75 L 149.515 110.775 L 150.024 110.851 L 150.524 110.976 L 151.009 111.15 L 151.475 111.37 L 151.917 111.635 L 152.331 111.942 L 152.712 112.288 L 153.058 112.669 L 153.365 113.083 L 153.63 113.525 L 153.85 113.991 L 154.024 114.476 L 154.149 114.976 L 154.225 115.485 L 154.25 116 L 154.225 116.515 L 154.149 117.024 L 154.024 117.524 L 153.85 118.009 L 153.63 118.475 L 153.365 118.917 L 153.058 119.331 L 152.712 119.712 L 152.331 120.058 L 151.917 120.365 L 151.475 120.63 L 151.009 120.85 L 150.524 121.024 L 150.024 121.149 L 149.515 121.225 L 149 121.25 Z" fill="#ececec" fill-rule="evenodd" stroke="#000000" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 57.75 116 L 157.25 116" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 66 116 L 116.091 80.926" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 66 124.25 L 66 107.75" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 149 124.25 L 149 107.75" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 107.291 98.258 L 96.794 83.267" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 113.844 93.669 L 103.348 78.679" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 66 117 L 66 140.25" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 149 117 L 149 140.25" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 66 138.25 L 149 138.25" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 66 138.25 L 68.6 137.8 L 68.6 138.7 Z" fill="#c85a00" stroke="#c85a00" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 149 138.25 L 146.4 138.7 L 146.4 137.8 Z" fill="#c85a00" stroke="#c85a00" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="107.5" y="137.35" font-size="3" fill="#c85a00" text-anchor="middle">83</text>
+<path d="M 65.426 115.181 L 52.148 96.217" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 104.746 87.649 L 91.467 68.686" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 53.295 97.856 L 92.615 70.324" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 53.295 97.856 L 55.167 95.996 L 55.683 96.733 Z" fill="#c85a00" stroke="#c85a00" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 92.615 70.324 L 90.743 72.184 L 90.227 71.447 Z" fill="#c85a00" stroke="#c85a00" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="72.439" y="83.353" font-size="3" fill="#c85a00" text-anchor="middle" transform="rotate(-35 72.439 83.353)">48</text>
+<path d="M 102.616 91.582 L 115.895 110.545" fill="none" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 109.169 86.993 L 122.448 105.957" fill="none" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 114.747 108.907 L 121.301 104.318" fill="none" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 114.747 108.907 L 116.619 107.047 L 117.135 107.784 Z" fill="#000000" stroke="#000000" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 121.301 104.318 L 119.429 106.178 L 118.913 105.441 Z" fill="#000000" stroke="#000000" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="117.508" y="105.875" font-size="3" fill="#000000" text-anchor="middle" transform="rotate(-35 117.508 105.875)">8</text>
+<path d="M 87.298 101.087 C 90.358 105.458 92 110.664 92 116" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 87.298 101.087 L 89.158 102.959 L 88.421 103.475 Z" fill="#c85a00" stroke="#c85a00" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 92 116 L 91.55 113.4 L 92.45 113.4 Z" fill="#c85a00" stroke="#c85a00" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="95.244" y="107.859" font-size="3" fill="#c85a00" text-anchor="middle">35°</text>
+<path d="M 62.288 119.712 L 52.388 129.612 L 38.962 129.612" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 62.288 119.712 L 60.767 121.869 L 60.131 121.233 Z" fill="#c85a00" stroke="#c85a00" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="51.888" y="128.712" font-size="3" fill="#c85a00" text-anchor="end">2× Ø10.5</text>
+<path d="M 105.068 81.136 L 117.068 71.136 L 136.41 71.136" fill="none" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 105.068 81.136 L 106.778 79.126 L 107.354 79.817 Z" fill="#000000" stroke="#000000" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="117.568" y="70.236" font-size="3" fill="#000000">slot 12.3 wide</text>
+<path d="M 53.75 149.25 L 161.25 149.25 L 161.25 152.25 L 53.75 152.25 Z" fill="#ececec" stroke="#000000" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 60.75 149.25 L 60.75 152.25" fill="none" stroke="#000000" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 1"/>
+<path d="M 71.25 149.25 L 71.25 152.25" fill="none" stroke="#000000" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 1"/>
+<path d="M 143.75 149.25 L 143.75 152.25" fill="none" stroke="#000000" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 1"/>
+<path d="M 154.25 149.25 L 154.25 152.25" fill="none" stroke="#000000" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 1"/>
+<path d="M 95.893 149.25 L 95.893 152.25" fill="none" stroke="#000000" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 1"/>
+<path d="M 114.746 149.25 L 114.746 152.25" fill="none" stroke="#000000" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 1"/>
+<path d="M 52.75 152.25 L 43.75 152.25" fill="none" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 52.75 149.25 L 43.75 149.25" fill="none" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 45.75 157.25 L 45.75 144.25" fill="none" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 45.75 152.25 L 46.2 154.85 L 45.3 154.85 Z" fill="#000000" stroke="#000000" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 45.75 149.25 L 45.3 146.65 L 46.2 146.65 Z" fill="#000000" stroke="#000000" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="46.65" y="150.75" font-size="3" fill="#000000" text-anchor="middle" transform="rotate(90 46.65 150.75)">3</text>
+<text x="53.75" y="164.25" font-size="3" fill="#000000" font-weight="bold">Plate 3 mm, aluminum 5754 or 6082</text>
+<path d="M 24 182 L 34 182 L 34 184 L 24 184 Z" fill="#000000" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 34 182 L 44 182 L 44 184 L 34 184 Z" fill="#ffffff" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 44 182 L 54 182 L 54 184 L 44 184 Z" fill="#000000" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 54 182 L 64 182 L 64 184 L 54 184 Z" fill="#ffffff" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 64 182 L 74 182 L 74 184 L 64 184 Z" fill="#000000" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="24" y="187.4" font-size="2.2" fill="#000000" text-anchor="middle">0</text>
+<text x="34" y="187.4" font-size="2.2" fill="#000000" text-anchor="middle">10</text>
+<text x="44" y="187.4" font-size="2.2" fill="#000000" text-anchor="middle">20</text>
+<text x="54" y="187.4" font-size="2.2" fill="#000000" text-anchor="middle">30</text>
+<text x="64" y="187.4" font-size="2.2" fill="#000000" text-anchor="middle">40</text>
+<text x="74" y="187.4" font-size="2.2" fill="#000000" text-anchor="middle">50</text>
+<text x="76.223" y="187.4" font-size="2.2" fill="#000000">mm</text>
+<text x="24" y="180.4" font-size="2.2" fill="#000084">Print at 100 % (actual size): this bar measures 50 mm</text>
+<text x="172" y="21.872" font-size="2.6" fill="#000000" font-weight="bold">NOTES</text>
+<text x="172" y="27.072" font-size="2.6" fill="#000000">1.</text>
+<text x="177" y="27.072" font-size="2.6" fill="#000000">Print the PDF at 100 % (actual size) on A4 landscape and check the 50 mm bar.</text>
+<text x="172" y="32.012" font-size="2.6" fill="#000000">2.</text>
+<text x="177" y="32.012" font-size="2.6" fill="#000000">Glue the print on the plate, center-punch the crossings of the center lines, drill the holes,</text>
+<text x="177" y="35.652" font-size="2.6" fill="#000000">then cut and file the outline.</text>
+<text x="172" y="40.592" font-size="2.6" fill="#000000">3.</text>
+<text x="177" y="40.592" font-size="2.6" fill="#000000">Only aluminum may go under a brake caliper bolt. A printed bracket is a fit check, never a</text>
+<text x="177" y="44.232" font-size="2.6" fill="#000000">part (chapter 07).</text>
+<text x="172" y="49.172" font-size="2.6" fill="#000000">4.</text>
+<text x="177" y="49.172" font-size="2.6" fill="#000000">The sensor slides in the slot: 48 ± 4 mm from the bolt. Its two M12 nuts set the 1–2 mm</text>
+<text x="177" y="52.812" font-size="2.6" fill="#000000">gap to the disc bolts.</text>
+<text x="172" y="57.752" font-size="2.6" fill="#c85a00">5.</text>
+<text x="177" y="57.752" font-size="2.6" fill="#c85a00">Dimensions in mm, from sensor-bracket.scad. Orange values are [TO VERIFY] on the</text>
+<text x="177" y="61.392" font-size="2.6" fill="#c85a00">bike (docs/research/bike-measurements.md): set them in the .scad file and regenerate.</text>
+</svg>

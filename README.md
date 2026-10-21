@@ -55,7 +55,7 @@ flowchart LR
 | [`profiles/`](profiles/) | Bike profiles (TOML) |
 | [`design/`](design/) | Interactive design mock-up of the interface (HTML) |
 | [`os/`](os/) | Linux image: Buildroot and external tree |
-| [`hardware/`](hardware/) | KiCad schematic, WireViz harnesses, perfboard, enclosure and bracket (OpenSCAD) |
+| [`hardware/`](hardware/) | KiCad schematic, WireViz harnesses, enclosure and bracket (OpenSCAD), dimensioned drawings |
 | [`docs/`](docs/) | Manual, research, ADRs |
 | [`tools/`](tools/) | Documentation and schematic checks, UF2 conversion, banner |
 
@@ -80,8 +80,8 @@ The Rust toolchain (1.97.1, the same as Buildroot 2026.08) and the targets are i
 
 The CI (GitHub Actions) runs:
 - Rust tests, firmware for RP2040 and RP2350, binary for the Pi
-- schematic ERC and the cross-check against the firmware pins
-- harnesses, printable parts and documentation checks
+- schematic: ERC, netlist and layout checks, and the cross-check against the firmware pins
+- harnesses, printable parts, dimensioned drawings and documentation checks
 - the full image, on tags and once a week
 
 ## Roadmap
