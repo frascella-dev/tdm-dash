@@ -6,7 +6,7 @@
 | [`exports/kicad/`](exports/kicad/) | Schematic as PDF and one SVG per sheet | `hardware/kicad/export.sh` (checks included, see below) |
 | [`harness/`](harness/) | Wiring harnesses in WireViz (YAML) | `wireviz -f st -o hardware/exports/harness hardware/harness/<file>.yml` |
 | [`exports/harness/`](exports/harness/) | Harness drawings (SVG) and bills of materials (TSV) | see `harness/` |
-| [`enclosure/`](enclosure/) | Parametric enclosure in OpenSCAD: bezel, rear shell, sun visor | `hardware/cad-export.sh` |
+| [`enclosure/`](enclosure/) | Parametric enclosure in OpenSCAD: thin display unit (bezel and cover) and a small pod for the boards | `hardware/cad-export.sh` |
 | [`bracket/`](bracket/) | Wheel sensor bracket in OpenSCAD | `hardware/cad-export.sh` |
 | [`exports/cad/`](exports/cad/) | STL files to print, DXF/SVG outline of the bracket, PNG previews | `hardware/cad-export.sh` (also with Docker, see below) |
 | [`drawings/`](drawings/) | Dimensioned A4 drawings: bracket 1:1, enclosure 1:2, perfboard zone plan 2:1 | `python3 hardware/drawings/generate.py` |

@@ -193,6 +193,31 @@ class Drawing:
         cmds.append(("Z",))
         self.path(cmds, color, width, dash, fill)
 
+    def rounded_polygon(self, pts, r, color=INK, width=THIN, dash=None, fill=None):
+        """Closed polygon (page points) with every corner rounded to radius `r`."""
+        n = len(pts)
+        corners = []
+        for i, p in enumerate(pts):
+            u1 = unit(pts[i - 1][0] - p[0], pts[i - 1][1] - p[1])
+            u2 = unit(pts[(i + 1) % n][0] - p[0], pts[(i + 1) % n][1] - p[1])
+            half = math.acos(max(-1.0, min(1.0, u1[0] * u2[0] + u1[1] * u2[1]))) / 2
+            t = r / math.tan(half)
+            bis = unit(u1[0] + u2[0], u1[1] + u2[1])
+            c = (p[0] + bis[0] * r / math.sin(half), p[1] + bis[1] * r / math.sin(half))
+            a = (p[0] + u1[0] * t, p[1] + u1[1] * t)
+            b = (p[0] + u2[0] * t, p[1] + u2[1] * t)
+            a0 = math.degrees(math.atan2(a[1] - c[1], a[0] - c[0]))
+            a1 = math.degrees(math.atan2(b[1] - c[1], b[0] - c[0]))
+            sweep = (a1 - a0 + 180) % 360 - 180      # the short way round
+            corners.append((a, arc_points(c, r, a0, a0 + sweep)[1:]))
+        cmds = [("M", corners[0][0])]
+        for i, (a, segs) in enumerate(corners):
+            if i:
+                cmds.append(("L", a))
+            cmds += [("C", *seg) for seg in segs]
+        cmds.append(("Z",))
+        self.path(cmds, color, width, dash, fill)
+
     def circle(self, c, r, color=INK, width=THIN, dash=None, fill=None, stroke=True):
         pts = arc_points(c, r, 0, 360)
         cmds = [("M", pts[0])] + [("C", *seg) for seg in pts[1:]] + [("Z",)]
@@ -647,7 +672,7 @@ def scad_params(path: Path) -> dict:
     # the one comprehension the models use: a grid of points
     grid = re.compile(r"^\[\s*for\s*\(\s*(\w+)\s*=\s*(\[[^\]]*\])\s*,\s*(\w+)\s*=\s*(\[[^\]]*\])\s*\)\s*"
                       r"\[\s*(\w+)\s*,\s*(\w+)\s*\]\s*\]$")
-    for line in path.read_text(encoding="utf-8").splitlines():
+    for line in _statements(path.read_text(encoding="utf-8").splitlines()):
         m = pat.match(line)
         if not m:
             continue
@@ -664,6 +689,24 @@ def scad_params(path: Path) -> dict:
         verify = verify or "[TO VERIFY]" in comment
         env[name] = _mark(value, verify)
     return env
+
+
+def _statements(lines):
+    """Top-level lines, with an assignment that goes on over several lines
+    joined into one (its comments joined at the end)."""
+    start = re.compile(r"^[A-Za-z_]\w*\s*=")
+    buf: list[str] = []
+    notes: list[str] = []
+    for line in lines:
+        code, _, note = line.partition("//")
+        if not buf and not start.match(line):
+            yield line
+            continue
+        buf.append(code.strip())
+        notes.append(note.strip())
+        if code.rstrip().endswith(";"):
+            yield " ".join(buf) + ("  // " + " ".join(n for n in notes if n) if any(notes) else "")
+            buf, notes = [], []
 
 
 def _mark(value, verify: bool):

@@ -16,7 +16,7 @@ mkdir -p "$out"
 enc="$here/enclosure/enclosure.scad"
 brk="$here/bracket/sensor-bracket.scad"
 
-for part in front rear visor; do
+for part in front cover rear; do
     openscad -q -D "part=\"$part\"" -o "$out/enclosure-$part.stl" "$enc"
 done
 openscad -q -D 'out="3d"' -o "$out/sensor-bracket.stl" "$brk"
