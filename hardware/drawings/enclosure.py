@@ -1,19 +1,23 @@
 """Enclosure at 1:2: front, back and bottom, with the main dimensions.
 
 The display unit (bezel and cover) is thin; the pod behind it holds the
-perfboard and carries the bike mount. The parts are printed from the STL
-files; this sheet is for checking them and for fitting the enclosure to the
-bike. Every value comes from hardware/enclosure/enclosure.scad.
+perfboard and carries the mount plate, whose two M6 screws go into the
+grommets of the original cluster. The parts are printed from the STL files;
+this sheet is for checking them and for fitting the enclosure to the bike.
+Every value comes from hardware/enclosure/enclosure.scad, the plate outline
+from its export (the plate has its own sheet, mount.py).
 """
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from sheet import (CENTER, FILL, GREY, INK, MEDIUM, NOTE, THICK, THIN, VERIFY, Drawing, View, diameter, fmt, frame,
-                   hdim, notes, scad_params, scale_bar, vdim)
+from mount import OUTLINE, check_outline, m6_len, pod_screws, studs
+from sheet import (CENTER, FILL, GREY, INK, MEDIUM, NOTE, THICK, THIN, VERIFY, Drawing, View, center_mark, diameter,
+                   fmt, frame, hdim, notes, scad_params, scale_bar, svg_outline, vdim)
 
 SCAD = "hardware/enclosure/enclosure.scad"
+PLATE = "#c8ccd1"   # aluminum
 S = 0.5  # 1:2
 
 
@@ -28,6 +32,8 @@ def label(d: Drawing, x: float, y: float, title: str, sub: str) -> None:
 
 def build(root: Path, rev: str, date: str) -> Drawing:
     p = scad_params(root / SCAD)
+    polys = svg_outline(root / OUTLINE)
+    check_outline(polys, p)
     d = Drawing("tdm-dash · enclosure, 1:2")
     frame(d, "Enclosure", "mechanical parts · Yamaha TDM 850 (3VD)", "1:2", rev, date, SCAD)
 
@@ -37,9 +43,10 @@ def build(root: Path, rev: str, date: str) -> Drawing:
     bx, by, bd = p["button_x"], p["button_y"], p["button_d"]
     unit, z_back = p["unit_d"], p["z_back"]
     pw, ph, pcy = p["pod_w"], p["pod_h"], p["pod_cy"]
-    pod_screws = [(sx * (p["pod_in_w"] / 2 - 3), pcy + sy * (p["pod_in_h"] / 2 - 3)) for sx in (-1, 1) for sy in (-1, 1)]
     mounts = p["mount_points"]
-    mc = color(*[v for m in mounts for v in m])
+    st = studs(p)
+    sc = color(p["stud_pitch"], p["stud_x"], p["stud_y"])
+    t = p["plate_t"]
 
     # ------------------------------------------------------------ front
     f = View(82, 63, S)
@@ -83,22 +90,22 @@ def build(root: Path, rev: str, date: str) -> Drawing:
     x0, y0 = k(pw / 2, pcy + ph / 2)
     x1, y1 = k(-pw / 2, pcy - ph / 2)
     d.rounded_polygon([(x0, y0), (x1, y0), (x1, y1), (x0, y1)], p["pod_r"] * S, INK, THICK, fill="#d9d9d9")
-    for q in pod_screws:
+    for q in pod_screws(p):
         d.circle(k(*q), 3.0 * S, INK, THIN, fill="#ffffff")
+    cmds = []                                  # the mount plate, nearest to the eye
+    for poly in polys:
+        cmds += [("M", k(*poly[0]))] + [("L", k(*q)) for q in poly[1:]] + [("Z",)]
+    d.path(cmds, INK, THICK, fill=PLATE, evenodd=True)
     for m in mounts:
-        d.circle(k(*m), p["mount_insert_d"] / 2 * S, mc, MEDIUM, fill="#ffffff")
-        d.line(k(m[0] - 9, m[1]), k(m[0] + 9, m[1]), GREY, THIN, CENTER)
-        d.line(k(m[0], m[1] - 9), k(m[0], m[1] + 9), GREY, THIN, CENTER)
-    side = sorted((m for m in mounts if abs(m[0]) > 1), key=lambda m: m[0])
-    upper = [m for m in mounts if abs(m[0]) <= 1]
-    if len(side) == 2:
-        hdim(d, k(*side[1]), k(*side[0]), k(0, pcy - ph / 2)[1] + 5, fmt(side[1][0] - side[0][0]), mc)
-    if side and upper:
-        vdim(d, k(*side[0]), k(*upper[0]), k(side[0][0], 0)[0] + 9, fmt(upper[0][1] - side[0][1]), mc)
+        center_mark(d, k(*m), p["m5_hole"] / 2 * S, 2)
+    for c in st:                               # the M6 screws, threaded end towards the eye
+        d.circle(k(*c), 3.0 * S, sc, MEDIUM, fill="#ffffff")
+        center_mark(d, k(*c), 3.0 * S, 3)
+    hdim(d, k(*st[1]), k(*st[0]), k(0, pcy - ph / 2)[1] + 5, fmt(p["stud_pitch"]), sc)
     hdim(d, k(pw / 2, pcy + ph / 2), k(-pw / 2, pcy + ph / 2), k(0, top)[1] - 7, fmt(pw), color(pw))
-    vdim(d, k(-pw / 2, pcy - ph / 2), k(-pw / 2, pcy + ph / 2), k(-pw / 2, 0)[0] - 6, fmt(ph), text_at=0.7)
+    vdim(d, k(-pw / 2, pcy - ph / 2), k(-pw / 2, pcy + ph / 2), k(-pw / 2, 0)[0] - 6, fmt(ph), text_at=0.12)
     label(d, k(0, 0)[0], k(0, bot)[1] + 8, "BACK",
-          f"bike side · 3× M5 inserts Ø{fmt(p['mount_insert_d'])} in the lugs · 4× M3 pod screws")
+          "bike side · mount plate on the pod lugs · 2× M6 studs into the original grommets")
 
     # ------------------------------------------------------------ bottom
     b = View(82, 117, S)                      # part (x, z): front face at the top
@@ -112,6 +119,11 @@ def build(root: Path, rev: str, date: str) -> Drawing:
         if abs(m[0]) > pw / 2:
             d.rect(*b(m[0] - lug_r, z_back + p["lug_t"]), *b(m[0] + lug_r, z_back), INK, MEDIUM, fill="#d9d9d9")
     d.rect(*b(-pw / 2, -unit), *b(pw / 2, z_back), INK, THICK, fill=FILL)
+    xs = [x for poly in polys for x, _ in poly]
+    d.rect(*b(min(xs), z_back), *b(max(xs), z_back - t), INK, MEDIUM, fill=PLATE)
+    for c in st:                               # M6 head between plate and display unit, shank through the plate
+        d.rect(*b(c[0] - p["m6_head"], z_back + 4), *b(c[0] + p["m6_head"], z_back), sc, THIN, fill="#ffffff")
+        d.rect(*b(c[0] - 3, z_back - t), *b(c[0] + 3, z_back - m6_len(p)), sc, THIN, fill="#ffffff")
     zp = -unit - p["port_z"]
     for x, dia, name in ((p["gland_x"], p["gland_d"], "gland"), (p["vent_x"], p["vent_d"], "vent")):
         c = b(x, zp)
@@ -130,9 +142,11 @@ def build(root: Path, rev: str, date: str) -> Drawing:
         (f"Display unit {fmt(2 * hw)} × {fmt(top - bot)} × {fmt(unit)} mm: bezel and cover, M3 screws "
          "from the back. The pod behind it holds the perfboard; the Pi Zero 2 W and the Kippah sit on "
          "the cover, inside the pod.", INK),
-        ("Bike mount: 3 M5 heat-set inserts in the lugs of the pod. Two 12 mm IP67 buttons in the "
-         "wings, their bodies in the cups of the cover.", INK),
+        (f"Bike mount: a {fmt(t)} mm aluminum plate on the three lugs of the pod (M5 inserts) carries two "
+         "M6 screws in place of the studs of the original cluster, into its rubber grommets on the "
+         f"fairing stay (sheet dash-mount). Depth {fmt(-z_back + t)} mm with the plate.", INK),
+        ("Two 12 mm IP67 buttons in the wings, their bodies in the cups of the cover.", INK),
         ("Orange values are [TO VERIFY] before printing (chapter 07): display thickness, board heights "
-         "that set the pod depth, button bodies, mount points.", VERIFY),
+         "that set the pod depth, button bodies, the studs of the bike.", VERIFY),
     ], width=130, size=2.4)
     return d

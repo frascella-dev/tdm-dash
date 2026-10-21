@@ -26,7 +26,7 @@ flowchart TD
 
 1. **Photo of the original odometer:** with the cluster on, together with the number plate or the frame number. It is used to set the initial km and as proof of the mileage (chapter 00).
 2. **Removing the instruments:**
-   - remove the inner fairing panel and the screws of the instrument mount, following the workshop manual
+   - remove the fairing and the two nuts under the cluster, following the workshop manual. Keep the two rubber grommets, their collars, washers and nuts: the new dashboard uses them
    - disconnect the connectors of the original cluster, photographing them before you disconnect them
 3. **Speedometer cable:**
    - unhook it from the drive on the front hub. The drive **stays in place**: it acts as a spacer between hub and fork and must not be removed
@@ -45,11 +45,15 @@ flowchart TD
 
 ## 3 · The enclosure
 
-1. **Mounting:**
-   - the enclosure is screwed with its three M5 inserts to the original cluster mount, reusing the original rubber anti-vibration grommets
-   - if the positions do not match, you need an adapter plate or new values of `mount_points` in `enclosure.scad`
-2. **Clearance:**
-   - check that the enclosure does not touch the fairing with the handlebar at full lock
+The dashboard goes where the original cluster was, on the fairing stay, which is bolted to the frame: it does not turn with the handlebar ([chapter 07](07-enclosure-and-bracket.md#the-bike-mount)).
+
+1. **Fit check:** before printing and cutting, try the cardboard [fit template](../../hardware/exports/drawings/fit-template.pdf) on two M6 rods in the grommets, as in the [measurements](../research/bike-measurements.md#8-mechanical-measurements-for-the-mount). Set the values you read in `enclosure.scad` and cut the mount plate.
+2. **Mounting:**
+   - put the two M6 screws in the mount plate, heads on the pod side, then screw the plate to the pod lugs with three M5 × 10 button head screws and medium-strength threadlocker
+   - fit an original grommet in each hole of the fairing stay, with its collar inside
+   - put the M6 screws through the grommets, then the washer and the nut. Tighten until the collar is clamped, about 7 Nm ([HYPOTHESIS]: the value of the 1996 manual, whose cluster uses the same parts)
+3. **Clearance:**
+   - turn the handlebar from lock to lock: nothing may touch the dashboard, the ignition key included
    - the window must be tilted so that it does not reflect the sky into your eyes
 3. **Cables:** they enter through the cable gland and make a downward loop, so water running along the cable drips off instead of getting in.
 

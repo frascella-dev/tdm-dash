@@ -17,7 +17,7 @@ flowchart TD
   E --> F["5. Charging and cranking voltages"]
   F --> G["6. Coolant sender: resistances in a water bath"]
   G --> H["7. Wheel: disc bolts, bracket, clearances"]
-  H --> I["8. Mechanical measurements of the cluster"]
+  H --> I["8. Measurements for the mount"]
   I --> J["9. Update research, schematics and profile"]
 ```
 
@@ -102,11 +102,30 @@ Better on a spare sender: it avoids draining the system. Dip the tip in water wi
 - [ ] Minimum clearance between bolt head and caliper/fork: ____ mm
 - [ ] Alternatively: thread of the speedometer drive output ____ and ratio (cable turns per 10 wheel turns): ____
 
-## 8. Mechanical measurements of the cluster
+## 8. Mechanical measurements for the mount
 
-- [ ] Mounting center distance: ____ mm; rubber mount diameter: ____ mm
-- [ ] Maximum size: width ____ × height ____ × free depth behind ____ mm
-- [ ] Cluster tilt from horizontal: ____°
+The dashboard goes where the original cluster was, on its two rubber grommets on the fairing stay ([chapter 07](../manual/07-enclosure-and-bracket.md#the-bike-mount)). These measurements set the aluminum mount plate: `stud_pitch`, `stud_x`, `stud_y`, `grommet_d` and `grommet_stack` in `hardware/enclosure/enclosure.scad`. The printed parts do not depend on them.
+
+You need the [fit template](../../hardware/exports/drawings/fit-template.pdf), printed at 100 % and glued on cardboard, and two M6 threaded rods about 100 mm long with a nut each.
+
+```mermaid
+flowchart TD
+  A["Before: photo of the cluster from the side<br/>to see its tilt"] --> B["Remove the fairing and the cluster<br/>keep grommets, collars, washers, nuts"]
+  B --> C["Two M6 rods through the grommets,<br/>standing like the original studs"]
+  C --> D["Measure the grommets<br/>and their distance"]
+  D --> E["Fit template on the rods,<br/>its face 69 mm from the grommets"]
+  E --> F{"Clear of windscreen,<br/>panels, key at full lock?"}
+  F -- yes --> G["Read stud_x and stud_y<br/>on the template"]
+  F -- no --> H["Note where it touches:<br/>the plate needs another shape"]
+  G --> I["Set the values in enclosure.scad,<br/>cut the plate"]
+```
+
+- [ ] Number of grommets: ____ (two expected); do the studs stand at right angles to the face of the cluster? Yes / No: tilt between them ____°
+- [ ] Distance between the grommet centers (`stud_pitch`): ____ mm
+- [ ] Grommet outer diameter (`grommet_d`): ____ mm; collar length (`grommet_stack`): ____ mm
+- [ ] With the template on the rods, its face 69 mm from the top of the grommets (68.6 mm: plate and enclosure): where the rods pierce it, from the center lines, `stud_x` ____ mm (+ to the right of the rider), `stud_y` ____ mm (+ up)
+- [ ] Clearances in that position: windscreen ____ mm, inner fairing panels left ____ / right ____ mm, ignition key with the handlebar at full lock left ____ / right ____ mm, headlight and wiring in front of the pod ____ mm
+- [ ] Original cluster: width ____ × height ____ × depth ____ mm, tilt of the face from vertical ____°
 - [ ] Possible cable route to the front wheel (photo)
 
 ## 9. After the measurements

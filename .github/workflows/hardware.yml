@@ -52,15 +52,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # the bracket drawing takes its outline from the OpenSCAD export
+      # the bracket and mount plate drawings take their outlines from the OpenSCAD export
       - uses: actions/download-artifact@v4
         with:
           name: cad
           path: fresh-cad
-      - name: Committed bracket outline matches the .scad
+      - name: Committed outlines match the .scad
         run: |
-          cmp fresh-cad/sensor-bracket.svg hardware/exports/cad/sensor-bracket.svg
-          cmp fresh-cad/sensor-bracket.dxf hardware/exports/cad/sensor-bracket.dxf
+          for f in sensor-bracket dash-mount; do
+            cmp fresh-cad/$f.svg hardware/exports/cad/$f.svg
+            cmp fresh-cad/$f.dxf hardware/exports/cad/$f.dxf
+          done
       - name: Drawings match generate.py (text overlaps are refused)
         run: |
           python3 hardware/drawings/generate.py

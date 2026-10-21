@@ -57,7 +57,7 @@ The biggest cost is the 7" 1000 nit display (≈ 78 €). A 7" that is not sunli
 | # | Component | Part number | Qty | Price | Notes |
 |---|---|---|---|---|---|
 | 23 | Speed sensor | **LJ12A3-4-Z/BX** inductive NPN NO, 6–36 V, 4 mm range | 1 | ≈ 6 € | [AZ-Delivery](https://az-delivery.de/en/products/lj12a3-4-z-bx-induktiver-naherungssensor). It only sees steel: check the bolts with a magnet |
-| 24 | Sensor bracket | 3 mm aluminum sheet, or 3D print in ASA/PA-CF | 1 | ≈ 3 € | 1–2 mm gap from the bolt heads |
+| 24 | Sensor bracket and dashboard mount plate | 3 mm aluminum sheet (5754 or 6082), 200 × 200 mm for both; a 3D print only for a trial | 1 | ≈ 6 € | 1–2 mm gap from the bolt heads; the plate holds the dashboard on the original grommets |
 | 25 | Dashboard connector | **Superseal 1.5** 6–8 pins, male + female + terminals + seals | 1 | ≈ 5 € (estimate) | Waterproof |
 | 26 | Sensor connector | **Deutsch DTM** 3 pins | 1 | ≈ 4 € (estimate) | |
 | 27 | Used original cluster harness | **3VD-83509-00** (cord set) or matching connector | 1 | 5–15 € (used, estimate) | Provides the right connector for the adapter without cutting the bike |
@@ -72,8 +72,9 @@ The biggest cost is the 7" 1000 nit display (≈ 78 €). A 7" that is not sunli
 | 31 | Matte black **ASA** filament (≈ 200 g) | — | ≈ 6 € | ASA resists UV and heat (≈ 93 °C); PETG ages worse in the sun |
 | 32 | 2 mm anti-glare polycarbonate or PMMA window | 1 | ≈ 4 € (estimate) | |
 | 33 | 1 mm EPDM foam sheet (two gaskets) and 2 mm adhesive foam pads, M12 breather vent (Gore type), PG7 cable gland, Ø 4 mm acrylic rod for the light sensor | 1 | ≈ 6 € (estimate) | Prevents condensation; see chapter 07 |
-| 34 | M3 ×13 and M5 ×3 heat-set inserts, stainless M3 × 10 ×9 and M3 × 30 ×4 screws, M2.5 × 6 self-tapping ×8 | — | ≈ 5 € | Display unit, pod and boards |
+| 34 | M3 ×13 and M5 ×3 heat-set inserts; stainless screws M3 × 10 ×9, M3 × 30 ×4, M5 × 10 button head ×3, M6 × 25 hex ×2 with washers; M2.5 × 6 self-tapping ×8 | — | ≈ 6 € | Display unit, pod, mount plate and boards |
 | 35 | Conformal coating varnish | 1 | ≈ 6 € | Protects against moisture |
+| 36 | Original mount parts, only if missing or worn: grommet 90480-14555, collar 90387-07391, washer 90201-06059, nut 95316-06600 | 2 each | ≈ 2 € each (estimate) | The dashboard reuses those of the original cluster |
 
 ## 6. Development tools (optional)
 
@@ -87,5 +88,5 @@ The biggest cost is the 7" 1000 nit display (≈ 78 €). A 7" that is not sunli
 ## Recommended order
 
 1. Right away: Pi Zero 2 W (because of availability), display and Kippah (long shipping), Pico, FRAM.
-2. After the [bike measurements](../research/bike-measurements.md): speed sensor, connectors, used harness, bracket (they depend on the bolts and the pinout).
+2. After the [bike measurements](../research/bike-measurements.md): speed sensor, connectors, used harness, bracket and mount plate (they depend on the bolts, the grommets and the pinout).
 3. After the schematic is confirmed (chapter 04): passive components, protections, perfboard.

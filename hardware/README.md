@@ -6,10 +6,10 @@
 | [`exports/kicad/`](exports/kicad/) | Schematic as PDF and one SVG per sheet | `hardware/kicad/export.sh` (checks included, see below) |
 | [`harness/`](harness/) | Wiring harnesses in WireViz (YAML) | `wireviz -f st -o hardware/exports/harness hardware/harness/<file>.yml` |
 | [`exports/harness/`](exports/harness/) | Harness drawings (SVG) and bills of materials (TSV) | see `harness/` |
-| [`enclosure/`](enclosure/) | Parametric enclosure in OpenSCAD: thin display unit (bezel and cover) and a small pod for the boards | `hardware/cad-export.sh` |
+| [`enclosure/`](enclosure/) | Parametric enclosure in OpenSCAD: thin display unit (bezel and cover), a small pod for the boards and the aluminum plate that mounts it on the original cluster grommets | `hardware/cad-export.sh` |
 | [`bracket/`](bracket/) | Wheel sensor bracket in OpenSCAD | `hardware/cad-export.sh` |
-| [`exports/cad/`](exports/cad/) | STL files to print, DXF/SVG outline of the bracket, PNG previews | `hardware/cad-export.sh` (also with Docker, see below) |
-| [`drawings/`](drawings/) | Dimensioned A4 drawings: bracket 1:1, enclosure 1:2, perfboard zone plan 2:1 | `python3 hardware/drawings/generate.py` |
+| [`exports/cad/`](exports/cad/) | STL files to print, DXF/SVG outlines of the sensor bracket and the mount plate, PNG previews | `hardware/cad-export.sh` (also with Docker, see below) |
+| [`drawings/`](drawings/) | Dimensioned A4 drawings: sensor bracket 1:1, enclosure 1:2, mount plate and fit template 1:1, perfboard zone plan 2:1 | `python3 hardware/drawings/generate.py` |
 | [`exports/drawings/`](exports/drawings/) | The drawings as SVG (for the manual) and PDF (to print at 100 %) | see `drawings/` |
 
 Where they are explained in the manual:
@@ -18,7 +18,7 @@ Where they are explained in the manual:
 - building the perfboard: [chapter 06](../docs/manual/06-building-the-electronics.md)
 - enclosure and bracket: [chapter 07](../docs/manual/07-enclosure-and-bracket.md)
 
-The mechanical parts are exported with OpenSCAD 2021.01, also through Docker, and the drawings after them, because the bracket drawing reads the bracket outline:
+The mechanical parts are exported with OpenSCAD 2021.01, also through Docker, and the drawings after them, because the drawings of the sensor bracket and the mount plate read their outlines:
 
 ```sh
 docker run --rm -u 0 -v "$PWD":/w -w /w openscad/openscad:2021.01 hardware/cad-export.sh
@@ -77,7 +77,7 @@ Opening the project in KiCad to look at it is fine. Changes made in the editor m
 
 ## Editing the drawings
 
-The dimensioned drawings are Python in [`drawings/`](drawings/), one module per sheet. They read every value from the `.scad` files, so a changed parameter changes the drawing. Values marked `[TO VERIFY]` in the `.scad` comments, and the values computed from them, are printed in orange. The bracket drawing takes its outline from the OpenSCAD export (`exports/cad/sensor-bracket.svg`), so the print is the shape that gets cut; it stops if the export does not match the `.scad` parameters.
+The dimensioned drawings are Python in [`drawings/`](drawings/), one module per sheet. They read every value from the `.scad` files, so a changed parameter changes the drawing. Values marked `[TO VERIFY]` in the `.scad` comments, and the values computed from them, are printed in orange. The drawings of the sensor bracket and of the mount plate take their outlines from the OpenSCAD exports (`exports/cad/sensor-bracket.svg`, `exports/cad/dash-mount.svg`), so the print is the shape that gets cut; they stop if the export does not match the `.scad` parameters.
 
 The frame and title block repeat the schematic ones. The generator refuses overlapping texts, and texts that leave the frame or enter the title block. Each drawing is written as SVG, for the manual, and as PDF, to print at 100 %: every sheet has a 50 mm bar to check the print scale.
 

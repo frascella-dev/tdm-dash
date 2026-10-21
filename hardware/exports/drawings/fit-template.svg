@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="297mm" height="210mm" viewBox="0 0 297 210" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif">
+<title>tdm-dash · fit template, 1:1</title>
+<rect width="297" height="210" fill="#ffffff"/>
+<path d="M 10 10 L 287 10 L 287 200 L 10 200 Z" fill="none" stroke="#840000" stroke-width="0.3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 14 14 L 283 14 L 283 196 L 14 196 Z" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 60 10 L 60 14" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 60 196 L 60 200" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 110 10 L 110 14" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 110 196 L 110 200" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 160 10 L 160 14" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 160 196 L 160 200" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 210 10 L 210 14" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 210 196 L 210 200" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 260 10 L 260 14" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 260 196 L 260 200" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="35" y="12.648" font-size="1.8" fill="#840000" text-anchor="middle">1</text>
+<text x="35" y="198.648" font-size="1.8" fill="#840000" text-anchor="middle">1</text>
+<text x="85" y="12.648" font-size="1.8" fill="#840000" text-anchor="middle">2</text>
+<text x="85" y="198.648" font-size="1.8" fill="#840000" text-anchor="middle">2</text>
+<text x="135" y="12.648" font-size="1.8" fill="#840000" text-anchor="middle">3</text>
+<text x="135" y="198.648" font-size="1.8" fill="#840000" text-anchor="middle">3</text>
+<text x="185" y="12.648" font-size="1.8" fill="#840000" text-anchor="middle">4</text>
+<text x="185" y="198.648" font-size="1.8" fill="#840000" text-anchor="middle">4</text>
+<text x="235" y="12.648" font-size="1.8" fill="#840000" text-anchor="middle">5</text>
+<text x="235" y="198.648" font-size="1.8" fill="#840000" text-anchor="middle">5</text>
+<text x="285" y="12.648" font-size="1.8" fill="#840000" text-anchor="middle">6</text>
+<text x="285" y="198.648" font-size="1.8" fill="#840000" text-anchor="middle">6</text>
+<path d="M 10 60 L 14 60" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 283 60 L 287 60" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 10 110 L 14 110" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 283 110 L 287 110" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 10 160 L 14 160" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 283 160 L 287 160" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="12" y="35.648" font-size="1.8" fill="#840000" text-anchor="middle">A</text>
+<text x="285" y="35.648" font-size="1.8" fill="#840000" text-anchor="middle">A</text>
+<text x="12" y="85.648" font-size="1.8" fill="#840000" text-anchor="middle">B</text>
+<text x="285" y="85.648" font-size="1.8" fill="#840000" text-anchor="middle">B</text>
+<text x="12" y="135.648" font-size="1.8" fill="#840000" text-anchor="middle">C</text>
+<text x="285" y="135.648" font-size="1.8" fill="#840000" text-anchor="middle">C</text>
+<text x="12" y="185.648" font-size="1.8" fill="#840000" text-anchor="middle">D</text>
+<text x="285" y="185.648" font-size="1.8" fill="#840000" text-anchor="middle">D</text>
+<path d="M 163 166 L 283 166 L 283 196 L 163 196 Z" fill="none" stroke="#840000" stroke-width="0.3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 163 188 L 283 188" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 163 177 L 283 177" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 163 171 L 283 171" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 197 188 L 197 196" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 219 188 L 219 196" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 259 188 L 259 196" fill="none" stroke="#840000" stroke-width="0.15" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="164.5" y="190.104" font-size="1.4" fill="#840000">SCALE</text>
+<text x="164.5" y="194.1" font-size="2.5" fill="#840000" font-weight="bold">1:1</text>
+<text x="198.5" y="190.104" font-size="1.4" fill="#840000">REV</text>
+<text x="198.5" y="194.1" font-size="2.5" fill="#840000" font-weight="bold">0.2</text>
+<text x="220.5" y="190.104" font-size="1.4" fill="#840000">DATE</text>
+<text x="220.5" y="194.1" font-size="2.5" fill="#840000" font-weight="bold">2026-10-21</text>
+<text x="260.5" y="190.104" font-size="1.4" fill="#840000">SIZE</text>
+<text x="260.5" y="194.1" font-size="2.5" fill="#840000" font-weight="bold">A4</text>
+<text x="164.5" y="183.796" font-size="3.6" fill="#840000" font-weight="bold">Fit template</text>
+<text x="164.5" y="175.008" font-size="2.8" fill="#840000" font-weight="bold">tdm-dash</text>
+<text x="185" y="174.702" font-size="1.95" fill="#840000">mechanical parts · Yamaha TDM 850 (3VD)</text>
+<text x="281.5" y="174.702" font-size="1.95" fill="#840000" text-anchor="end">CERN-OHL-P-2.0</text>
+<text x="164.5" y="169.004" font-size="1.4" fill="#840000">github.com/frascella-dev/tdm-dash · generated by hardware/drawings/generate.py from hardware/enclosure/enclosure.scad, do not edit by hand</text>
+<path d="M 34.581 152.654 C 35.499 154.918 37.699 156.4 40.142 156.4 L 209.858 156.4 C 212.301 156.4 214.501 154.918 215.419 152.654 L 231.46 113.084 C 231.751 112.368 231.9 111.603 231.9 110.83 L 231.9 31.6 C 231.9 28.286 229.214 25.6 225.9 25.6 L 24.1 25.6 C 20.786 25.6 18.1 28.286 18.1 31.6 L 18.1 110.83 C 18.1 111.603 18.249 112.368 18.54 113.084 Z" fill="#ffffff" stroke="#000000" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 45.4 40.7 L 204.6 40.7 L 204.6 131.3 L 45.4 131.3 Z" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="30.1" cy="92" r="6.1" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 22 92 L 38.2 92" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 30.1 83.9 L 30.1 100.1" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<circle cx="219.9" cy="92" r="6.1" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 211.8 92 L 228 92" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 219.9 83.9 L 219.9 100.1" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<circle cx="145" cy="147.4" r="2" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 14.1 86 L 235.9 86" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 125 160.4 L 125 21.6" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 76.5 65 L 173.5 65 C 176.814 65 179.5 67.686 179.5 71 L 179.5 148 C 179.5 151.314 176.814 154 173.5 154 L 76.5 154 C 73.186 154 70.5 151.314 70.5 148 L 70.5 71 C 70.5 67.686 73.186 65 76.5 65 Z" fill="none" stroke="#6e6e6e" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 1"/>
+<path d="M 200.073 135.996 L 200.833 135.959 L 201.126 135.93 L 201.805 135.829 L 202.094 135.772 L 202.76 135.605 L 203.041 135.52 L 203.688 135.288 L 203.96 135.176 L 204.581 134.882 L 204.84 134.744 L 205.43 134.39 L 205.674 134.227 L 206.226 133.818 L 206.453 133.631 L 206.962 133.17 L 207.17 132.962 L 207.631 132.453 L 207.818 132.226 L 208.227 131.674 L 208.39 131.429 L 208.744 130.84 L 208.882 130.581 L 209.176 129.96 L 209.288 129.688 L 209.52 129.041 L 209.605 128.76 L 209.772 128.094 L 209.829 127.805 L 209.93 127.126 L 209.959 126.833 L 209.993 126.147 L 209.993 125.853 L 209.959 125.167 L 209.93 124.874 L 209.829 124.195 L 209.772 123.906 L 209.605 123.24 L 209.52 122.959 L 209.258 122.226 L 209.218 122.121 L 194.887 86.332 L 194.814 86.165 L 194.559 85.626 L 194.421 85.367 L 194.143 84.904 L 193.98 84.659 L 193.658 84.226 L 193.472 83.999 L 193.109 83.599 L 192.901 83.391 L 192.501 83.028 L 192.274 82.842 L 191.841 82.52 L 191.596 82.357 L 191.097 82.058 L 190.913 81.956 L 176.146 74.454 L 176.121 74.469 L 175.722 74.657 L 175.306 74.806 L 174.878 74.913 L 174.441 74.978 L 174 75 L 173.559 74.978 L 173.122 74.913 L 172.694 74.806 L 172.278 74.657 L 171.879 74.469 L 171.5 74.242 L 171.145 73.979 L 170.818 73.682 L 170.521 73.355 L 170.258 73 L 170.031 72.621 L 169.843 72.222 L 169.694 71.806 L 169.587 71.378 L 169.545 71.1 L 129.045 50.523 L 128.968 50.486 L 128.386 50.21 L 128.114 50.097 L 127.606 49.916 L 127.325 49.83 L 126.801 49.699 L 126.513 49.642 L 125.979 49.562 L 125.686 49.534 L 125.147 49.507 L 124.853 49.507 L 124.314 49.534 L 124.021 49.562 L 123.487 49.642 L 123.199 49.699 L 122.675 49.83 L 122.394 49.916 L 121.886 50.097 L 121.614 50.21 L 121.032 50.486 L 120.955 50.523 L 80.455 71.1 L 80.413 71.378 L 80.306 71.806 L 80.157 72.222 L 79.969 72.621 L 79.742 73 L 79.479 73.355 L 79.182 73.682 L 78.855 73.979 L 78.5 74.242 L 78.121 74.469 L 77.722 74.657 L 77.306 74.806 L 76.878 74.913 L 76.441 74.978 L 76 75 L 75.559 74.978 L 75.122 74.913 L 74.694 74.806 L 74.278 74.657 L 73.879 74.469 L 73.854 74.454 L 59.087 81.956 L 58.903 82.058 L 58.404 82.357 L 58.159 82.52 L 57.726 82.842 L 57.499 83.028 L 57.099 83.391 L 56.891 83.599 L 56.528 83.999 L 56.342 84.226 L 56.02 84.659 L 55.857 84.904 L 55.579 85.367 L 55.441 85.626 L 55.186 86.165 L 55.113 86.332 L 40.782 122.121 L 40.742 122.226 L 40.48 122.959 L 40.395 123.24 L 40.228 123.906 L 40.171 124.195 L 40.07 124.874 L 40.041 125.167 L 40.007 125.853 L 40.007 126.147 L 40.041 126.833 L 40.07 127.126 L 40.171 127.805 L 40.228 128.094 L 40.395 128.76 L 40.48 129.041 L 40.712 129.688 L 40.824 129.96 L 41.118 130.581 L 41.256 130.84 L 41.61 131.429 L 41.773 131.674 L 42.182 132.226 L 42.369 132.453 L 42.83 132.962 L 43.038 133.17 L 43.547 133.631 L 43.774 133.818 L 44.326 134.227 L 44.57 134.39 L 45.16 134.744 L 45.419 134.882 L 46.04 135.176 L 46.312 135.288 L 46.959 135.52 L 47.24 135.605 L 47.906 135.772 L 48.195 135.829 L 48.874 135.93 L 49.167 135.959 L 49.927 135.996 L 50.073 136 L 199.927 136 Z" fill="none" stroke="#6e6e6e" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 1"/>
+<circle cx="50" cy="126" r="3.2" fill="none" stroke="#c85a00" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 41.8 126 L 58.2 126" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 50 117.8 L 50 134.2" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<circle cx="200" cy="126" r="3.2" fill="none" stroke="#c85a00" stroke-width="0.35" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 191.8 126 L 208.2 126" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 200 117.8 L 200 134.2" fill="none" stroke="#6e6e6e" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 1 0.5 1"/>
+<path d="M 18.1 24.6 L 18.1 17.6" fill="none" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 231.9 24.6 L 231.9 17.6" fill="none" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 18.1 19.6 L 231.9 19.6" fill="none" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 18.1 19.6 L 20.7 19.15 L 20.7 20.05 Z" fill="#000000" stroke="#000000" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 231.9 19.6 L 229.3 20.05 L 229.3 19.15 Z" fill="#000000" stroke="#000000" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="125" y="18.7" font-size="3" fill="#000000" text-anchor="middle">213.8</text>
+<path d="M 50 127 L 50 144" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 200 127 L 200 144" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 50 142 L 200 142" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 50 142 L 52.6 141.55 L 52.6 142.45 Z" fill="#c85a00" stroke="#c85a00" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 200 142 L 197.4 142.45 L 197.4 141.55 Z" fill="#c85a00" stroke="#c85a00" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="102.5" y="141.1" font-size="3" fill="#c85a00" text-anchor="middle">150</text>
+<path d="M 126 86 L 136 86" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 126 126 L 136 126" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 134 86 L 134 126" fill="none" stroke="#c85a00" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 134 86 L 134.45 88.6 L 133.55 88.6 Z" fill="#c85a00" stroke="#c85a00" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 134 126 L 133.55 123.4 L 134.45 123.4 Z" fill="#c85a00" stroke="#c85a00" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="134.9" y="104" font-size="3" fill="#c85a00" text-anchor="middle" transform="rotate(90 134.9 104)">40</text>
+<text x="28.1" y="32.6" font-size="3" fill="#000000" font-weight="bold">FIT TEMPLATE · seen from the rider</text>
+<text x="28.1" y="37.1" font-size="2.2" fill="#000084">cut along the thick line, pierce the two crosses</text>
+<path d="M 24 186 L 34 186 L 34 188 L 24 188 Z" fill="#000000" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 34 186 L 44 186 L 44 188 L 34 188 Z" fill="#ffffff" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 44 186 L 54 186 L 54 188 L 44 188 Z" fill="#000000" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 54 186 L 64 186 L 64 188 L 54 188 Z" fill="#ffffff" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 64 186 L 74 186 L 74 188 L 64 188 Z" fill="#000000" stroke="#000000" stroke-width="0.18" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="24" y="191.4" font-size="2.2" fill="#000000" text-anchor="middle">0</text>
+<text x="34" y="191.4" font-size="2.2" fill="#000000" text-anchor="middle">10</text>
+<text x="44" y="191.4" font-size="2.2" fill="#000000" text-anchor="middle">20</text>
+<text x="54" y="191.4" font-size="2.2" fill="#000000" text-anchor="middle">30</text>
+<text x="64" y="191.4" font-size="2.2" fill="#000000" text-anchor="middle">40</text>
+<text x="74" y="191.4" font-size="2.2" fill="#000000" text-anchor="middle">50</text>
+<text x="76.223" y="191.4" font-size="2.2" fill="#000000">mm</text>
+<text x="24" y="184.4" font-size="2.2" fill="#000084">Print at 100 % (actual size): this bar measures 50 mm</text>
+<text x="237" y="21.584" font-size="2.2" fill="#000000" font-weight="bold">NOTES</text>
+<text x="237" y="25.984" font-size="2.2" fill="#000000">1.</text>
+<text x="242" y="25.984" font-size="2.2" fill="#000000">Print at 100 %: the bar measures 50 mm</text>
+<text x="242" y="29.064" font-size="2.2" fill="#000000">and the width 213.8 mm. Glue on</text>
+<text x="242" y="32.144" font-size="2.2" fill="#000000">cardboard and cut along the thick line.</text>
+<text x="237" y="36.324" font-size="2.2" fill="#000000">2.</text>
+<text x="242" y="36.324" font-size="2.2" fill="#000000">Hold it where the original cluster was, the</text>
+<text x="242" y="39.404" font-size="2.2" fill="#000000">face towards the rider. It must clear the</text>
+<text x="242" y="42.484" font-size="2.2" fill="#000000">windscreen, the inner fairing panels and</text>
+<text x="242" y="45.564" font-size="2.2" fill="#000000">the ignition key with the handlebar at full</text>
+<text x="242" y="48.644" font-size="2.2" fill="#000000">lock on both sides.</text>
+<text x="237" y="52.824" font-size="2.2" fill="#c85a00">3.</text>
+<text x="242" y="52.824" font-size="2.2" fill="#c85a00">The crosses are the M6 studs of the</text>
+<text x="242" y="55.904" font-size="2.2" fill="#c85a00">mount plate: they must fall on the</text>
+<text x="242" y="58.984" font-size="2.2" fill="#c85a00">grommets of the fairing stay. If not,</text>
+<text x="242" y="62.064" font-size="2.2" fill="#c85a00">measure the grommets from the center</text>
+<text x="242" y="65.144" font-size="2.2" fill="#c85a00">lines and set stud_pitch, stud_x and</text>
+<text x="242" y="68.224" font-size="2.2" fill="#c85a00">stud_y in enclosure.scad.</text>
+<text x="237" y="72.404" font-size="2.2" fill="#000000">4.</text>
+<text x="242" y="72.404" font-size="2.2" fill="#000000">Dashed: the pod and the mount plate,</text>
+<text x="242" y="75.484" font-size="2.2" fill="#000000">behind the display unit. Depth behind the</text>
+<text x="242" y="78.564" font-size="2.2" fill="#000000">face: 14.5 mm display unit, 65.6 mm with</text>
+<text x="242" y="81.644" font-size="2.2" fill="#000000">the pod, 68.6 mm with the plate.</text>
+</svg>

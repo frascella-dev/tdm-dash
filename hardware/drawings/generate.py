@@ -3,9 +3,9 @@
 
     python3 hardware/drawings/generate.py
 
-Reads the OpenSCAD parameters (and the 2D export of the bracket, so run
-hardware/cad-export.sh first after changing the bracket) and writes
-hardware/exports/drawings/. Needs only Python 3.
+Reads the OpenSCAD parameters, and the 2D exports of the sensor bracket and
+the mount plate (run hardware/cad-export.sh first after changing them), and
+writes hardware/exports/drawings/. Needs only Python 3.
 """
 
 from __future__ import annotations
@@ -19,6 +19,7 @@ sys.path.insert(0, str(HERE))
 
 import bracket  # noqa: E402
 import enclosure  # noqa: E402
+import mount  # noqa: E402
 import perfboard  # noqa: E402
 
 ROOT = HERE.parent.parent
@@ -28,6 +29,8 @@ REV, DATE = "0.2", "2026-10-21"
 DRAWINGS = {
     "sensor-bracket": bracket.build,
     "enclosure": enclosure.build,
+    "dash-mount": mount.build,
+    "fit-template": mount.template,
     "perfboard": perfboard.build,
 }
 
