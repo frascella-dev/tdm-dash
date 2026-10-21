@@ -12,9 +12,9 @@ Il manuale cresce insieme al progetto: ogni milestone aggiunge o aggiorna i capi
 | 03 | [Distinta componenti](03-distinta-componenti.md) | Prima stesura, prezzi ottobre 2026 |
 | 04 | [Schemi elettrici](04-schemi-elettrici.md) | Prima stesura, da rivedere dopo i rilievi |
 | 05 | [Schemi dei collegamenti](05-schemi-collegamenti.md) | Prima stesura, colori della moto da rilevare |
-| 06 | Costruzione dell'elettronica | Milestone M5 |
-| 07 | Contenitore e staffa | Milestone M5 |
-| 08 | Installazione sulla moto | Milestone M5/M6 |
+| 06 | [Costruzione dell'elettronica](06-costruzione.md) | Prima stesura, da provare al banco |
+| 07 | [Contenitore e staffa](07-contenitore-e-staffa.md) | Prima stesura, misure da verificare sui pezzi |
+| 08 | [Installazione sulla moto](08-installazione.md) | Prima stesura, da completare con i rilievi |
 | 09 | [Software: firmware, immagine e profilo](09-software.md) | Prima stesura; immagine da provare sull'hardware |
 | 10 | Calibrazione | Milestone M6 |
 | 11 | [Uso](11-uso.md) | Prima stesura, schermate dal software vero |

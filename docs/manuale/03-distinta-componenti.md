@@ -71,8 +71,8 @@ Il costo più grande è il display da 7" e 1000 nit (≈ 78 €). Un 7" non legg
 | 30 | Millefori a doppia faccia 7×9 cm, header e zoccoli a tulipano | 1 | ≈ 3 € | PCB dedicato solo dopo 500 km di prova |
 | 31 | Filamento **ASA** chiaro (≈ 150 g) + nero opaco per la cornice | — | ≈ 5 € | ASA resiste a UV e calore (≈ 93 °C); PETG invecchia peggio al sole |
 | 32 | Finestra in policarbonato o PMMA antiriflesso 2 mm | 1 | ≈ 4 € (stima) | |
-| 33 | Guarnizione in EPDM, sfiato traspirante (tipo Gore) | 1 | ≈ 3 € (stima) | Evita la condensa |
-| 34 | Inserti filettati a caldo M3, viti inox | — | ≈ 3 € | |
+| 33 | Guarnizione piatta in EPDM espanso 1 mm, valvola di sfiato M12 (tipo Gore), pressacavo PG7, bacchetta acrilica Ø 4 mm per il sensore di luce | 1 | ≈ 6 € (stima) | Evita la condensa; vedi capitolo 07 |
+| 34 | Inserti filettati a caldo M3 ×8 e M5 ×3, viti inox M3 × 16 ×6 e M3 × 8 ×2 | — | ≈ 4 € | |
 | 35 | Vernice per tropicalizzazione (conformal coating) | 1 | ≈ 6 € | Protegge dall'umidità |
 
 ## 6. Strumenti per lo sviluppo (facoltativi)
