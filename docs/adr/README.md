@@ -14,3 +14,4 @@ Ogni file registra una decisione di progetto: il contesto, la scelta e le conseg
 | [0008](0008-profili-toml.md) | Profili moto in TOML a strati | Accettata |
 | [0009](0009-display-7-pollici.md) | Display Newhaven 7" 800×480 da 1000 nit in DPI | Accettata |
 | [0010](0010-layout-predefinito.md) | Layout predefinito Classic | Accettata |
+| [0011](0011-immagine-dal-checkout.md) | L'immagine compila il quadro dal checkout (metodo `local` di Buildroot) | Accettata |

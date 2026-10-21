@@ -1,0 +1,30 @@
+config BR2_PACKAGE_TDM_DASH
+	bool "tdm-dash"
+	depends on BR2_PACKAGE_HOST_RUSTC_TARGET_ARCH_SUPPORTS
+	depends on BR2_TOOLCHAIN_USES_GLIBC
+	select BR2_PACKAGE_HOST_RUSTC
+	help
+	  Digital instrument cluster for the Yamaha TDM 850: the Slint
+	  UI drawn straight on DRM/KMS (tdm-dash) and the command-line
+	  tool for the sensor module (tdmctl).
+
+	  The program is MIT or Apache-2.0; the binary links Slint and
+	  is distributed under GPL-3.0-only.
+
+	  https://github.com/frascella-dev/tdm-dash
+
+if BR2_PACKAGE_TDM_DASH
+
+config BR2_PACKAGE_TDM_DASH_PROFILE
+	string "bike profile"
+	default "yamaha-tdm850-3vd"
+	help
+	  Name of the file in profiles/ (without .toml) installed as
+	  /etc/tdm-dash/default.toml and copied to the boot partition
+	  as tdm-dash.toml.
+
+endif
+
+comment "tdm-dash needs a glibc toolchain"
+	depends on BR2_PACKAGE_HOST_RUSTC_TARGET_ARCH_SUPPORTS
+	depends on !BR2_TOOLCHAIN_USES_GLIBC

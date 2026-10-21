@@ -1,0 +1,1 @@
+root=/dev/mmcblk0p2 rootfstype=erofs ro rootwait quiet loglevel=0 logo.nologo vt.global_cursor_default=0 consoleblank=0 bcm2835_wdt.heartbeat=10

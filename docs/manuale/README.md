@@ -15,7 +15,7 @@ Il manuale cresce insieme al progetto: ogni milestone aggiunge o aggiorna i capi
 | 06 | Costruzione dell'elettronica | Milestone M5 |
 | 07 | Contenitore e staffa | Milestone M5 |
 | 08 | Installazione sulla moto | Milestone M5/M6 |
-| 09 | [Software: firmware, immagine e profilo](09-software.md) | Firmware e profilo; immagine con M4 |
+| 09 | [Software: firmware, immagine e profilo](09-software.md) | Prima stesura; immagine da provare sull'hardware |
 | 10 | Calibrazione | Milestone M6 |
 | 11 | [Uso](11-uso.md) | Prima stesura, schermate dal software vero |
 | 12 | Diagnostica e risoluzione dei problemi | Milestone M6 |

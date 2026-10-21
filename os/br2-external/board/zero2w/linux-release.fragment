@@ -1,0 +1,11 @@
+# tdm-dash release image: nothing but the display, USB and the SD card.
+# No network, no media, no boot logo and no text console on the panel,
+# which stays black until the dashboard draws its first frame.
+# CONFIG_NET is not set
+# CONFIG_MEDIA_SUPPORT is not set
+# CONFIG_LOGO is not set
+# CONFIG_FRAMEBUFFER_CONSOLE is not set
+# CONFIG_DRM_FBDEV_EMULATION is not set
+# CONFIG_INPUT_JOYSTICK is not set
+# CONFIG_INPUT_TOUCHSCREEN is not set
+# CONFIG_IIO is not set
