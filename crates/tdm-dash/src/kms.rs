@@ -10,17 +10,18 @@ use std::time::{Duration, Instant};
 
 use drm::buffer::Buffer as _;
 use drm::buffer::DrmFourcc;
+use drm::control::ModeTypeFlags;
 use drm::control::dumbbuffer::DumbBuffer;
 use drm::control::{Device as ControlDevice, PageFlipFlags, connector, crtc, framebuffer};
 use slint::platform::software_renderer::{
-    MinimalSoftwareWindow, PremultipliedRgbaColor, RenderingRotation, RepaintBufferType,
-    TargetPixel,
+    MinimalSoftwareWindow, PremultipliedRgbaColor, RepaintBufferType, TargetPixel,
 };
 use slint::platform::{Platform, WindowAdapter};
-use slint::{ComponentHandle, PhysicalSize, PlatformError};
+use slint::{ComponentHandle, PlatformError};
 use tdm_link::SourceSpec;
 
 use crate::app::App;
+use crate::screen;
 use crate::{AppWindow, Options};
 
 struct Card(File);
@@ -114,7 +115,13 @@ fn setup(card: Card) -> Result<Output, String> {
             }
         })
         .ok_or("no connected connector")?;
-    let mode = con.modes()[0];
+    // the panel's native mode, as the EDID or the overlay marks it
+    let mode = con
+        .modes()
+        .iter()
+        .find(|m| m.mode_type().contains(ModeTypeFlags::PREFERRED))
+        .copied()
+        .unwrap_or(con.modes()[0]);
     let crtc = con
         .current_encoder()
         .and_then(|h| card.get_encoder(h).ok())
@@ -169,8 +176,13 @@ impl Watchdog {
 pub fn run(o: &Options) -> Result<(), String> {
     let mut out = open_output()?;
     let (w, h) = out.mode.size();
+    let dash = crate::make_dash(o);
+    let d = &dash.profile().display;
+    let degrees = o.rotation.unwrap_or(d.rotation());
+    let fit = screen::fit(w as u32, h as u32, degrees, d.form, d.scale);
+    let rotation = screen::rendering_rotation(degrees);
     let window = MinimalSoftwareWindow::new(RepaintBufferType::SwappedBuffers);
-    window.set_size(PhysicalSize::new(w as u32, h as u32));
+    screen::apply(window.window(), &fit);
     let t0 = Instant::now();
     slint::platform::set_platform(Box::new(KmsPlatform {
         window: window.clone(),
@@ -178,17 +190,18 @@ pub fn run(o: &Options) -> Result<(), String> {
     }))
     .map_err(|e| e.to_string())?;
 
-    let dash = crate::make_dash(o);
-    let rotate = dash.profile().display.rotate_180;
     let source = crate::open_source(o, &dash, SourceSpec::Serial(None))?;
     let ui = AppWindow::new().map_err(|e| e.to_string())?;
     ui.show().map_err(|e| e.to_string())?;
-    let mut app = App::new(ui.clone_strong(), dash, source);
+    let mut app = App::new(ui.clone_strong(), dash, source, fit);
     let mut wd = Watchdog::open();
     let mut back = 1usize;
     let mut shown_first = false;
     let frame = Duration::from_micros(16_667);
-    eprintln!("tdm-dash: KMS {}x{} su connettore {:?}", w, h, out.conn);
+    eprintln!(
+        "tdm-dash: KMS {w}x{h} on connector {:?}, rotation {degrees}°, {:?} layouts at scale {:.2}",
+        out.conn, fit.family, fit.scale
+    );
 
     loop {
         let tick = Instant::now();
@@ -199,9 +212,7 @@ pub fn run(o: &Options) -> Result<(), String> {
         let card = &out.card;
         let buf = &mut out.bufs[back];
         window.draw_if_needed(|r| {
-            if rotate {
-                r.set_rendering_rotation(RenderingRotation::Rotate180);
-            }
+            r.set_rendering_rotation(rotation);
             let pitch = buf.pitch() as usize / 4;
             if let Ok(mut map) = card.map_dumb_buffer(buf) {
                 let bytes = map.as_mut();

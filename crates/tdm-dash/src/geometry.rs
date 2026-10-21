@@ -51,10 +51,13 @@ fn to_image(pm: &Pixmap) -> Image {
     Image::from_rgba8_premultiplied(buf)
 }
 
-/// Tick marks, red zone and (speed) Italian limit markers; numerals are
-/// separate Text items so they use the same font as the rest of the UI.
-pub fn dial_face(kind: DialKind, c: &Colors) -> (Image, Vec<DialLabel>) {
-    let mut pm = Pixmap::new(DIAL as u32, DIAL as u32).expect("pixmap");
+/// Tick marks, red zone and (speed) Italian limit markers, drawn on a
+/// `px`×`px` image (the dial size in physical pixels) so it is shown 1:1.
+/// Numerals are separate Text items so they use the same font as the rest
+/// of the UI; their positions are in dial coordinates (340×340).
+pub fn dial_face(kind: DialKind, c: &Colors, px: u32) -> (Image, Vec<DialLabel>) {
+    let mut pm = Pixmap::new(px, px).expect("pixmap");
+    let tf = Transform::from_scale(px as f32 / DIAL, px as f32 / DIAL);
     let (max, minor, major) = match kind {
         DialKind::Speed { max_kmh } => (max_kmh as f64, 10.0, 20.0),
         DialKind::Rpm { max_rpm, .. } => (max_rpm as f64, 250.0, 1000.0),
@@ -86,13 +89,7 @@ pub fn dial_face(kind: DialKind, c: &Colors) -> (Image, Vec<DialLabel>) {
         }
     }
     if let Some(p) = pb.finish() {
-        pm.stroke_path(
-            &p,
-            &paint(c.faint),
-            &stroke(2.0),
-            Transform::identity(),
-            None,
-        );
+        pm.stroke_path(&p, &paint(c.faint), &stroke(2.0), tf, None);
     }
     // red zone band
     if redline.is_finite() {
@@ -108,7 +105,7 @@ pub fn dial_face(kind: DialKind, c: &Colors) -> (Image, Vec<DialLabel>) {
             }
         }
         if let Some(p) = pb.finish() {
-            pm.stroke_path(&p, &paint(c.red), &stroke(9.0), Transform::identity(), None);
+            pm.stroke_path(&p, &paint(c.red), &stroke(9.0), tf, None);
         }
     }
     let mut labels = Vec::new();
@@ -143,7 +140,7 @@ pub fn dial_face(kind: DialKind, c: &Colors) -> (Image, Vec<DialLabel>) {
                 &p,
                 &paint(col),
                 &stroke(if is_major { 3.2 } else { 1.6 }),
-                Transform::identity(),
+                tf,
                 None,
             );
         }
@@ -184,13 +181,7 @@ pub fn dial_face(kind: DialKind, c: &Colors) -> (Image, Vec<DialLabel>) {
             );
             pb.close();
             if let Some(p) = pb.finish() {
-                pm.fill_path(
-                    &p,
-                    &paint(c.needle),
-                    FillRule::Winding,
-                    Transform::identity(),
-                    None,
-                );
+                pm.fill_path(&p, &paint(c.needle), FillRule::Winding, tf, None);
             }
         }
     }
@@ -295,9 +286,9 @@ pub fn arc_segments(max_rpm: u32, redline: u32) -> (Vec<ArcSeg>, Vec<DialLabel>)
             h: (y1 - y0.floor()).ceil() as f32,
         });
     }
-    let labels = (0..=10)
+    let labels = (0..=max_rpm / 1000)
         .map(|k| {
-            let a = (a0 + (a1 - a0) * k as f64 / 10.0).to_radians();
+            let a = (a0 + (a1 - a0) * (k * 1000) as f64 / max_rpm as f64).to_radians();
             let (x, y) = polar(cx, cy, r0 - 18.0, a);
             DialLabel {
                 x: x as f32,
@@ -308,6 +299,26 @@ pub fn arc_segments(max_rpm: u32, redline: u32) -> (Vec<ArcSeg>, Vec<DialLabel>)
         })
         .collect();
     (segs, labels)
+}
+
+/// A numeral on a straight rpm scale: thousands of rpm at `frac` of the
+/// scale; `major` marks the even thousands, kept where the scale is short.
+pub struct Mark {
+    pub frac: f32,
+    pub text: String,
+    pub red: bool,
+    pub major: bool,
+}
+
+pub fn rpm_marks(max_rpm: u32, redline: u32) -> Vec<Mark> {
+    (0..=max_rpm / 1000)
+        .map(|k| Mark {
+            frac: (k * 1000) as f32 / max_rpm as f32,
+            text: k.to_string(),
+            red: k * 1000 >= redline,
+            major: k % 2 == 0,
+        })
+        .collect()
 }
 
 #[cfg(test)]
@@ -330,5 +341,26 @@ mod tests {
         assert_eq!(segs.len(), 50);
         assert_eq!(segs.iter().filter(|s| s.red).count(), 10);
         assert_eq!(labels.len(), 11);
+        // the numerals follow max_rpm: 0–12 over the same arc
+        let (_, labels) = arc_segments(12_000, 10_500);
+        assert_eq!(labels.len(), 13);
+        assert!(labels[11].red && !labels[10].red);
+    }
+
+    #[test]
+    fn rpm_marks_follow_max_rpm() {
+        let m = rpm_marks(12_000, 10_000);
+        assert_eq!(m.len(), 13);
+        assert_eq!((m[6].frac, m[6].major, m[10].red), (0.5, true, true));
+        assert!(!m[9].red && !m[7].major);
+    }
+
+    #[test]
+    fn dial_face_is_drawn_at_the_requested_size() {
+        let c = crate::theme::colors(tdm_logic::Theme::Day);
+        let (img, labels) = dial_face(DialKind::Speed { max_kmh: 220 }, c, 510);
+        assert_eq!((img.size().width, img.size().height), (510, 510));
+        // numerals stay in dial coordinates
+        assert!(labels.iter().all(|l| (0.0..DIAL).contains(&l.x)));
     }
 }

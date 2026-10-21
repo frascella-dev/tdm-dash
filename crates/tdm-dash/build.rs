@@ -10,6 +10,7 @@ fn main() {
     println!("cargo:rerun-if-changed=ui");
     println!("cargo:rerun-if-changed=fonts");
     let cfg = slint_build::CompilerConfiguration::new()
-        .embed_resources(slint_build::EmbedResourcesKind::EmbedForSoftwareRenderer);
+        .embed_resources(slint_build::EmbedResourcesKind::EmbedForSoftwareRenderer)
+        .with_sdf_fonts(true);
     slint_build::compile_with_config("ui/dash.slint", cfg).expect("compile ui/dash.slint");
 }

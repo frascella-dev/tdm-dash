@@ -14,6 +14,7 @@ mod geometry;
 mod headless;
 #[cfg(feature = "kms")]
 mod kms;
+mod screen;
 mod shots;
 mod theme;
 
@@ -33,6 +34,8 @@ USAGE: tdm-dash [options]
   --layout NAME        classic | sport | touring (overrides the profile)
   --theme NAME         auto | day | night
   --language LANG      en | it (overrides the profile)
+  --size WxH           panel size of the PC window and of --bench (default 800x480)
+  --rotation DEG       0 | 90 | 180 | 270, clockwise (overrides the profile)
   --record FILE        record the USB traffic for --source replay:FILE
   --screenshot DIR     save the reference screens in DIR and exit
   --bench N            measure the drawing time over N frames and exit
@@ -46,6 +49,8 @@ pub struct Options {
     layout: Option<Layout>,
     theme: Option<ThemeMode>,
     language: Option<Language>,
+    size: Option<(u32, u32)>,
+    rotation: Option<u16>,
     record: Option<PathBuf>,
     screenshot: Option<PathBuf>,
     bench: Option<usize>,
@@ -59,6 +64,8 @@ fn parse_args() -> Result<Options, String> {
         layout: None,
         theme: None,
         language: None,
+        size: None,
+        rotation: None,
         record: None,
         screenshot: None,
         bench: None,
@@ -91,6 +98,16 @@ fn parse_args() -> Result<Options, String> {
                     "en" => Language::En,
                     "it" => Language::It,
                     x => return Err(format!("unknown language '{x}'")),
+                })
+            }
+            "--size" => o.size = Some(screen::parse_size(&val()?)?),
+            "--rotation" => {
+                o.rotation = Some(match val()?.as_str() {
+                    "0" => 0,
+                    "90" => 90,
+                    "180" => 180,
+                    "270" => 270,
+                    x => return Err(format!("rotation '{x}' is not 0, 90, 180 or 270")),
                 })
             }
             "--record" => o.record = Some(val()?.into()),
@@ -205,8 +222,22 @@ fn run_desktop(o: &Options) -> Result<(), String> {
 
     let dash = make_dash(o);
     let source = open_source(o, &dash, SourceSpec::Sim("city".into()))?;
+    // The window stands for the panel: its pixels are the panel's, and the
+    // UI scale comes from the panel size, as on the bike (rotation aside).
+    let d = &dash.profile().display;
+    let (w, h) = o.size.unwrap_or((800, 480));
+    let fit = screen::fit(w, h, 0, d.form, d.scale);
+    // SAFETY: no other thread exists yet.
+    unsafe { std::env::set_var("SLINT_SCALE_FACTOR", fit.scale.to_string()) };
     let ui = AppWindow::new().map_err(|e| e.to_string())?;
-    let app = Rc::new(RefCell::new(app::App::new(ui.clone_strong(), dash, source)));
+    ui.window()
+        .set_size(slint::PhysicalSize::new(fit.physical.0, fit.physical.1));
+    let app = Rc::new(RefCell::new(app::App::new(
+        ui.clone_strong(),
+        dash,
+        source,
+        fit,
+    )));
     let t0 = Instant::now();
     let timer = slint::Timer::default();
     {
@@ -218,6 +249,11 @@ fn run_desktop(o: &Options) -> Result<(), String> {
             move || {
                 let now = t0.elapsed().as_secs_f64();
                 let mut a = app.borrow_mut();
+                // a resized window may change the layout family
+                let size = a.ui.window().size();
+                let d = &a.dash.profile().display;
+                let fit = screen::fit(size.width, size.height, 0, d.form, Some(fit.scale.into()));
+                a.set_fit(fit);
                 a.frame(now);
                 if first {
                     a.dash.first_frame_shown(now);
