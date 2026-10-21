@@ -71,7 +71,8 @@ jobs:
             buildroot-
       - name: Build
         run: |
-          make -C os ${{ matrix.image }}
+          set -o pipefail
+          make -C os ${{ matrix.image }} 2>&1 | tee build.log
           df -h / /mnt || df -h /
       - name: Kernel configuration has what the dashboard needs
         run: |
@@ -113,3 +114,11 @@ jobs:
           gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1 ||
             gh release create "${GITHUB_REF_NAME}" --draft --title "${GITHUB_REF_NAME}" --notes "Images and firmware of ${GITHUB_REF_NAME}."
           gh release upload "${GITHUB_REF_NAME}" dist/* --clobber
+      # The logs are not always at hand where the failure is looked at: put
+      # the end of the build log and the free space in the job annotations.
+      - name: Report a failure
+        if: failure()
+        run: |
+          esc() { sed -e 's/%/%25/g' -e 's/\r//g' | awk '{printf "%s%%0A", $0}'; }
+          echo "::error title=End of the build log::$(tail -n 60 build.log 2>/dev/null | cut -c1-300 | esc)"
+          echo "::error title=Free space::$( (df -h / /mnt || df -h /) 2>&1 | esc)"
