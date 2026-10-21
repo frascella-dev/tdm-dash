@@ -127,6 +127,18 @@ pub enum ThemeMode {
     Night,
 }
 
+/// Layout family: `wide` for 5:3 to 2:1 panels, `bar` for elongated ones
+/// (docs/adr/0013).
+#[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq, Default)]
+#[serde(rename_all = "lowercase")]
+pub enum Form {
+    /// From the aspect ratio of the panel.
+    #[default]
+    Auto,
+    Wide,
+    Bar,
+}
+
 #[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum NightSource {
@@ -147,7 +159,17 @@ pub struct Display {
     pub day_above: f64,
     pub brightness_min_pct: f64,
     pub brightness_max_pct: f64,
+    /// Kept for older profiles: the same as `rotation = 180`.
+    #[serde(default)]
     pub rotate_180: bool,
+    /// Clockwise rotation of the picture: 0, 90, 180 or 270 degrees.
+    #[serde(default)]
+    pub rotation: u16,
+    #[serde(default)]
+    pub form: Form,
+    /// UI scale; computed from the panel size when absent.
+    #[serde(default)]
+    pub scale: Option<f64>,
     pub selftest: bool,
     /// Language of the dashboard texts; English when absent.
     #[serde(default)]
@@ -207,6 +229,13 @@ impl std::fmt::Display for ProfileError {
 }
 
 impl std::error::Error for ProfileError {}
+
+impl Display {
+    /// Clockwise rotation in degrees, with `rotate_180` folded in.
+    pub fn rotation(&self) -> u16 {
+        if self.rotate_180 { 180 } else { self.rotation }
+    }
+}
 
 impl Profile {
     pub fn parse(text: &str) -> Result<Self, ProfileError> {
@@ -281,6 +310,16 @@ impl Profile {
         {
             return bad("display light anchors out of order");
         }
+        let d = &self.display;
+        if !matches!(d.rotation, 0 | 90 | 180 | 270) {
+            return bad("display.rotation must be 0, 90, 180 or 270");
+        }
+        if d.rotate_180 && !matches!(d.rotation, 0 | 180) {
+            return bad("display.rotate_180 contradicts display.rotation");
+        }
+        if d.scale.is_some_and(|s| !(0.25..=4.0).contains(&s)) {
+            return bad("display.scale must be 0.25–4");
+        }
         Ok(())
     }
 
@@ -331,6 +370,29 @@ mod tests {
         assert_eq!(Profile::parse(&t).unwrap().display.language, Language::En);
         let t = BUILTIN_TOML.replace("language = \"it\"", "language = \"de\"");
         assert!(Profile::parse(&t).is_err());
+    }
+
+    #[test]
+    fn rotation_and_form() {
+        let d = Profile::builtin().display;
+        assert_eq!((d.rotation(), d.form, d.scale), (0, Form::Auto, None));
+        let with = |old: &str, new: &str| Profile::parse(&BUILTIN_TOML.replace(old, new));
+        let r0 = "rotation = 0 ";
+        let p = with(r0, "rotate_180 = true ").unwrap();
+        assert_eq!(p.display.rotation(), 180);
+        let p = with(r0, "rotation = 90\nform = \"bar\"\nscale = 1.5 ").unwrap();
+        assert_eq!((p.display.rotation(), p.display.form), (90, Form::Bar));
+        assert_eq!(p.display.scale, Some(1.5));
+        // older profiles, with rotate_180 or without either key, still load
+        assert_eq!(
+            with(r0, "rotate_180 = false ").unwrap().display.rotation(),
+            0
+        );
+        assert_eq!(with(r0, "").unwrap().display.rotation(), 0);
+        assert!(with(r0, "rotation = 45 ").is_err());
+        assert!(with(r0, "rotate_180 = true\nrotation = 90 ").is_err());
+        assert!(with(r0, "scale = 9.0 ").is_err());
+        assert!(with(r0, "form = \"round\" ").is_err());
     }
 
     #[test]

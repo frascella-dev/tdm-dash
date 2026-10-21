@@ -13,5 +13,5 @@ pub mod warnings;
 
 pub use dash::{Dash, Level, LinkEvent, LinkState, Screen, Theme, UiState, ViewModel};
 pub use i18n::{Language, Msg, tr};
-pub use profile::{Layout, Profile, ThemeMode};
+pub use profile::{Form, Layout, Profile, ThemeMode};
 pub use warnings::{Icon, Severity, WarningId};

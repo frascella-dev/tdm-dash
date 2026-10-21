@@ -7,6 +7,10 @@
 To try it locally, just open it in the browser.
 
 The screens of the real software (Rust/Slint), generated with `tdm-dash --screenshot`, are in [`screenshots/`](screenshots/) and in [chapter 11 of the manual](../docs/manual/11-usage.md).
+- The 800×480 reference display is at the top level.
+- The other panels are in one folder per size: `1024x600/`, `1280x720/`, the bars `1280x400/`, `1920x480/` and `1920x720/`, and `400x1280-r90/`, a portrait bar mounted on its side.
+
+The mock-up covers 800×480 only; for the other sizes the reference is these screens ([ADR 0013](../docs/adr/0013-other-displays-and-bars.md)).
 
 ## What it simulates
 
@@ -42,6 +46,14 @@ flowchart LR
 
 Common screens: Trip, Diagnostics, Settings (only when stopped), splash, self-test.
 
+On elongated bar displays (2.2:1 and wider) each layout has its own version:
+
+| Layout | On a bar display |
+|---|---|
+| **Classic** | Two 300 px dials with the temperature column between them; range, average, trip and riding time at the sides |
+| **Sport** | Straight 60-segment rev bar across the panel, speed in the middle, revs and temperature on the left, range on the right |
+| **Touring** | Speed and rev bar on the left, trip data in a 2×2 grid, temperature column on the right |
+
 ## Tokens
 
 | Token | Day | Night | Use |
@@ -64,7 +76,7 @@ Common screens: Trip, Diagnostics, Settings (only when stopped), splash, self-te
 ## Rules for the Slint implementation
 
 - No rotation except the needles, which are `Path`s with the points computed in Rust (software renderer).
-- Dials pre-rendered at startup with tiny-skia from the profile.
+- Dials pre-rendered at startup with tiny-skia from the profile, at the pixel size of the panel.
 - Rpm arc and bars: image of the lit segments revealed by a clip.
 - No blur or shadow.
 - While riding, only the needles, critical warnings and the shift light are animated.

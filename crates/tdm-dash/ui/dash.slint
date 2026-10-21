@@ -1,4 +1,8 @@
-// tdm-dash instrument cluster, 800×480. Mirrors design/index.html.
+// tdm-dash instrument cluster. Two layout families (docs/adr/0013): "wide"
+// for 5:3 to 2:1 panels, laid out on an 800×480 canvas that mirrors
+// design/index.html, and "bar" for elongated panels, at least 1200×400. The
+// window is in logical pixels, scaled to the panel; the screenshots in
+// design/screenshots/<size>/ are the reference for the other sizes.
 // Rules for the software renderer: no rotations or blur; dial faces are
 // images generated at start-up; needles and arc segments are Paths whose
 // commands are computed in Rust.
@@ -35,6 +39,14 @@ export struct NeedleGeom {
 export struct Row {
     label: string,
     value: string,
+}
+
+// A numeral on a straight rpm scale (geometry::rpm_marks).
+export struct Mark {
+    frac: float,
+    text: string,
+    red: bool,
+    major: bool,
 }
 
 // Fixed labels; set from tdm_logic::i18n at start-up (docs/adr/0012).
@@ -163,20 +175,22 @@ component Telltales inherits Rectangle {
     in property <int> battery;
     in property <bool> link;
     in property <bool> fuel;
-    height: 58px;
-    TurnIcon { x: 24px; y: 14px; color: left ? Palette.green : Palette.ghost; }
-    TurnIcon { x: 736px; y: 14px; right: true; color: right ? Palette.green : Palette.ghost; }
+    // turn signals at the edges, the rest grouped around the centre
+    property <length> cx: self.width / 2;
+    property <length> iy: self.height / 2 - 15px;
+    TurnIcon { x: 24px; y: iy; color: left ? Palette.green : Palette.ghost; }
+    TurnIcon { x: parent.width - 64px; y: iy; right: true; color: right ? Palette.green : Palette.ghost; }
     T {
-        x: 334px; y: 8px; width: 36px; height: 44px;
+        x: cx - 66px; y: parent.height / 2 - 21px; width: 36px; height: 44px;
         text: "N"; font-size: 34px; weight: 700;
         horizontal-alignment: center;
         color: neutral ? Palette.green : Palette.ghost;
     }
-    HighBeamIcon { x: 425px; y: 14px; color: high-beam ? Palette.blue : Palette.ghost; }
-    if link: LinkIcon { x: 242px; y: 14px; color: Palette.red; }
-    if fuel: FuelIcon { x: 184px; y: 14px; color: Palette.amber; }
-    if coolant > 0: CoolantIcon { x: 518px; y: 14px; color: coolant >= 3 ? Palette.red : Palette.amber; }
-    if battery > 0: BatteryIcon { x: 576px; y: 14px; color: battery >= 3 ? Palette.red : Palette.amber; }
+    HighBeamIcon { x: cx + 25px; y: iy; color: high-beam ? Palette.blue : Palette.ghost; }
+    if link: LinkIcon { x: cx - 158px; y: iy; color: Palette.red; }
+    if fuel: FuelIcon { x: cx - 216px; y: iy; color: Palette.amber; }
+    if coolant > 0: CoolantIcon { x: cx + 118px; y: iy; color: coolant >= 3 ? Palette.red : Palette.amber; }
+    if battery > 0: BatteryIcon { x: cx + 176px; y: iy; color: battery >= 3 ? Palette.red : Palette.amber; }
 }
 
 component BottomStrip inherits Rectangle {
@@ -187,29 +201,43 @@ component BottomStrip inherits Rectangle {
     in property <int> vbat-level;
     in property <string> info;
     in property <int> info-icon;   // 0 none, 1 fuel, 2 turn
-    y: 432px;
-    height: 48px;
-    width: 800px;
+    // odometer and trips on the left, notice and battery on the right
+    property <length> iy: (self.height - 32px) / 2;
     background: Palette.panel;
-    T { x: 22px; y: 0; height: 48px; text: "ODO"; font-size: 13px; color: Palette.dim; }
-    T { x: 60px; y: 0; height: 48px; text: odo; font-size: 24px; }
-    T { x: 166px; y: 0; height: 48px; text: "A"; font-size: 13px; color: Palette.dim; }
-    T { x: 182px; y: 0; height: 48px; text: trip-a; font-size: 24px; }
-    T { x: 282px; y: 0; height: 48px; text: Labels.fill; font-size: 13px; color: Palette.dim; }
-    T { x: 330px; y: 0; height: 48px; text: trip-b; font-size: 24px; }
-    if info-icon == 1: FuelIcon { x: 500px; y: 8px; color: Palette.amber; }
-    if info-icon == 2: TurnIcon { x: 500px; y: 8px; color: Palette.amber; }
-    if info-icon > 0: T { x: 544px; y: 0; height: 48px; text: info; font-size: 18px; color: Palette.amber; }
+    T { x: 22px; y: 0; height: parent.height; text: "ODO"; font-size: 13px; color: Palette.dim; }
+    T { x: 60px; y: 0; height: parent.height; text: odo; font-size: 24px; }
+    T { x: 166px; y: 0; height: parent.height; text: "A"; font-size: 13px; color: Palette.dim; }
+    T { x: 182px; y: 0; height: parent.height; text: trip-a; font-size: 24px; }
+    T { x: 282px; y: 0; height: parent.height; text: Labels.fill; font-size: 13px; color: Palette.dim; }
+    T { x: 330px; y: 0; height: parent.height; text: trip-b; font-size: 24px; }
+    if info-icon == 1: FuelIcon { x: parent.width - 300px; y: iy; color: Palette.amber; }
+    if info-icon == 2: TurnIcon { x: parent.width - 300px; y: iy; color: Palette.amber; }
+    if info-icon > 0: T { x: parent.width - 256px; y: 0; height: parent.height; text: info; font-size: 18px; color: Palette.amber; }
     BatteryIcon {
-        x: 652px; y: 8px;
+        x: parent.width - 148px; y: iy;
         color: vbat-level >= 3 ? Palette.red : vbat-level == 2 ? Palette.amber : Palette.dim;
     }
     T {
-        x: 690px; y: 0; width: 66px; height: 48px;
+        x: parent.width - 110px; y: 0; width: 66px; height: parent.height;
         text: vbat; font-size: 24px; horizontal-alignment: right;
         color: vbat-level >= 3 ? Palette.red : vbat-level == 2 ? Palette.amber : Palette.ink;
     }
-    T { x: 762px; y: 0; height: 48px; text: "V"; font-size: 16px; color: Palette.dim; }
+    T { x: parent.width - 38px; y: 0; height: parent.height; text: "V"; font-size: 16px; color: Palette.dim; }
+}
+
+// A label over a large right-aligned value and its unit.
+component InfoRow inherits Rectangle {
+    in property <string> label;
+    in property <string> value;
+    in property <string> unit;
+    in property <bool> amber;
+    height: 60px;
+    T { x: 0; y: 0; height: 16px; text: label; font-size: 13px; color: Palette.dim; }
+    T {
+        x: 0; y: 18px; width: parent.width - 74px; height: 40px; text: value; font-size: 30px; horizontal-alignment: right;
+        color: amber ? Palette.amber : Palette.ink;
+    }
+    T { x: parent.width - 66px; y: 26px; height: 30px; text: unit; font-size: 15px; color: Palette.dim; }
 }
 
 component SegBar inherits Rectangle {
@@ -250,37 +278,42 @@ component Dial inherits Rectangle {
     in property <[Label]> labels;
     in property <NeedleGeom> needle;
     in property <string> unit;
-    width: 340px;
-    height: 340px;
-    Image { source: face; width: 340px; height: 340px; }
+    // labels and needle come in dial coordinates (340×340): scale them
+    in property <length> size: 340px;
+    property <float> k: size / 340px;
+    width: size;
+    height: size;
+    Image { source: face; width: size; height: size; }
     for l in labels: T {
-        x: l.x - 20px; y: l.y - 14px; width: 40px; height: 28px;
-        text: l.text; font-size: 22px; horizontal-alignment: center;
+        x: (l.x - 20px) * k; y: (l.y - 14px) * k; width: 40px * k; height: 28px * k;
+        text: l.text; font-size: 22px * k; horizontal-alignment: center;
         color: l.red ? Palette.red : Palette.ink;
     }
-    T { x: 0; y: 104px; width: 340px; height: 18px; text: unit; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+    T { x: 0; y: 104px * k; width: size; height: 18px * k; text: unit; font-size: 13px * k; weight: 500; color: Palette.dim; horizontal-alignment: center; }
     Path {
-        x: needle.x * 1px; y: needle.y * 1px; width: needle.w * 1px; height: needle.h * 1px;
+        x: needle.x * 1px * k; y: needle.y * 1px * k; width: needle.w * 1px * k; height: needle.h * 1px * k;
         viewbox-x: needle.x; viewbox-y: needle.y; viewbox-width: needle.w; viewbox-height: needle.h;
         commands: needle.cmd;
         fill: Palette.needle;
     }
     Rectangle {
-        x: 155px; y: 155px; width: 30px; height: 30px;
-        border-radius: 15px; background: Palette.panel;
-        border-width: 2.5px; border-color: Palette.needle;
+        x: 155px * k; y: 155px * k; width: 30px * k; height: 30px * k;
+        border-radius: 15px * k; background: Palette.panel;
+        border-width: 2.5px * k; border-color: Palette.needle;
     }
 }
 
 // ------------------------------------------------------------------ window
 
 export component AppWindow inherits Window {
-    width: 800px;
-    height: 480px;
+    preferred-width: 800px;
+    preferred-height: 480px;
     title: "tdm-dash";
     background: Palette.bg;
     default-font-family: "Saira SemiCondensed SemiBold";
 
+    in property <int> form;          // 0 wide, 1 bar
+    in property <length> dial-size: 340px;
     in property <int> ui-state;      // 0 splash, 1 self-test, 2 ride, 3 settings, 4 off
     in property <int> screen;        // 0 main, 1 trip, 2 diag
     in property <int> layout;        // 0 classic, 1 sport, 2 touring
@@ -303,6 +336,8 @@ export component AppWindow inherits Window {
     in property <float> coolant-frac;
     in property <float> coolant-warn-frac;
     in property <int> coolant-level;
+    in property <string> coolant-min-text: "40";
+    in property <string> coolant-max-text: "120";
     in property <string> vbat-text;
     in property <int> vbat-level;
     in property <string> odo-text;
@@ -337,11 +372,20 @@ export component AppWindow inherits Window {
     in property <NeedleGeom> rpm-needle;
     in property <[Seg]> arc-segs;
     in property <[Label]> arc-labels;
+    in property <[Mark]> rpm-marks;
 
     callback key(string, bool);
 
     property <bool> main-visible: (ui-state == 1 || ui-state == 2) && screen == 0;
     property <color> digit-color: stale ? Palette.dim : Palette.ink;
+    property <bool> bar: form == 1;
+    // the frame: telltale row on top, information strip at the bottom
+    property <length> top: bar ? 48px : 58px;
+    property <length> strip-h: bar ? 44px : 48px;
+    // bar layouts stop growing at 1920 logical pixels, centred beyond that
+    property <length> band-w: Math.min(root.width, 1920px);
+    property <length> band-x: (root.width - band-w) / 2;
+    property <length> band-h: root.height - top - strip-h;
 
     // Characters that only appear in strings built in Rust: listing them
     // here makes the compiler embed their glyphs for the software renderer.
@@ -356,146 +400,277 @@ export component AppWindow inherits Window {
         key-released(e) => { root.key(e.text, false); accept }
     }
 
-    // ---------------- classic
-    if main-visible && layout == 0: Rectangle {
-        Dial { x: 30px; y: 58px; face: speed-face; labels: speed-labels; needle: speed-needle; unit: "km/h"; }
-        Dial { x: 430px; y: 58px; face: rpm-face; labels: rpm-labels; needle: rpm-needle; unit: Labels.krpm; }
-        Cells { x: 200px - self.width / 2; y: 268px; height: 64px; chars: speed-chars; cell: 36px; size: 64px; ink: digit-color; }
-        T { x: 150px; y: 334px; width: 100px; height: 18px; text: "km/h"; font-size: 14px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
-        T { x: 520px; y: 268px; width: 160px; height: 44px; text: rpm-text; font-size: 34px; color: digit-color; horizontal-alignment: center; }
-        T { x: 550px; y: 312px; width: 100px; height: 18px; text: Labels.rpm; font-size: 14px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
-        if shift: Rectangle { x: 593px; y: 113px; width: 14px; height: 14px; border-radius: 7px; background: Palette.needle; }
-        T {
-            x: 372px; y: 104px; width: 56px; height: 30px;
-            text: coolant-text; font-size: 24px; horizontal-alignment: center;
-            color: coolant-level >= 2 ? Palette.red : Palette.ink;
-        }
-        T { x: 372px; y: 132px; width: 56px; height: 16px; text: "°C"; font-size: 12px; color: Palette.dim; horizontal-alignment: center; }
-        VBar { x: 387px; y: 150px; width: 26px; height: 202px; count: 12; frac: coolant-frac; red-from: coolant-warn-frac; }
-        CoolantIcon { x: 380px; y: 362px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
-    }
+    // ================================================================ wide
+    // The three layouts are drawn on the 800×480 canvas of the mock-up,
+    // centred; only the frame stretches to the panel.
+    if main-visible && !bar: Rectangle {
+        x: (root.width - 800px) / 2;
+        y: (root.height - 480px) / 2;
+        width: 800px;
+        height: 480px;
 
-    // ---------------- sport
-    if main-visible && layout == 1: Rectangle {
-        for s in arc-segs: Path {
-            x: s.x * 1px; y: s.y * 1px; width: s.w * 1px; height: s.h * 1px;
-            viewbox-x: s.x; viewbox-y: s.y; viewbox-width: s.w; viewbox-height: s.h;
-            commands: s.cmd;
-            property <bool> lit: s.at - 0.5 / arc-segs.length <= rpm-frac;
-            fill: lit && shift ? Palette.needle : s.red ? (lit ? Palette.red : Palette.red-dim) : (lit ? Palette.ink : Palette.faint);
-        }
-        for l in arc-labels: T {
-            x: l.x - 16px; y: l.y - 12px; width: 32px; height: 24px;
-            text: l.text; font-size: 20px; horizontal-alignment: center;
-            color: l.red ? Palette.red : Palette.dim;
-        }
-        T { x: 300px; y: 150px; width: 200px; height: 40px; text: rpm-text; font-size: 30px; color: digit-color; horizontal-alignment: center; }
-        T { x: 300px; y: 188px; width: 200px; height: 18px; text: Labels.rpm; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
-        Cells { x: 400px - self.width / 2; y: 228px; height: 190px; chars: speed-chars; cell: 112px; size: 200px; weight: 700; ink: digit-color; }
-        T { x: 350px; y: 412px; width: 100px; height: 18px; text: "km/h"; font-size: 16px; color: Palette.dim; horizontal-alignment: center; }
-        CoolantIcon { x: 24px; y: 284px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
-        T { x: 70px; y: 288px; height: 36px; text: coolant-text + "°"; font-size: 28px; color: coolant-level >= 2 ? Palette.red : Palette.ink; }
-        SegBar { x: 30px; y: 330px; width: 130px; height: 12px; count: 8; frac: coolant-frac; red-from: coolant-warn-frac; }
-        T { x: 30px; y: 346px; height: 16px; text: "40"; font-size: 12px; weight: 500; color: Palette.dim; }
-        T { x: 130px; y: 346px; width: 30px; height: 16px; text: "120"; font-size: 12px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
-        FuelIcon { x: 640px; y: 284px; color: Palette.dim; }
-        T { x: 600px; y: 288px; width: 142px; height: 36px; text: range-text; font-size: 28px; horizontal-alignment: right; color: range-low ? Palette.amber : Palette.ink; }
-        T { x: 746px; y: 292px; height: 30px; text: "km"; font-size: 14px; color: Palette.dim; }
-        T { x: 600px; y: 326px; width: 170px; height: 16px; text: Labels.estimated-range; font-size: 12px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
-    }
-
-    // ---------------- touring
-    if main-visible && layout == 2: Rectangle {
-        Cells { x: 236px - self.width / 2; y: 116px; height: 150px; chars: speed-chars; cell: 80px; size: 152px; weight: 700; ink: digit-color; }
-        T { x: 186px; y: 258px; width: 100px; height: 20px; text: "km/h"; font-size: 16px; color: Palette.dim; horizontal-alignment: center; }
-        SegBar { x: 34px; y: 300px; width: 404px; height: 26px; count: 40; frac: rpm-frac; red-from: redline-frac; flash: shift; }
-        for k in 6: T {
-            x: 34px + 404px * k * 2 / 10 - 16px; y: 332px; width: 32px; height: 20px;
-            text: k * 2; font-size: 15px; horizontal-alignment: center;
-            color: k * 2 / 10 >= redline-frac ? Palette.red : Palette.dim;
-        }
-        T { x: 34px; y: 372px; height: 26px; text: Labels.rpm; font-size: 14px; weight: 500; color: Palette.dim; }
-        T { x: 238px; y: 368px; width: 200px; height: 34px; text: rpm-text; font-size: 26px; horizontal-alignment: right; color: digit-color; }
-        Rectangle { x: 478px; y: 70px; width: 2px; height: 340px; background: Palette.faint; }
-        for r[i] in [
-            { label: Labels.trip-a, value: trip-a-text, unit: "km" },
-            { label: Labels.average-caps, value: avg-text, unit: "" },
-            { label: Labels.riding-caps, value: ride-time-text, unit: "" },
-            { label: Labels.range-caps, value: range-text, unit: "km" },
-        ]: Rectangle {
-            x: 506px; y: 74px + i * 66px; width: 270px; height: 60px;
-            T { x: 0; y: 0; height: 16px; text: r.label; font-size: 13px; color: Palette.dim; }
+        // ---------------- classic
+        if layout == 0: Rectangle {
+            Dial { x: 30px; y: 58px; face: speed-face; labels: speed-labels; needle: speed-needle; unit: "km/h"; }
+            Dial { x: 430px; y: 58px; face: rpm-face; labels: rpm-labels; needle: rpm-needle; unit: Labels.krpm; }
+            Cells { x: 200px - self.width / 2; y: 268px; height: 64px; chars: speed-chars; cell: 36px; size: 64px; ink: digit-color; }
+            T { x: 150px; y: 334px; width: 100px; height: 18px; text: "km/h"; font-size: 14px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+            T { x: 520px; y: 268px; width: 160px; height: 44px; text: rpm-text; font-size: 34px; color: digit-color; horizontal-alignment: center; }
+            T { x: 550px; y: 312px; width: 100px; height: 18px; text: Labels.rpm; font-size: 14px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+            if shift: Rectangle { x: 593px; y: 113px; width: 14px; height: 14px; border-radius: 7px; background: Palette.needle; }
             T {
-                x: 0; y: 18px; width: 196px; height: 40px; text: r.value; font-size: 30px; horizontal-alignment: right;
-                color: i == 3 && range-low ? Palette.amber : Palette.ink;
+                x: 372px; y: 104px; width: 56px; height: 30px;
+                text: coolant-text; font-size: 24px; horizontal-alignment: center;
+                color: coolant-level >= 2 ? Palette.red : Palette.ink;
             }
-            T { x: 204px; y: 26px; height: 30px; text: r.unit; font-size: 15px; color: Palette.dim; }
+            T { x: 372px; y: 132px; width: 56px; height: 16px; text: "°C"; font-size: 12px; color: Palette.dim; horizontal-alignment: center; }
+            VBar { x: 387px; y: 150px; width: 26px; height: 202px; count: 12; frac: coolant-frac; red-from: coolant-warn-frac; }
+            CoolantIcon { x: 380px; y: 362px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
         }
-        CoolantIcon { x: 494px; y: 368px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
-        SegBar { x: 540px; y: 376px; width: 160px; height: 14px; count: 10; frac: coolant-frac; red-from: coolant-warn-frac; }
-        T { x: 700px; y: 368px; width: 74px; height: 30px; text: coolant-text + "°C"; font-size: 22px; horizontal-alignment: right; color: coolant-level >= 2 ? Palette.red : Palette.ink; }
+
+        // ---------------- sport
+        if layout == 1: Rectangle {
+            for s in arc-segs: Path {
+                x: s.x * 1px; y: s.y * 1px; width: s.w * 1px; height: s.h * 1px;
+                viewbox-x: s.x; viewbox-y: s.y; viewbox-width: s.w; viewbox-height: s.h;
+                commands: s.cmd;
+                property <bool> lit: s.at - 0.5 / arc-segs.length <= rpm-frac;
+                fill: lit && shift ? Palette.needle : s.red ? (lit ? Palette.red : Palette.red-dim) : (lit ? Palette.ink : Palette.faint);
+            }
+            for l in arc-labels: T {
+                x: l.x - 16px; y: l.y - 12px; width: 32px; height: 24px;
+                text: l.text; font-size: 20px; horizontal-alignment: center;
+                color: l.red ? Palette.red : Palette.dim;
+            }
+            T { x: 300px; y: 150px; width: 200px; height: 40px; text: rpm-text; font-size: 30px; color: digit-color; horizontal-alignment: center; }
+            T { x: 300px; y: 188px; width: 200px; height: 18px; text: Labels.rpm; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+            Cells { x: 400px - self.width / 2; y: 228px; height: 190px; chars: speed-chars; cell: 112px; size: 200px; weight: 700; ink: digit-color; }
+            T { x: 350px; y: 412px; width: 100px; height: 18px; text: "km/h"; font-size: 16px; color: Palette.dim; horizontal-alignment: center; }
+            CoolantIcon { x: 24px; y: 284px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
+            T { x: 70px; y: 288px; height: 36px; text: coolant-text + "°"; font-size: 28px; color: coolant-level >= 2 ? Palette.red : Palette.ink; }
+            SegBar { x: 30px; y: 330px; width: 130px; height: 12px; count: 8; frac: coolant-frac; red-from: coolant-warn-frac; }
+            T { x: 30px; y: 346px; height: 16px; text: coolant-min-text; font-size: 12px; weight: 500; color: Palette.dim; }
+            T { x: 130px; y: 346px; width: 30px; height: 16px; text: coolant-max-text; font-size: 12px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
+            FuelIcon { x: 640px; y: 284px; color: Palette.dim; }
+            T { x: 600px; y: 288px; width: 142px; height: 36px; text: range-text; font-size: 28px; horizontal-alignment: right; color: range-low ? Palette.amber : Palette.ink; }
+            T { x: 746px; y: 292px; height: 30px; text: "km"; font-size: 14px; color: Palette.dim; }
+            T { x: 600px; y: 326px; width: 170px; height: 16px; text: Labels.estimated-range; font-size: 12px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
+        }
+
+        // ---------------- touring
+        if layout == 2: Rectangle {
+            Cells { x: 236px - self.width / 2; y: 116px; height: 150px; chars: speed-chars; cell: 80px; size: 152px; weight: 700; ink: digit-color; }
+            T { x: 186px; y: 258px; width: 100px; height: 20px; text: "km/h"; font-size: 16px; color: Palette.dim; horizontal-alignment: center; }
+            SegBar { x: 34px; y: 300px; width: 404px; height: 26px; count: 40; frac: rpm-frac; red-from: redline-frac; flash: shift; }
+            for m in rpm-marks: T {
+                visible: m.major;
+                x: 34px + 404px * m.frac - 16px; y: 332px; width: 32px; height: 20px;
+                text: m.text; font-size: 15px; horizontal-alignment: center;
+                color: m.red ? Palette.red : Palette.dim;
+            }
+            T { x: 34px; y: 372px; height: 26px; text: Labels.rpm; font-size: 14px; weight: 500; color: Palette.dim; }
+            T { x: 238px; y: 368px; width: 200px; height: 34px; text: rpm-text; font-size: 26px; horizontal-alignment: right; color: digit-color; }
+            Rectangle { x: 478px; y: 70px; width: 2px; height: 340px; background: Palette.faint; }
+            for r[i] in [
+                { label: Labels.trip-a, value: trip-a-text, unit: "km" },
+                { label: Labels.average-caps, value: avg-text, unit: "" },
+                { label: Labels.riding-caps, value: ride-time-text, unit: "" },
+                { label: Labels.range-caps, value: range-text, unit: "km" },
+            ]: InfoRow {
+                x: 506px; y: 74px + i * 66px; width: 270px;
+                label: r.label; value: r.value; unit: r.unit; amber: i == 3 && range-low;
+            }
+            CoolantIcon { x: 494px; y: 368px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
+            SegBar { x: 540px; y: 376px; width: 160px; height: 14px; count: 10; frac: coolant-frac; red-from: coolant-warn-frac; }
+            T { x: 700px; y: 368px; width: 74px; height: 30px; text: coolant-text + "°C"; font-size: 22px; horizontal-alignment: right; color: coolant-level >= 2 ? Palette.red : Palette.ink; }
+        }
     }
+
+    // ================================================================ bar
+    // Elongated panels: the band between the telltales and the strip is at
+    // least 1200×308; the extra width goes to the sides.
+    if main-visible && bar: Rectangle {
+        x: band-x;
+        y: top;
+        width: band-w;
+        height: band-h;
+        property <length> mid: self.width / 2;
+
+        // ---------------- classic: two dials with the coolant column between
+        if layout == 0: Rectangle {
+            property <length> d: dial-size;
+            property <float> k: d / 340px;
+            property <length> dy: (self.height - d) / 2;
+            property <length> sx: mid - 50px - d;
+            property <length> rx: mid + 50px;
+            Dial { x: sx; y: dy; size: d; face: speed-face; labels: speed-labels; needle: speed-needle; unit: "km/h"; }
+            Dial { x: rx; y: dy; size: d; face: rpm-face; labels: rpm-labels; needle: rpm-needle; unit: Labels.krpm; }
+            Cells { x: sx + d / 2 - self.width / 2; y: dy + 210px * k; height: 64px * k; chars: speed-chars; cell: 36px * k; size: 64px * k; ink: digit-color; }
+            T { x: sx + d / 2 - 50px; y: dy + 276px * k; width: 100px; height: 18px; text: "km/h"; font-size: 14px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+            T { x: rx + d / 2 - 80px; y: dy + 210px * k; width: 160px; height: 44px * k; text: rpm-text; font-size: 34px * k; color: digit-color; horizontal-alignment: center; }
+            T { x: rx + d / 2 - 50px; y: dy + 254px * k; width: 100px; height: 18px; text: Labels.rpm; font-size: 14px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+            if shift: Rectangle { x: rx + 163px * k; y: dy + 55px * k; width: 14px; height: 14px; border-radius: 7px; background: Palette.needle; }
+            T {
+                x: mid - 28px; y: dy + 18px; width: 56px; height: 30px;
+                text: coolant-text; font-size: 24px; horizontal-alignment: center;
+                color: coolant-level >= 2 ? Palette.red : Palette.ink;
+            }
+            T { x: mid - 28px; y: dy + 46px; width: 56px; height: 16px; text: "°C"; font-size: 12px; color: Palette.dim; horizontal-alignment: center; }
+            VBar { x: mid - 13px; y: dy + 66px; width: 26px; height: d - 110px; count: 12; frac: coolant-frac; red-from: coolant-warn-frac; }
+            CoolantIcon { x: mid - 20px; y: dy + d - 34px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
+            // the sides: what the 800-pixel layout keeps for the other screens
+            property <length> side-w: Math.min(260px, sx - 40px);
+            for r[i] in [
+                { label: Labels.range-caps, value: range-text, unit: "km" },
+                { label: Labels.average-caps, value: avg-text, unit: "" },
+                { label: Labels.trip-a, value: trip-a-text, unit: "km" },
+                { label: Labels.riding-caps, value: ride-time-text, unit: "" },
+            ]: InfoRow {
+                x: i < 2 ? (sx - side-w) / 2 : rx + d + (sx - side-w) / 2;
+                y: parent.height / 2 - 72px + Math.mod(i, 2) * 84px;
+                width: side-w;
+                label: r.label; value: r.value; unit: r.unit; amber: i == 0 && range-low;
+            }
+        }
+
+        // ---------------- sport: straight rev bar across the whole panel
+        if layout == 1: Rectangle {
+            property <length> bx: 24px;
+            property <length> bw: self.width - 48px;
+            SegBar { x: bx; y: 6px; width: bw; height: 40px; count: 60; frac: rpm-frac; red-from: redline-frac; flash: shift; }
+            for m in rpm-marks: T {
+                x: bx + bw * m.frac - 16px; y: 50px; width: 32px; height: 24px;
+                text: m.text; font-size: 20px; horizontal-alignment: center;
+                color: m.red ? Palette.red : Palette.dim;
+            }
+            property <length> sy: 80px + (self.height - 308px) / 2;
+            Cells { x: mid - self.width / 2; y: sy; height: 190px; chars: speed-chars; cell: 112px; size: 200px; weight: 700; ink: digit-color; }
+            T { x: mid - 50px; y: sy + 184px; width: 100px; height: 18px; text: "km/h"; font-size: 16px; color: Palette.dim; horizontal-alignment: center; }
+            // left: revs and coolant
+            T { x: 40px; y: sy + 20px; width: 220px; height: 50px; text: rpm-text; font-size: 42px; color: digit-color; }
+            T { x: 40px; y: sy + 70px; height: 18px; text: Labels.rpm; font-size: 14px; weight: 500; color: Palette.dim; }
+            CoolantIcon { x: 34px; y: sy + 112px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
+            T { x: 80px; y: sy + 110px; height: 36px; text: coolant-text + "°"; font-size: 28px; color: coolant-level >= 2 ? Palette.red : Palette.ink; }
+            SegBar { x: 40px; y: sy + 154px; width: 180px; height: 12px; count: 10; frac: coolant-frac; red-from: coolant-warn-frac; }
+            T { x: 40px; y: sy + 170px; height: 16px; text: coolant-min-text; font-size: 12px; weight: 500; color: Palette.dim; }
+            T { x: 180px; y: sy + 170px; width: 40px; height: 16px; text: coolant-max-text; font-size: 12px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
+            // right: range
+            FuelIcon { x: parent.width - 80px; y: sy + 28px; color: Palette.dim; }
+            T { x: parent.width - 300px; y: sy + 92px; width: 210px; height: 50px; text: range-text; font-size: 42px; horizontal-alignment: right; color: range-low ? Palette.amber : Palette.ink; }
+            T { x: parent.width - 82px; y: sy + 104px; height: 30px; text: "km"; font-size: 16px; color: Palette.dim; }
+            T { x: parent.width - 300px; y: sy + 144px; width: 260px; height: 18px; text: Labels.estimated-range; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
+        }
+
+        // ---------------- touring: speed and revs on the left, trip data in a grid
+        if layout == 2: Rectangle {
+            property <length> ty: (self.height - 308px) / 2;
+            Cells { x: 40px; y: ty + 16px; height: 150px; chars: speed-chars; cell: 80px; size: 152px; weight: 700; ink: digit-color; }
+            T { x: 290px; y: ty + 130px; height: 20px; text: "km/h"; font-size: 16px; color: Palette.dim; }
+            SegBar { x: 40px; y: ty + 186px; width: 440px; height: 26px; count: 40; frac: rpm-frac; red-from: redline-frac; flash: shift; }
+            for m in rpm-marks: T {
+                visible: m.major;
+                x: 40px + 440px * m.frac - 16px; y: ty + 218px; width: 32px; height: 20px;
+                text: m.text; font-size: 15px; horizontal-alignment: center;
+                color: m.red ? Palette.red : Palette.dim;
+            }
+            T { x: 40px; y: ty + 252px; height: 34px; text: Labels.rpm; font-size: 14px; weight: 500; color: Palette.dim; }
+            T { x: 280px; y: ty + 252px; width: 200px; height: 34px; text: rpm-text; font-size: 26px; horizontal-alignment: right; color: digit-color; }
+            Rectangle { x: 518px; y: ty + 16px; width: 2px; height: 276px; background: Palette.faint; }
+            property <length> gx: 552px;
+            property <length> gw: (self.width - gx - 150px) / 2;
+            for r[i] in [
+                { label: Labels.trip-a, value: trip-a-text, unit: "km" },
+                { label: Labels.average-caps, value: avg-text, unit: "" },
+                { label: Labels.riding-caps, value: ride-time-text, unit: "" },
+                { label: Labels.range-caps, value: range-text, unit: "km" },
+            ]: InfoRow {
+                x: gx + Math.mod(i, 2) * gw; y: ty + 70px + Math.floor(i / 2) * 96px; width: gw - 24px;
+                label: r.label; value: r.value; unit: r.unit; amber: i == 3 && range-low;
+            }
+            Rectangle { x: parent.width - 132px; y: ty + 16px; width: 2px; height: 276px; background: Palette.faint; }
+            T {
+                x: parent.width - 120px; y: ty + 20px; width: 90px; height: 30px; text: coolant-text + "°C"; font-size: 22px;
+                horizontal-alignment: center; color: coolant-level >= 2 ? Palette.red : Palette.ink;
+            }
+            VBar { x: parent.width - 88px; y: ty + 60px; width: 26px; height: 186px; count: 12; frac: coolant-frac; red-from: coolant-warn-frac; }
+            CoolantIcon { x: parent.width - 95px; y: ty + 256px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
+        }
+    }
+
+    // ================================================================ service screens
+    // Both families: title under the telltales, key help at the bottom.
 
     // ---------------- trip
     if ui-state == 2 && screen == 1: Rectangle {
-        T { x: 40px; y: 76px; height: 20px; text: Labels.trip-title; font-size: 15px; color: Palette.dim; }
+        property <length> cw: (self.width - 96px) / 2;
+        property <length> ch: bar ? 210px : 300px;
+        T { x: 40px; y: top + 18px; height: 20px; text: Labels.trip-title; font-size: 15px; color: Palette.dim; }
         for c[i] in [
             { title: Labels.trip-a, value: trip-a-text, k1: Labels.riding-time, v1: ride-time-text, k2: Labels.average, v2: avg-text, k3: Labels.top-speed, v3: max-text },
             { title: Labels.since-fill, value: trip-b-text, k1: Labels.est-consumption, v1: consumption-text, k2: Labels.fuel-used, v2: fuel-used-text, k3: Labels.range, v3: range-text + " km" },
         ]: Rectangle {
-            x: 24px + i * 380px; y: 110px; width: 352px; height: 300px;
+            x: 24px + i * (cw + 28px); y: top + 52px + (root.height - top - 52px - 70px - ch) / 2; width: cw; height: ch;
             background: trip-sel == i ? Palette.panel : transparent;
-            if trip-sel == i: Rectangle { x: 0; y: 0; width: 4px; height: 300px; background: Palette.needle; }
+            if trip-sel == i: Rectangle { x: 0; y: 0; width: 4px; height: parent.height; background: Palette.needle; }
             T { x: 16px; y: 22px; height: 24px; text: c.title; font-size: 16px; color: trip-sel == i ? Palette.ink : Palette.dim; }
             T { x: 16px; y: 54px; height: 80px; text: c.value; font-size: 72px; }
-            T { x: 300px; y: 90px; width: 30px; height: 30px; text: "km"; font-size: 18px; color: Palette.dim; }
+            // the rows go under the value, or beside it on a bar panel
+            property <length> kx: bar ? self.width / 2 : 16px;
+            property <length> kw: bar ? self.width / 2 - 24px : self.width - 36px;
+            T { x: bar ? kx - 52px : parent.width - 52px; y: 90px; width: 30px; height: 30px; text: "km"; font-size: 18px; color: Palette.dim; }
             for kv[j] in [{ k: c.k1, v: c.v1 }, { k: c.k2, v: c.v2 }, { k: c.k3, v: c.v3 }]: Rectangle {
-                x: 16px; y: 150px + j * 40px; width: 316px; height: 30px;
+                x: kx; y: (bar ? 56px : 150px) + j * 40px; width: kw; height: 30px;
                 T { x: 0; y: 0; height: 30px; text: kv.k; font-size: 17px; weight: 500; color: Palette.dim; }
-                T { x: 0; y: 0; width: 316px; height: 30px; text: kv.v; font-size: 21px; horizontal-alignment: right; }
+                T { x: 0; y: 0; width: parent.width; height: 30px; text: kv.v; font-size: 21px; horizontal-alignment: right; }
             }
         }
-        T { x: 0; y: 438px; width: 800px; height: 24px; text: Labels.trip-keys; font-size: 15px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+        T { x: 0; y: root.height - 42px; width: root.width; height: 24px; text: Labels.trip-keys; font-size: 15px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
     }
 
     // ---------------- diagnostics
     if ui-state == 2 && screen == 2: Rectangle {
-        T { x: 40px; y: 76px; height: 20px; text: Labels.diag-title; font-size: 15px; color: Palette.dim; }
+        // one column, or two on a bar panel
+        property <int> per: bar ? Math.ceil(diag.length / 2) : diag.length;
+        property <length> colw: bar ? (self.width - 120px) / 2 : self.width - 60px;
+        T { x: 40px; y: top + 18px; height: 20px; text: Labels.diag-title; font-size: 15px; color: Palette.dim; }
         for d[i] in diag: Rectangle {
-            x: 40px; y: 108px + i * 32px; width: 740px; height: 28px;
+            x: 40px + Math.floor(i / per) * (colw + 40px); y: top + 50px + Math.mod(i, per) * 32px; width: colw; height: 28px;
             T { x: 0; y: 0; height: 28px; text: d.label; font-size: 17px; weight: 500; color: Palette.dim; }
-            T { x: 160px; y: 0; width: 580px; height: 28px; text: d.value; font-size: 17px; overflow: elide; }
+            T { x: 160px; y: 0; width: parent.width - 160px; height: 28px; text: d.value; font-size: 17px; overflow: elide; }
         }
-        T { x: 0; y: 438px; width: 800px; height: 24px; text: diag-note; font-size: 15px; weight: 500; color: Palette.amber; horizontal-alignment: center; }
+        T { x: 0; y: root.height - 42px; width: root.width; height: 24px; text: diag-note; font-size: 15px; weight: 500; color: Palette.amber; horizontal-alignment: center; }
     }
 
     // ---------------- settings
     if ui-state == 3: Rectangle {
-        T { x: 40px; y: 76px; height: 20px; text: Labels.settings-title; font-size: 15px; color: Palette.dim; }
-        T { x: 560px; y: 76px; width: 200px; height: 20px; text: Labels.only-stopped; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
+        property <length> rh: bar ? 34px : 42px;
+        T { x: 40px; y: top + 18px; height: 20px; text: Labels.settings-title; font-size: 15px; color: Palette.dim; }
+        T { x: root.width - 240px; y: top + 18px; width: 200px; height: 20px; text: Labels.only-stopped; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
         for s[i] in settings: Rectangle {
-            x: 24px; y: 112px + i * 42px; width: 752px; height: 38px;
+            x: 24px; y: top + (bar ? 46px : 54px) + i * rh; width: root.width - 48px; height: rh - 4px;
             background: i == settings-sel ? Palette.panel : transparent;
-            if i == settings-sel: Rectangle { x: 0; y: 0; width: 4px; height: 38px; background: Palette.needle; }
-            T { x: 20px; y: 0; height: 38px; text: s.label; font-size: 20px; weight: i == settings-sel ? 600 : 500; color: i == settings-sel ? Palette.ink : Palette.dim; }
-            T { x: 300px; y: 0; width: 432px; height: 38px; text: s.value; font-size: 19px; weight: 500; horizontal-alignment: right; color: i == settings-sel ? Palette.ink : Palette.dim; }
+            if i == settings-sel: Rectangle { x: 0; y: 0; width: 4px; height: parent.height; background: Palette.needle; }
+            T { x: 20px; y: 0; height: parent.height; text: s.label; font-size: 20px; weight: i == settings-sel ? 600 : 500; color: i == settings-sel ? Palette.ink : Palette.dim; }
+            T { x: parent.width - 452px; y: 0; width: 432px; height: parent.height; text: s.value; font-size: 19px; weight: 500; horizontal-alignment: right; color: i == settings-sel ? Palette.ink : Palette.dim; }
         }
-        T { x: 0; y: 438px; width: 800px; height: 24px; text: Labels.settings-keys; font-size: 15px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+        T { x: 0; y: root.height - 42px; width: root.width; height: 24px; text: Labels.settings-keys; font-size: 15px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
     }
 
+    // ================================================================ frame
     if ui-state >= 1 && ui-state <= 3: Telltales {
-        x: 0; y: 0; width: 800px;
+        x: 0; y: 0; width: root.width; height: top;
         left: tt-left; right: tt-right; neutral: tt-neutral; high-beam: tt-high-beam;
         coolant: icon-coolant; battery: icon-battery; link: icon-link; fuel: icon-fuel;
     }
     if main-visible: BottomStrip {
+        x: 0; y: root.height - strip-h; width: root.width; height: strip-h;
         odo: odo-text; trip-a: trip-a-text; trip-b: trip-b-text;
         vbat: vbat-text; vbat-level: vbat-level; info: info-text; info-icon: info-icon;
     }
 
     // ---------------- warnings
     if ui-state == 2 && warning-severity == 3: Rectangle {
-        x: 0; y: 58px; width: 800px; height: 70px;
+        x: 0; y: top; width: root.width; height: 70px;
         background: Palette.crit-bg;
         if warning-icon == 1: LinkIcon { x: 24px; y: 19px; color: Palette.crit-ink; }
         if warning-icon == 2: CoolantIcon { x: 24px; y: 19px; color: Palette.crit-ink; }
@@ -504,17 +679,17 @@ export component AppWindow inherits Window {
         T { x: 84px; y: 40px; height: 22px; text: warning-detail; font-size: 16px; weight: 500; color: Palette.crit-ink; }
     }
     if (ui-state == 2) && warning-severity == 2: Rectangle {
-        x: 0; y: 58px; width: 800px; height: 48px;
+        x: 0; y: top; width: root.width; height: 48px;
         background: Palette.amber-bg;
         if warning-icon == 2: CoolantIcon { x: 18px; y: 8px; color: Palette.caution-ink; }
         if warning-icon == 3: BatteryIcon { x: 18px; y: 8px; color: Palette.caution-ink; }
         if warning-icon == 4: LinkIcon { x: 18px; y: 8px; color: Palette.caution-ink; }
         T { x: 66px; y: 0; height: 48px; text: warning-title; font-size: 22px; weight: 700; color: Palette.caution-ink; }
-        T { x: 380px; y: 0; width: 392px; height: 48px; text: warning-detail; font-size: 15px; weight: 500; color: Palette.caution-ink; horizontal-alignment: right; }
+        T { x: parent.width - 420px; y: 0; width: 392px; height: 48px; text: warning-detail; font-size: 15px; weight: 500; color: Palette.caution-ink; horizontal-alignment: right; }
     }
 
     if toast != "": Rectangle {
-        x: (800px - self.width) / 2; y: 372px; height: 40px;
+        x: (root.width - self.width) / 2; y: root.height - 108px; height: 40px;
         width: toast-text.preferred-width + 36px;
         background: Palette.ink;
         toast-text := T { x: 18px; y: 0; height: 40px; text: toast; font-size: 18px; color: Palette.bg; }
@@ -523,13 +698,13 @@ export component AppWindow inherits Window {
     // ---------------- splash
     if ui-state == 0: Rectangle {
         background: #050607;
-        T { x: 0; y: 180px; width: 800px; height: 80px; text: "tdm·dash"; font-size: 64px; color: #e8e2d6; horizontal-alignment: center; }
+        T { x: 0; y: root.height / 2 - 60px; width: root.width; height: 80px; text: "tdm·dash"; font-size: 64px; color: #e8e2d6; horizontal-alignment: center; }
         Rectangle {
-            x: 400px - self.width / 2; y: 267px; height: 3px;
+            x: (root.width - self.width) / 2; y: root.height / 2 + 27px; height: 3px;
             width: 520px * Math.min(1, phase * 1.6);
             background: #ff6a1a;
         }
-        T { x: 0; y: 290px; width: 800px; height: 24px; text: splash-subtitle; font-size: 16px; weight: 500; color: #8b877e; horizontal-alignment: center; }
+        T { x: 0; y: root.height / 2 + 50px; width: root.width; height: 24px; text: splash-subtitle; font-size: 16px; weight: 500; color: #8b877e; horizontal-alignment: center; }
     }
     if ui-state == 4: Rectangle { background: #000000; }
 }

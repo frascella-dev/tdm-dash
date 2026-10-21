@@ -7,17 +7,22 @@ use std::path::Path;
 use std::rc::Rc;
 use std::time::{Duration, Instant};
 
-use slint::platform::software_renderer::{MinimalSoftwareWindow, RepaintBufferType, Rgb565Pixel};
+use slint::platform::software_renderer::{
+    MinimalSoftwareWindow, RepaintBufferType, Rgb565Pixel, TargetPixel,
+};
 use slint::platform::{Platform, WindowAdapter};
-use slint::{PhysicalSize, PlatformError, Rgb8Pixel};
+use slint::{PlatformError, Rgb8Pixel};
+use tdm_logic::Form;
 
-pub const W: usize = 800;
-pub const H: usize = 480;
+use crate::screen::{self, Fit};
 
 pub struct Headless {
     pub window: Rc<MinimalSoftwareWindow>,
     clock: Rc<Cell<Duration>>,
     base: Cell<Duration>,
+    /// Panel size in buffer pixels (before the rotation) and the rotation.
+    panel: Cell<(usize, usize)>,
+    rotation: Cell<u16>,
 }
 
 struct HeadlessPlatform {
@@ -35,22 +40,41 @@ impl Platform for HeadlessPlatform {
 }
 
 impl Headless {
-    /// Installs the headless platform; call once per process, before
-    /// creating any window.
+    /// Installs the headless platform with an 800×480 panel; call once per
+    /// process, before creating any window.
     pub fn install(repaint: RepaintBufferType) -> Self {
         let window = MinimalSoftwareWindow::new(repaint);
-        window.set_size(PhysicalSize::new(W as u32, H as u32));
         let clock = Rc::new(Cell::new(Duration::ZERO));
         slint::platform::set_platform(Box::new(HeadlessPlatform {
             window: window.clone(),
             clock: clock.clone(),
         }))
         .expect("a Slint platform was already installed");
-        Self {
+        let h = Self {
             window,
             clock,
             base: Cell::new(Duration::ZERO),
-        }
+            panel: Cell::new((0, 0)),
+            rotation: Cell::new(0),
+        };
+        h.set_panel(800, 480, 0, Form::Auto, None);
+        h
+    }
+
+    /// Simulates a panel of `w`×`h` pixels mounted with `rotation` degrees
+    /// clockwise; returns how the UI fits on it.
+    pub fn set_panel(&self, w: u32, h: u32, rotation: u16, form: Form, scale: Option<f64>) -> Fit {
+        let fit = screen::fit(w, h, rotation, form, scale);
+        self.panel.set((w as usize, h as usize));
+        self.rotation.set(rotation);
+        screen::apply(self.window.window(), &fit);
+        self.window.request_redraw();
+        fit
+    }
+
+    /// Panel width and height in pixels: the size of the buffers.
+    pub fn panel(&self) -> (usize, usize) {
+        self.panel.get()
     }
 
     /// Sets the clock to `t` seconds after the last [`Headless::rebase`];
@@ -67,14 +91,14 @@ impl Headless {
     }
 
     /// Renders if anything changed; returns the time spent drawing.
-    pub fn draw<P: slint::platform::software_renderer::TargetPixel>(
-        &self,
-        buf: &mut [P],
-    ) -> Option<Duration> {
+    pub fn draw<P: TargetPixel>(&self, buf: &mut [P]) -> Option<Duration> {
         let mut spent = None;
+        let stride = self.panel.get().0;
+        let rotation = screen::rendering_rotation(self.rotation.get());
         self.window.draw_if_needed(|r| {
+            r.set_rendering_rotation(rotation);
             let t = Instant::now();
-            r.render(buf, W);
+            r.render(buf, stride);
             spent = Some(t.elapsed());
         });
         spent
@@ -83,23 +107,26 @@ impl Headless {
     pub fn redraw_all(&self) {
         self.window.request_redraw();
     }
+
+    pub fn rgb_buffer(&self) -> Vec<Rgb8Pixel> {
+        let (w, h) = self.panel.get();
+        vec![Rgb8Pixel::new(0, 0, 0); w * h]
+    }
+
+    pub fn rgb565_buffer(&self) -> Vec<Rgb565Pixel> {
+        let (w, h) = self.panel.get();
+        vec![Rgb565Pixel::default(); w * h]
+    }
 }
 
-pub fn save_png(path: &Path, buf: &[Rgb8Pixel]) -> std::io::Result<()> {
+/// Saves a `w`×`h` frame.
+pub fn save_png(path: &Path, buf: &[Rgb8Pixel], w: usize, h: usize) -> std::io::Result<()> {
     let f = std::fs::File::create(path)?;
-    let mut enc = png::Encoder::new(std::io::BufWriter::new(f), W as u32, H as u32);
+    let mut enc = png::Encoder::new(std::io::BufWriter::new(f), w as u32, h as u32);
     enc.set_color(png::ColorType::Rgb);
     enc.set_depth(png::BitDepth::Eight);
-    let mut w = enc.write_header().map_err(std::io::Error::other)?;
+    let mut wr = enc.write_header().map_err(std::io::Error::other)?;
     let bytes: Vec<u8> = buf.iter().flat_map(|p| [p.r, p.g, p.b]).collect();
-    w.write_image_data(&bytes).map_err(std::io::Error::other)?;
+    wr.write_image_data(&bytes).map_err(std::io::Error::other)?;
     Ok(())
-}
-
-pub fn rgb_buffer() -> Vec<Rgb8Pixel> {
-    vec![Rgb8Pixel::new(0, 0, 0); W * H]
-}
-
-pub fn rgb565_buffer() -> Vec<Rgb565Pixel> {
-    vec![Rgb565Pixel::default(); W * H]
 }

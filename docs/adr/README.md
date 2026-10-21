@@ -16,3 +16,4 @@ Each file records a project decision: the context, the choice and the consequenc
 | [0010](0010-default-layout.md) | Classic default layout | Accepted |
 | [0011](0011-image-from-checkout.md) | The image builds the dashboard from the checkout (Buildroot `local` method) | Accepted |
 | [0012](0012-english-repository-bilingual-ui.md) | English repository, bilingual dashboard | Accepted |
+| [0013](0013-other-displays-and-bars.md) | Interface for other panel sizes and elongated bar displays | Accepted |

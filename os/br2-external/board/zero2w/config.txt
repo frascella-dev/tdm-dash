@@ -33,3 +33,11 @@ dtoverlay=dwc2,dr_mode=host
 # add pixclk-invert if the image shimmers].
 dtoverlay=vc4-kms-v3d,nohdmi,noaudio
 dtoverlay=vc4-kms-dpi-generic,clock-frequency=25000000,hactive=800,hfp=8,hsync=4,hbp=8,vactive=480,vfp=16,vsync=4,vbp=16,width-mm=154,height-mm=86
+
+# Other displays (manual chapter 09, "Other displays"): the dashboard adapts
+# to the panel size. For an HDMI panel, most elongated bars included,
+# replace the two lines above with:
+#dtoverlay=vc4-kms-v3d,noaudio
+# and, if the panel is not detected or announces a wrong mode, add to
+# cmdline.txt for example: video=HDMI-A-1:1280x400@60D
+# A natively portrait bar (400x1280) also needs rotation = 90 in the profile.

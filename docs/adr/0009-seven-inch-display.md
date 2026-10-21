@@ -1,6 +1,6 @@
 # 0009 · 7" 800×480 1000 nit DPI display
 
-**Status:** accepted · October 2026. Replaces the choice of the 4.3" Crystalfontz CFAF800480H0-043SN made during planning.
+**Status:** accepted · October 2026. Replaces the choice of the 4.3" Crystalfontz CFAF800480H0-043SN made during planning. [ADR 0013](0013-other-displays-and-bars.md) extends the software to other panels, bars included; this one stays the reference display.
 
 ## Context
 

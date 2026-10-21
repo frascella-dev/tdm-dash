@@ -19,6 +19,8 @@ tdm-dash replaces the original cluster with a 7" display readable in the sun (10
 
 It is cheap (≈ 190–240 €), **reversible** (the bike's wiring is never cut) and **extensible** to other motorcycles through TOML profiles. The dashboard texts are in English or Italian, chosen in the profile.
 
+The interface also adapts to other panels, from 1024×600 and 1280×720 to elongated bar displays such as 1280×400 or 1920×480 ([ADR 0013](docs/adr/0013-other-displays-and-bars.md), [screens](design/screenshots/)).
+
 ## How it is built
 
 ```mermaid
@@ -93,6 +95,7 @@ The CI (GitHub Actions) runs:
 | M4 | Buildroot operating system | Done, to be tried on the hardware |
 | M5 | Enclosure, bracket, perfboard, build manual (ch. 06–08) | Design done; building is up to the owner |
 | M6 | Calibration (`tdmctl calibrate`), manual (ch. 10, 12, 13) | Tools done; bike measurements, fitting and the 500 km test still to do |
+| — | Other panel sizes and elongated bar displays | Done in the software, to be tried on a real panel |
 
 Next steps on the bike:
 1. [measurements](docs/research/bike-measurements.md)

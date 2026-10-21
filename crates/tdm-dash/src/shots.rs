@@ -7,10 +7,11 @@ use std::time::Duration;
 use slint::ComponentHandle;
 use slint::platform::software_renderer::RepaintBufferType;
 use tdm_link::{SimSource, scenario};
-use tdm_logic::{Dash, Language, Layout, Profile, Screen, ThemeMode};
+use tdm_logic::{Dash, Form, Language, Layout, Profile, Screen, ThemeMode};
 
 use crate::app::App;
 use crate::headless::{self, Headless};
+use crate::screen::Fit;
 use crate::{AppWindow, Options};
 
 pub struct Shot {
@@ -98,8 +99,113 @@ pub fn catalogue() -> Vec<Shot> {
     ]
 }
 
+/// A simulated panel; `dir` is the folder of its screens, inside the
+/// screenshot folder (empty for the reference 800×480 display).
+pub struct Panel {
+    pub dir: &'static str,
+    pub w: u32,
+    pub h: u32,
+    pub rotation: u16,
+    /// Names of the catalogue shots to take; empty for all of them.
+    pub shots: &'static [&'static str],
+}
+
+const MAIN: &[&str] = &[
+    "01-splash",
+    "03-classic-day",
+    "04-classic-night",
+    "05-sport-day",
+    "07-touring-day",
+    "09-trip",
+    "10-diagnostics",
+    "11-settings",
+    "12-warning-caution",
+    "13-warning-critical",
+];
+
+const MAIN_IT: &[&str] = &[
+    "01-splash",
+    "03-classic-day",
+    "04-classic-night",
+    "05-sport-day",
+    "06-sport-night",
+    "07-touring-day",
+    "08-touring-night",
+    "09-trip",
+    "10-diagnostics",
+    "11-settings",
+    "12-warning-caution",
+    "13-warning-critical",
+    "14-usb-lost",
+    "it-07-touring-day",
+    "it-09-trip",
+    "it-10-diagnostics",
+    "it-11-settings",
+    "it-12-warning-caution",
+];
+
+pub const PANELS: &[Panel] = &[
+    Panel {
+        dir: "",
+        w: 800,
+        h: 480,
+        rotation: 0,
+        shots: &[],
+    },
+    Panel {
+        dir: "1024x600",
+        w: 1024,
+        h: 600,
+        rotation: 0,
+        shots: MAIN,
+    },
+    Panel {
+        dir: "1280x720",
+        w: 1280,
+        h: 720,
+        rotation: 0,
+        shots: MAIN,
+    },
+    Panel {
+        dir: "1280x400",
+        w: 1280,
+        h: 400,
+        rotation: 0,
+        shots: MAIN_IT,
+    },
+    Panel {
+        dir: "1920x480",
+        w: 1920,
+        h: 480,
+        rotation: 0,
+        shots: MAIN,
+    },
+    Panel {
+        dir: "1920x720",
+        w: 1920,
+        h: 720,
+        rotation: 0,
+        shots: MAIN,
+    },
+    // a bar panel that is natively portrait, mounted on its side: the
+    // screens are saved as the panel receives them
+    Panel {
+        dir: "400x1280-r90",
+        w: 400,
+        h: 1280,
+        rotation: 90,
+        shots: &["03-classic-day", "13-warning-critical"],
+    },
+];
+
+impl Panel {
+    pub fn wants(&self, shot: &Shot) -> bool {
+        self.shots.is_empty() || self.shots.contains(&shot.name)
+    }
+}
+
 /// Runs a shot's scenario up to its time and returns the rendered frame.
-fn render_shot(h: &Headless, ui: &AppWindow, s: &Shot) -> Vec<slint::Rgb8Pixel> {
+fn render_shot(h: &Headless, ui: &AppWindow, s: &Shot, fit: Fit) -> Vec<slint::Rgb8Pixel> {
     h.rebase();
     let p = Profile::builtin();
     let mut dash = Dash::new(p.clone(), None);
@@ -107,7 +213,7 @@ fn render_shot(h: &Headless, ui: &AppWindow, s: &Shot) -> Vec<slint::Rgb8Pixel> 
     dash.set_theme_mode(s.theme);
     dash.set_language(s.language);
     let src = SimSource::new(&p, scenario(s.scenario).expect("scenario"), 11);
-    let mut app = App::new(ui.clone_strong(), dash, Box::new(src));
+    let mut app = App::new(ui.clone_strong(), dash, Box::new(src), fit);
     let dt = 1.0 / 60.0;
     let mut t = 0.0;
     while t < s.at {
@@ -124,29 +230,39 @@ fn render_shot(h: &Headless, ui: &AppWindow, s: &Shot) -> Vec<slint::Rgb8Pixel> 
         }
     }
     h.set_time(t);
-    let mut buf = headless::rgb_buffer();
+    let mut buf = h.rgb_buffer();
     h.redraw_all();
     h.draw(&mut buf);
     buf
 }
 
+/// Saves the catalogue for every panel of [`PANELS`].
 pub fn screenshots(dir: &Path) -> std::io::Result<usize> {
-    std::fs::create_dir_all(dir)?;
     let h = Headless::install(RepaintBufferType::NewBuffer);
     let ui = AppWindow::new().map_err(std::io::Error::other)?;
     ui.show().map_err(std::io::Error::other)?;
     let shots = catalogue();
-    for s in &shots {
-        let buf = render_shot(&h, &ui, s);
-        headless::save_png(&dir.join(format!("{}.png", s.name)), &buf)?;
+    let mut n = 0;
+    for panel in PANELS {
+        let out = dir.join(panel.dir);
+        std::fs::create_dir_all(&out)?;
+        let fit = h.set_panel(panel.w, panel.h, panel.rotation, Form::Auto, None);
+        let (w, hh) = h.panel();
+        for s in shots.iter().filter(|s| panel.wants(s)) {
+            let buf = render_shot(&h, &ui, s, fit);
+            headless::save_png(&out.join(format!("{}.png", s.name)), &buf, w, hh)?;
+            n += 1;
+        }
     }
-    Ok(shots.len())
+    Ok(n)
 }
 
 /// Draw time per frame while riding: partial rendering into an RGB565
 /// buffer, as on the Pi.
 pub fn bench(o: &Options, frames: usize) {
     let h = Headless::install(RepaintBufferType::ReusedBuffer);
+    let (w, hh) = o.size.unwrap_or((800, 480));
+    let fit = h.set_panel(w, hh, o.rotation.unwrap_or(0), Form::Auto, None);
     let ui = AppWindow::new().expect("window");
     ui.show().expect("show");
     let p = Profile::builtin();
@@ -159,8 +275,8 @@ pub fn bench(o: &Options, frames: usize) {
         _ => "mountain".into(),
     };
     let src = SimSource::new(&p, scenario(&sc).expect("scenario"), 5);
-    let mut app = App::new(ui.clone_strong(), dash, Box::new(src));
-    let mut buf = headless::rgb565_buffer();
+    let mut app = App::new(ui.clone_strong(), dash, Box::new(src), fit);
+    let mut buf = h.rgb565_buffer();
     let mut times: Vec<Duration> = Vec::with_capacity(frames);
     let dt = 1.0 / 60.0;
     let mut t = 0.0;
@@ -190,7 +306,7 @@ pub fn bench(o: &Options, frames: usize) {
             .unwrap_or_default()
     };
     println!(
-        "scenario {sc}, {} frames drawn out of {frames}: p50 {:.2} ms · p95 {:.2} ms · max {:.2} ms",
+        "{w}x{hh}, scenario {sc}, {} frames drawn out of {frames}: p50 {:.2} ms · p95 {:.2} ms · max {:.2} ms",
         times.len(),
         pct(0.5).as_secs_f64() * 1e3,
         pct(0.95).as_secs_f64() * 1e3,
@@ -202,26 +318,46 @@ pub fn bench(o: &Options, frames: usize) {
 mod tests {
     use super::*;
 
-    /// Renders every reference screen (one test: Slint allows one platform
-    /// per process) and checks a few pixels that prove the screen is right.
+    /// Renders every reference screen on every panel (one test: Slint
+    /// allows one platform per process) and checks a few pixels that prove
+    /// the screen is right.
     #[test]
     fn every_screen_renders() {
         let h = Headless::install(RepaintBufferType::NewBuffer);
         let ui = AppWindow::new().unwrap();
         ui.show().unwrap();
-        for s in catalogue() {
-            let buf = render_shot(&h, &ui, &s);
-            let distinct: std::collections::HashSet<_> =
-                buf.iter().step_by(97).map(|p| (p.r, p.g, p.b)).collect();
-            assert!(distinct.len() > 8, "{} looks blank", s.name);
-            if s.name == "13-warning-critical" {
-                // critical band: red across the full width under the telltales
-                let p = buf[90 * headless::W + 700];
-                assert!(p.r > 120 && p.g < 60 && p.b < 60, "no critical band: {p:?}");
-            }
-            if s.name == "04-classic-night" {
-                let p = buf[5 * headless::W + 5];
-                assert!(p.r < 20 && p.g < 20, "night background expected");
+        for panel in PANELS {
+            let fit = h.set_panel(panel.w, panel.h, panel.rotation, Form::Auto, None);
+            let (w, hh) = h.panel();
+            for s in catalogue().iter().filter(|s| panel.wants(s)) {
+                let name = format!("{}/{}", panel.dir, s.name);
+                let buf = render_shot(&h, &ui, s, fit);
+                assert_eq!(buf.len(), w * hh);
+                let distinct: std::collections::HashSet<_> =
+                    buf.iter().step_by(97).map(|p| (p.r, p.g, p.b)).collect();
+                assert!(distinct.len() > 8, "{name} looks blank");
+                // logical point → buffer index, through the rotation
+                let at = |x: f32, y: f32| {
+                    let (px, py) = ((x * fit.scale) as usize, (y * fit.scale) as usize);
+                    match panel.rotation {
+                        90 => px * w + (w - 1 - py),
+                        _ => py * w + px,
+                    }
+                };
+                if s.name == "13-warning-critical" {
+                    // critical band: red across the full width under the telltales
+                    for x in [0.1, 0.5, 0.9] {
+                        let p = buf[at(fit.logical.0 * x, 90.0)];
+                        assert!(
+                            p.r > 120 && p.g < 60 && p.b < 60,
+                            "{name}: no critical band: {p:?}"
+                        );
+                    }
+                }
+                if s.name == "04-classic-night" {
+                    let p = buf[at(5.0, 5.0)];
+                    assert!(p.r < 20 && p.g < 20, "{name}: night background expected");
+                }
             }
         }
     }

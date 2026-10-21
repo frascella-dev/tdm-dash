@@ -11,8 +11,9 @@ use tdm_logic::warnings::Icon;
 use tdm_logic::{Dash, Layout, LinkState, Screen, Severity, Theme, UiState, ViewModel};
 
 use crate::geometry::{self, DialKind};
+use crate::screen::{Family, Fit};
 use crate::theme;
-use crate::{AppWindow, Label, Labels, NeedleGeom, Row, Seg};
+use crate::{AppWindow, Label, Labels, Mark, NeedleGeom, Row, Seg};
 
 struct Faces {
     speed: slint::Image,
@@ -26,6 +27,7 @@ pub struct App {
     pub source: Box<dyn Source>,
     faces: [Option<Faces>; 2],
     theme: Option<Theme>,
+    fit: Fit,
     speed_chars: Rc<VecModel<SharedString>>,
     settings: Rc<VecModel<Row>>,
     diag: Rc<VecModel<Row>>,
@@ -92,8 +94,16 @@ fn set_labels(ui: &AppWindow, lang: Language) {
     l.set_settings_keys(t(Msg::SettingsKeys));
 }
 
+/// Dial diameter in logical pixels for each layout family.
+fn dial_size(f: Family) -> f32 {
+    match f {
+        Family::Wide => 340.0,
+        Family::Bar => 300.0,
+    }
+}
+
 impl App {
-    pub fn new(ui: AppWindow, dash: Dash, source: Box<dyn Source>) -> Self {
+    pub fn new(ui: AppWindow, dash: Dash, source: Box<dyn Source>, fit: Fit) -> Self {
         let p = dash.profile().clone();
         let (segs, arc_labels) = geometry::arc_segments(p.tach.max_rpm, p.tach.redline_rpm);
         ui.set_arc_segs(ModelRc::new(VecModel::from(
@@ -110,6 +120,19 @@ impl App {
                 .collect::<Vec<_>>(),
         )));
         ui.set_arc_labels(labels(arc_labels));
+        ui.set_rpm_marks(ModelRc::new(VecModel::from(
+            geometry::rpm_marks(p.tach.max_rpm, p.tach.redline_rpm)
+                .into_iter()
+                .map(|m| Mark {
+                    frac: m.frac,
+                    text: m.text.into(),
+                    red: m.red,
+                    major: m.major,
+                })
+                .collect::<Vec<_>>(),
+        )));
+        ui.set_coolant_min_text(format!("{}", p.coolant.gauge_min_c).into());
+        ui.set_coolant_max_text(format!("{}", p.coolant.gauge_max_c).into());
         ui.set_redline_frac(p.tach.redline_rpm as f32 / p.tach.max_rpm as f32);
         set_labels(&ui, dash.language());
         ui.set_splash_subtitle(
@@ -121,12 +144,18 @@ impl App {
         ui.set_settings(ModelRc::from(settings.clone()));
         let diag = Rc::new(VecModel::default());
         ui.set_diag(ModelRc::from(diag.clone()));
+        ui.set_form(match fit.family {
+            Family::Wide => 0,
+            Family::Bar => 1,
+        });
+        ui.set_dial_size(dial_size(fit.family));
         Self {
             ui,
             dash,
             source,
             faces: [None, None],
             theme: None,
+            fit,
             speed_chars,
             settings,
             diag,
@@ -148,16 +177,35 @@ impl App {
         vm
     }
 
+    /// Follows a new panel size or family (the simulator window resized).
+    #[cfg_attr(not(feature = "desktop"), allow(dead_code))]
+    pub fn set_fit(&mut self, fit: Fit) {
+        if fit == self.fit {
+            return;
+        }
+        self.fit = fit;
+        self.ui.set_form(match fit.family {
+            Family::Wide => 0,
+            Family::Bar => 1,
+        });
+        self.ui.set_dial_size(dial_size(fit.family));
+        // dial faces are drawn at the physical size: draw them again
+        self.faces = [None, None];
+        self.theme = None;
+    }
+
     fn faces(&mut self, t: Theme) -> &Faces {
         let idx = (t == Theme::Night) as usize;
         if self.faces[idx].is_none() {
             let p = self.dash.profile();
             let c = theme::colors(t);
+            let px = (dial_size(self.fit.family) * self.fit.scale).round() as u32;
             let (speed, sl) = geometry::dial_face(
                 DialKind::Speed {
                     max_kmh: p.speed.dial_max_kmh,
                 },
                 c,
+                px,
             );
             let (rpm, rl) = geometry::dial_face(
                 DialKind::Rpm {
@@ -165,6 +213,7 @@ impl App {
                     redline: p.tach.redline_rpm,
                 },
                 c,
+                px,
             );
             self.ui.set_speed_labels(labels(sl));
             self.ui.set_rpm_labels(labels(rl));
