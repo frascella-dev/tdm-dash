@@ -10,7 +10,7 @@ Each file records a project decision: the context, the choice and the consequenc
 | [0004](0004-odometer-in-fram.md) | Odometer on the microcontroller, in FRAM | Accepted |
 | [0005](0005-read-only-rootfs.md) | Read-only EROFS rootfs, no orderly shutdown | Accepted |
 | [0006](0006-fail-dark-backlight.md) | Backlight driven by the microcontroller, "fail-dark" | Accepted |
-| [0007](0007-licences.md) | Licences of the code, the image, the hardware and the documents | Accepted |
+| [0007](0007-licenses.md) | Licenses of the code, the image, the hardware and the documents | Accepted |
 | [0008](0008-toml-profiles.md) | Layered TOML bike profiles | Accepted |
 | [0009](0009-seven-inch-display.md) | Newhaven 7" 800×480 1000 nit DPI display | Accepted |
 | [0010](0010-default-layout.md) | Classic default layout | Accepted |

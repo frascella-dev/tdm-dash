@@ -1,6 +1,6 @@
 # Wheel sensor: LJ12A3-4-Z/BX on the front brake disc -> DTM -> board J401.
 #
-# The sensor's own lead colours (brown +V, blue 0 V, black output) come from
+# The sensor's own lead colors (brown +V, blue 0 V, black output) come from
 # its datasheet; the extension cable is a shielded 3-core, shield grounded at
 # the board end only.
 

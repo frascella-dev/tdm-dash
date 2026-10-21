@@ -52,7 +52,7 @@ cables:
     gauge: 0.14 mm2
     length: 0.15
     colors: [WH, GN, BK]
-    notes: Standard USB colours (white D-, green D+). Clip-on ferrite on the cable
+    notes: Standard USB colors (white D-, green D+). Clip-on ferrite on the cable
 
 connections:
   -

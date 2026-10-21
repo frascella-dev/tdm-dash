@@ -7,7 +7,7 @@ git submodule update --init --depth 1 os/buildroot
 make -C os release                    # os/output/release/images/sdcard.img
 make -C os dev                        # os/output/dev/images/sdcard.img
 make -C os release-linux-menuconfig   # any Buildroot command, prefixed by the image
-make -C os release-legal-info         # licences and sources to publish with the image
+make -C os release-legal-info         # licenses and sources to publish with the image
 ```
 
 Downloads and the compiler cache live in `os/dl` and `os/ccache`, shared by the two images. The first build takes about an hour and 15 GB of disk. CI runs it with the [`os-image.yml`](../.github/workflows/os-image.yml) workflow:
@@ -57,6 +57,6 @@ flowchart TB
 - **Another DPI display:** change the timings of the `vc4-kms-dpi-generic` line in `board/zero2w/config.txt`, or directly on the card.
 - **Updating Buildroot:** move the submodule to a new tag and compare the defconfigs with `raspberrypizero2w_64_defconfig` of that version. 2027.02 will be the next long-term release.
 
-## Licences
+## Licenses
 
-The image contains the Linux kernel (GPL-2.0), BusyBox (GPL-2.0), glibc (LGPL-2.1), the Broadcom firmware (its own licence, redistributable) and `tdm-dash`. The latter is MIT/Apache-2.0, but the binary includes Slint, so it is distributed under **GPL-3.0** (see [LICENSING.md](../LICENSING.md)). Every release includes the `legal-info` archive produced by Buildroot, with licences and sources; the source of `tdm-dash` is this repository, at the release tag.
+The image contains the Linux kernel (GPL-2.0), BusyBox (GPL-2.0), glibc (LGPL-2.1), the Broadcom firmware (its own license, redistributable) and `tdm-dash`. The latter is MIT/Apache-2.0, but the binary includes Slint, so it is distributed under **GPL-3.0** (see [LICENSING.md](../LICENSING.md)). Every release includes the `legal-info` archive produced by Buildroot, with licenses and sources; the source of `tdm-dash` is this repository, at the release tag.

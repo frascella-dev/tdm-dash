@@ -2340,7 +2340,7 @@
 		)
 		(uuid "6c75716c-9e96-5b1c-a5f4-6dfccaf5a2ec")
 	)
-	(text "LJ12A3-4-Z/BX inductive NPN normally open: in front of a bolt the output goes to ground.\n+12V_P → 2.2 kΩ → EL817 LED → sensor output. External 4.7 kΩ pull-up for fast edges.\nSensor colours: brown +12 V, blue ground, black signal."
+	(text "LJ12A3-4-Z/BX inductive NPN normally open: in front of a bolt the output goes to ground.\n+12V_P → 2.2 kΩ → EL817 LED → sensor output. External 4.7 kΩ pull-up for fast edges.\nSensor colors: brown +12 V, blue ground, black signal."
 		(exclude_from_sim no)
 		(at 10.16 17.78 0)
 		(effects

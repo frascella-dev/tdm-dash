@@ -49,8 +49,8 @@ The frame number of the bike confirms the exact variant.
 |---|---|---|---|
 | Drive | Cable from the drive on the front hub. The drive has tabs that engage the hub and is part of the spacer stack on the axle | [VERIFIED] | [Haynes p.190](https://www.manualslib.com/manual/927505/Yamaha-Tdm850.html?page=190) |
 | Cable ratio | Not found for the TDM. The Japanese standard is 1400 cable turns/km | [HYPOTHESIS] | [xjbikes](https://xjbikes.com/forums/threads/gear-ratios-for-speedometer-and-tachometer.14114/) |
-| Front tyre | 110/80-18 | [VERIFIED] | [Rider](https://ridermagazine.com/2007/05/22/retrospective-yamaha-tdm-850-1992-1993/), [TDMitalia](https://www.tdmitalia.net/?u=lemoto%2Fdatitdm850-91) |
-| Rear tyre | 150/70-17 | [VERIFIED] | same |
+| Front tire | 110/80-18 | [VERIFIED] | [Rider](https://ridermagazine.com/2007/05/22/retrospective-yamaha-tdm-850-1992-1993/), [TDMitalia](https://www.tdmitalia.net/?u=lemoto%2Fdatitdm850-91) |
+| Rear tire | 150/70-17 | [VERIFIED] | same |
 | Nominal front circumference | 457.2 + 2 × 88 = 633.2 mm diameter → **1989 mm** | [HYPOTHESIS] calculation | — |
 | Rolling circumference | **1950–1970 mm** (squash under load) | [HYPOTHESIS] estimate; calibrated with GPS | — |
 | Front disc bolts | Number and material to be measured (needed for the inductive sensor) | — | — |
@@ -66,22 +66,22 @@ With the inductive sensor on the bolts the cable ratio is not needed: the pulses
 | Coil resistance | Primary 2.38–3.22 Ω, secondary 12–18 kΩ | [TO VERIFY] | [tdm-forum t=32766](https://tdm-forum.net/viewtopic.php?t=32766) |
 | Pulses per revolution | **1** (360° twin: "fires every revolution like a two-stroke") | [TO VERIFY] | tdm-forum t=6889 |
 | Frequencies | 16.7 Hz at 1000 rpm, 133 Hz at 8000 rpm | [HYPOTHESIS] calculation | — |
-| Signal shape | ≈ +12 V at rest, ≈ 0 V while the coil charges, then an inductive spike of **a few hundred volts** at every spark, with ringing | [HYPOTHESIS] typical TCI behaviour | [Acewell](https://www.acewell-meter.com/wp-content/uploads/2016/02/ACE-27-28XX-EN-V5-manual-20150512.pdf), [Koso RX2N](https://www.manualslib.com/manual/1885543/Koso-Rx2n.html?page=16) |
-| Wire colour | Orange (O) or grey (Gy) | [HYPOTHESIS] | [xjbikes](https://xjbikes.com/forums/threads/wiring-question-xj650-tach.125606/), [tenere.co.uk](https://tenere.co.uk/forum/viewtopic.php?p=27246) |
+| Signal shape | ≈ +12 V at rest, ≈ 0 V while the coil charges, then an inductive spike of **a few hundred volts** at every spark, with ringing | [HYPOTHESIS] typical TCI behavior | [Acewell](https://www.acewell-meter.com/wp-content/uploads/2016/02/ACE-27-28XX-EN-V5-manual-20150512.pdf), [Koso RX2N](https://www.manualslib.com/manual/1885543/Koso-Rx2n.html?page=16) |
+| Wire color | Orange (O) or gray (Gy) | [HYPOTHESIS] | [xjbikes](https://xjbikes.com/forums/threads/wiring-question-xj650-tach.125606/), [tenere.co.uk](https://tenere.co.uk/forum/viewtopic.php?p=27246) |
 | Red line | ≈ 8000 rpm. Peak power at 7500 rpm | [TO VERIFY] | [motorcyclespecs](https://www.motorcyclespecs.co.za/model/yamaha/yamaha_tdm850%2091.htm) |
 
 ## 5. Wires and connectors at the cluster
 
-Yamaha colour code: B black, Br brown, Ch chocolate, Dg dark green, G green, Gy grey, L blue, O orange, P pink, R red, Sb sky blue, W white, Y yellow. Two letters separated by `/` give the wire and the stripe (e.g. `L/W` = blue with a white stripe). Source: [TDM '96/'97 manual](https://manualmachine.com/yamaha/tdm850/8415354-user-manual/).
+Yamaha color code: B black, Br brown, Ch chocolate, Dg dark green, G green, Gy gray, L blue, O orange, P pink, R red, Sb sky blue, W white, Y yellow. Two letters separated by `/` give the wire and the stripe (e.g. `L/W` = blue with a white stripe). Source: [TDM '96/'97 manual](https://manualmachine.com/yamaha/tdm850/8415354-user-manual/).
 
-| Function | Probable colour | Logic | Status | Source |
+| Function | Probable color | Logic | Status | Source |
 |---|---|---|---|---|
 | Switched +12 V | Br | +12 V with the ignition key ON | [TO VERIFY] | [TDM '99 supplement](https://tdm-trx-tracer.nl/forums/applications/core/interface/file/attachment.php?id=2543), [trx850.com](http://www.trx850.com/phpBB_forum/viewtopic.php?t=10256) |
 | Ground | B | — | [HYPOTHESIS] convention | — |
 | Cluster illumination | L | +12 V with the position lights | [HYPOTHESIS] convention | — |
 | Neutral indicator | Sb | The lamp gets +12 V; the neutral switch **closes to ground** → active low | [HYPOTHESIS] convention; switch on the left near the front sprocket ([t=36168](https://tdm-forum.net/viewtopic.php?t=36168)) | — |
 | High beam indicator | Y | +12 V with the high beam on → active high | [HYPOTHESIS] convention | — |
-| Left / right turn signal | Ch / Dg | Flashing +12 V; the single indicator is connected **between** Ch and Dg | [VERIFIED] the single indicator; [TO VERIFY] the colours on the 3VD | [t=29044](https://tdm-forum.net/viewtopic.php?t=29044) |
+| Left / right turn signal | Ch / Dg | Flashing +12 V; the single indicator is connected **between** Ch and Dg | [VERIFIED] the single indicator; [TO VERIFY] the colors on the 3VD | [t=29044](https://tdm-forum.net/viewtopic.php?t=29044) |
 | Tachometer | O or Gy | Coil negative | [HYPOTHESIS] | section 4 |
 | Coolant sender | ? | Signal to the NTC to ground | [TO VERIFY] | — |
 | Connector | A **6-pin** behind the instruments is mentioned, make unknown | — | [TO VERIFY] | [t=2164](https://tdm-forum.net/viewtopic.php?t=2164) |
@@ -134,10 +134,10 @@ The range can only be **estimated** from the km ridden since the last fill-up (f
 
 **Manuals:**
 - **3VD owner's manual (3VD-28199)**, with a fold-out wiring diagram in the paper copies: [manualslib](https://www.manualslib.com/manual/1937486/Yamaha-Tdm850.html), [Scribd](https://www.scribd.com/document/696775450/User-manual-TDM850), [archive.org (1995)](https://archive.org/details/YamahaTDM850OwnersManual1995), [French edition](https://www.manualslib.fr/manual/1046161/Yamaha-Tdm850.html).
-- **Haynes 3540** (TDM850, TRX850, XTZ750), with colour wiring diagrams: [manualslib](https://www.manualslib.com/manual/927505/Yamaha-Tdm850.html).
+- **Haynes 3540** (TDM850, TRX850, XTZ750), with color wiring diagrams: [manualslib](https://www.manualslib.com/manual/927505/Yamaha-Tdm850.html).
 - **4TX service manuals** (similar, not identical): [rv96](https://www.journey.cz/moto/navody/Yamaha%20TDM850%20rv96.pdf), ['97](https://www.journey.cz/moto/navody/Yamaha%20TDM850%20'97%20Service%20Manual.pdf), [1997 supplement](https://archive.org/details/printermanual-yamaha-tdm-850-factory-1997-service-manual-supplement).
 - **3VD workshop manual** (aftermarket, PDF): [retromotorcyclemanuals](https://retromotorcyclemanuals.com/en-us/products/1991-1995-yamaha-tdm850-tdm-850-service-manual).
-- **Ignitech wiring diagram for the TDM 850**, useful for the colours at the TCI pins: [ignitech](https://www.ignitech.cz/en/vyrobky/tci/mototci.htm).
+- **Ignitech wiring diagram for the TDM 850**, useful for the colors at the TCI pins: [ignitech](https://www.ignitech.cz/en/vyrobky/tci/mototci.htm).
 
 **Italian sources:** [tdmitalia.net (1991 data)](https://www.tdmitalia.net/?u=lemoto%2Fdatitdm850-91), [Motosprint "Fai da te" guide](https://www.tdmitalia.net/documenti/manuali/FaidateTDM850.pdf). Caution: the "libretto uso e manutenzione" on [ManualMachine](https://manualmachine.com/yamaha/tdm850/10910352-user-manual/) is for the **4TX**, not the 3VD.
 
@@ -158,5 +158,5 @@ The range can only be **estimated** from the km ridden since the last fill-up (f
 | Bulbs | 3.4 W (1996 manual), 1.4/2 W (1999), 2–3 W (forum) | Irrelevant: we remove them |
 | Tank | 18 L / 3.5 L (3VD) versus 20 L / 3.1 L (4TX) | We use the 3VD figure |
 | Alternator | 280 W versus 300–340 W | Irrelevant: the dashboard draws ≈ 5 W |
-| XTZ 750 tachometer wire | Green/yellow in one post, orange → grey in another | Measured on the bike |
+| XTZ 750 tachometer wire | Green/yellow in one post, orange → gray in another | Measured on the bike |
 | 4EP years | 1992–94 Japan versus a 1999 listing | Irrelevant |

@@ -3,7 +3,7 @@
 #   make -C os release                    # image for the road: read-only EROFS
 #   make -C os dev                        # development image: ext4, Wi-Fi, SSH
 #   make -C os release-linux-menuconfig   # any Buildroot target, on either image
-#   make -C os release-legal-info         # licences and sources to publish
+#   make -C os release-legal-info         # licenses and sources to publish
 #   make -C os clean
 #
 # Output in os/output/<image>/images/sdcard.img. Downloads and the compiler

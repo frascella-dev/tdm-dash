@@ -161,7 +161,7 @@ pub fn en(m: Msg) -> &'static str {
         SettingsOnlyStopped => "Settings only when stopped",
         EditInProfile => "Edit in the profile /boot/tdm-dash.toml",
         TurnSignal => "Turn signal",
-        DiagNote => "Front tyre changed? Recalibrate the speed (manual, ch. 10)",
+        DiagNote => "Front tire changed? Recalibrate the speed (manual, ch. 10)",
         DiagWheel => "Wheel",
         DiagIgnition => "Ignition",
         DiagBattery => "Battery",

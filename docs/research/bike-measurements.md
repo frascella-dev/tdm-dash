@@ -30,7 +30,7 @@ flowchart TD
 
 ## 1. Cluster connectors
 
-| Connector | Number of pins | Body colour | Make/series (if readable) | Photo |
+| Connector | Number of pins | Body color | Make/series (if readable) | Photo |
 |---|---|---|---|---|
 | A | | | | |
 | B | | | | |
@@ -40,7 +40,7 @@ flowchart TD
 
 Measure from the back of the bike-side connector, with the cluster disconnected when stated. Ground reference: battery negative.
 
-| Pin | Wire colour | Key OFF (V) | Key ON (V) | Position lights ON | Neutral engaged | High beam ON | Left turn signal | Right turn signal | Deduced function |
+| Pin | Wire color | Key OFF (V) | Key ON (V) | Position lights ON | Neutral engaged | High beam ON | Left turn signal | Right turn signal | Deduced function |
 |---|---|---|---|---|---|---|---|---|---|
 | 1 | | | | | | | | | |
 | 2 | | | | | | | | | |
@@ -53,7 +53,7 @@ Measure from the back of the bike-side connector, with the cluster disconnected 
 Specific checks:
 - [ ] Does the neutral wire go to ground (< 1 Ω) only in neutral, with the cluster disconnected?
 - [ ] Is the L wire (illumination) **always** powered when the key is ON? In Italy dipped headlights are mandatory: if it is always powered it is no use for telling day from night.
-- [ ] Is there a **permanent** +12 V (also with the key OFF) near the cluster? Yes / No, colour: ____
+- [ ] Is there a **permanent** +12 V (also with the key OFF) near the cluster? Yes / No, color: ____
 - [ ] Rating of the fuse feeding the Br wire: ____ A
 
 ## 3. Starting and flasher with the cluster disconnected
@@ -65,7 +65,7 @@ Specific checks:
 
 ## 4. Tachometer
 
-- [ ] Colour of the wire from the coil negative to the tachometer: ______
+- [ ] Color of the wire from the coil negative to the tachometer: ______
 - [ ] Is it in the main connector or on a separate spade terminal? ______
 - [ ] Number of coils: ____ ; which one feeds the tachometer: ______
 - [ ] Frequency measured with the multimeter (Hz function) at idle: ____ Hz, with the original tachometer reading ____ rpm → pulses per revolution = Hz × 60 / rpm = ____
@@ -89,7 +89,7 @@ Better on a spare sender: it avoids draining the system. Dip the tip in water wi
 |---|---|---|---|---|---|---|
 | Resistance (Ω) | | | | | | |
 
-- [ ] Colour of the sender wire: ______ ; a single wire (ground through the body)? Yes / No
+- [ ] Color of the sender wire: ______ ; a single wire (ground through the body)? Yes / No
 - [ ] Sender thread: ______
 
 ## 7. Front wheel and speed sensor
@@ -104,7 +104,7 @@ Better on a spare sender: it avoids draining the system. Dip the tip in water wi
 
 ## 8. Mechanical measurements of the cluster
 
-- [ ] Mounting centre distance: ____ mm; rubber mount diameter: ____ mm
+- [ ] Mounting center distance: ____ mm; rubber mount diameter: ____ mm
 - [ ] Maximum size: width ____ × height ____ × free depth behind ____ mm
 - [ ] Cluster tilt from horizontal: ____°
 - [ ] Possible cable route to the front wheel (photo)

@@ -29,7 +29,7 @@ The 4.3" was judged too small for the bike. The options evaluated:
 | Backlight | 180 mA (135–225) at 9.3 V (8.3–10.2), **no on-board driver** |
 | Timing | DCLK 23–27 MHz (25 typical); horizontal 800 + 4/8/8 (typical pulse/back/front porch); vertical 480 + 4/16/16 |
 
-The pinout is the standard 40-pin one for RGB panels, the same used by the Kippah. The Pi drives the panel at 18 bits (RGB666): the two low bits of each colour are tied by the Kippah.
+The pinout is the standard 40-pin one for RGB panels, the same used by the Kippah. The Pi drives the panel at 18 bits (RGB666): the two low bits of each color are tied by the Kippah.
 
 **Backlight:** TPS61169 PWM-driven by the Pico (ADR 0006), with a sense resistor of ≈ 1.1–1.2 Ω for about 170–180 mA. `DISP` must be held high and `BIST_EN` low.
 

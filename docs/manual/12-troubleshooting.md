@@ -9,7 +9,7 @@ tdmctl monitor
 ```
 module: firmware 0.0.1, protocol 1, FRAM Ok, up 812 s
    12.0 s   50 frame/s   48.3 km/h   3120 rpm  14.21 V  coolant Celsius(86.0) (41.2 Ω)  light 2210  inputs 0x0004
-           km 41 250 · A 12.3 · B 210.4
+           km 41,250 · A 12.3 · B 210.4
 ```
 
 | Column | What it tells you |

@@ -6,16 +6,16 @@
 // the bolt heads of the disc; its two M12 nuts set the 1-2 mm gap.
 //
 //   openscad -D 'out="3d"' -o sensor-bracket.stl sensor-bracket.scad   # printed test piece
-//   openscad -D 'out="2d"' -o sensor-bracket.dxf sensor-bracket.scad   # outline for aluminium
+//   openscad -D 'out="2d"' -o sensor-bracket.dxf sensor-bracket.scad   # outline for aluminum
 //
-// SAFETY: under a brake caliper bolt only the 3 mm aluminium plate is
+// SAFETY: under a brake caliper bolt only the 3 mm aluminum plate is
 // allowed. A printed part creeps under the bolt load and the bolt loosens:
 // print it only to check the fit. All dimensions marked [TO VERIFY] come
 // from the measurements on the bike (docs/research/bike-measurements.md).
 
 out = "3d";
 
-t = 3.0;               // plate thickness (aluminium 5754/6082)
+t = 3.0;               // plate thickness (aluminum 5754/6082)
 bolt_d = 10.5;         // caliper bolt clearance hole (M10) [TO VERIFY]
 second_bolt = true;    // use the second caliper bolt against rotation
 bolt_pitch = 83.0;     // distance between the caliper bolts [TO VERIFY]

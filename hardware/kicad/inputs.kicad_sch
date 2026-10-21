@@ -5769,7 +5769,7 @@
 		)
 		(uuid "e0ec9f88-498f-5af0-8924-9259574535c1")
 	)
-	(text "High beam, turn signals and illumination are active at +12 V: 4.7 kΩ → EL817 LED → ground.\nNeutral is active to ground (the gearbox switch grounds the wire):\n+12V_P → 3.3 kΩ → LED → neutral wire. Outputs active low with the Pico's internal pull-up.\nWire colours and neutral logic [TO VERIFY] with the bike measurements."
+	(text "High beam, turn signals and illumination are active at +12 V: 4.7 kΩ → EL817 LED → ground.\nNeutral is active to ground (the gearbox switch grounds the wire):\n+12V_P → 3.3 kΩ → LED → neutral wire. Outputs active low with the Pico's internal pull-up.\nWire colors and neutral logic [TO VERIFY] with the bike measurements."
 		(exclude_from_sim no)
 		(at 10.16 17.78 0)
 		(effects

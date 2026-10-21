@@ -2,7 +2,7 @@
 #
 # The bike side is the plug of a used cluster cord set (3VD-83509-00) or the
 # matching connector, so the original loom is never cut. Its pin numbers and
-# wire colours are NOT known yet: the colours below are the Yamaha convention
+# wire colors are NOT known yet: the colors below are the Yamaha convention
 # and stay [TO VERIFY] until the measurements of
 # docs/research/bike-measurements.md are done. The adapter wires are ours.
 
@@ -23,7 +23,7 @@ connectors:
     subtype: pinout [TO VERIFY]
     notes: >-
       Provisional pin numbers: the original connector is measured with a multimeter.
-      In brackets the likely Yamaha colour [TO VERIFY].
+      In brackets the likely Yamaha color [TO VERIFY].
     pinlabels:
       - +12V key (Br?)
       - Ground (B?)
@@ -51,7 +51,7 @@ cables:
     gauge: 0.5 mm2
     length: 0.3
     colors: [RD, BK, TQ, YE, BN, GN]
-    notes: Adapter wires (our colour choice). 2 A inline fuse on the red wire, close to X1
+    notes: Adapter wires (our color choice). 2 A inline fuse on the red wire, close to X1
   W2:
     type: FLRY-B
     gauge: 0.5 mm2

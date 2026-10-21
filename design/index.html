@@ -426,7 +426,7 @@ class PulseMeter {
 // Vehicle and scenarios
 // ======================================================================
 const GEARS = [2.571, 1.778, 1.381, 1.125, 0.962];      // approximate 3VD ratios
-const RPM_PER_MS = (60 / 1.98) * 1.708 * 2.8125;          // primary × final, rear tyre 150/70-17
+const RPM_PER_MS = (60 / 1.98) * 1.708 * 2.8125;          // primary × final, rear tire 150/70-17
 
 const SCENARIOS = {
   city: {
@@ -945,7 +945,7 @@ function needle(c, cx, cy, r, f, T) {
   c.strokeStyle = T.needle; c.lineWidth = 2.5; c.beginPath(); c.arc(cx, cy, 15, 0, Math.PI * 2); c.stroke();
 }
 
-// ---------------------------------------------------------------- telltale icons (self-drawn, ECE colours)
+// ---------------------------------------------------------------- telltale icons (self-drawn, ECE colors)
 function icoTurn(c, x, y, dir, on, T) {
   c.save(); c.translate(x, y); if (dir === "R") c.scale(-1, 1);
   c.beginPath(); c.moveTo(-19, 0); c.lineTo(-2, -15); c.lineTo(-2, -6); c.lineTo(18, -6); c.lineTo(18, 6); c.lineTo(-2, 6); c.lineTo(-2, 15); c.closePath();
@@ -1229,7 +1229,7 @@ function drawDiag(c, vm) {
     label(c, k, 40, y, 17, T.dim, "left", 500);
     label(c, v, 210, y, 16, T.ink, "left", 500, MONO);
   });
-  label(c, "Front tyre changed? Recalibrate the speed (manual, ch. 10)", 400, 452, 15, T.amber, "center", 500);
+  label(c, "Front tire changed? Recalibrate the speed (manual, ch. 10)", 400, 452, 15, T.amber, "center", 500);
 }
 
 function drawSettings(c, vm) {

@@ -1,110 +1,110 @@
-<p align="center"><img src="docs/assets/banner.svg" alt="tdm-dash: quadro strumenti digitale open-source" width="100%"></p>
+<p align="center"><img src="docs/assets/banner.svg" alt="tdm-dash: open-source digital instrument cluster" width="100%"></p>
 
 # tdm-dash
 
-**Quadro strumenti digitale open-source per Yamaha TDM 850 prima serie (3VD, 1991–1995).**
-*Open-source digital instrument cluster for the first-generation Yamaha TDM 850. Documentation is in Italian; code and comments are in English.*
+**Open-source digital instrument cluster for the first-series Yamaha TDM 850 (3VD, 1991–1995).**
 
-> **Stato:** progettazione completa, hardware non ancora costruito.
-> - Il software del quadro e il simulatore funzionano sul PC.
-> - Pronti ma non ancora provati sull'hardware: firmware del Pico, immagine Linux, schemi elettrici, cablaggi, contenitore, strumenti di calibrazione e manuale.
-> - Mancano i rilievi sulla moto e il collaudo al banco e su strada.
+> **Status:** design complete, hardware not built yet.
+> - The dashboard software and the simulator run on a PC.
+> - Ready but not yet tried on the hardware: Pico firmware, Linux image, schematics, wiring harnesses, enclosure, calibration tools and manual.
+> - Still missing: the measurements on the bike and the bench and road tests.
 >
-> **Non** utilizzabile su strada.
+> **Not** fit for road use.
 
-tdm-dash sostituisce il quadro originale con un display da 7" leggibile al sole (1000 nit) e mostra:
-- velocità e giri
-- contachilometri totale e due parziali
-- temperatura dell'acqua e tensione della batteria, con avvisi
-- spie: folle, abbaglianti, frecce sinistra e destra separate
+tdm-dash replaces the original cluster with a 7" display readable in the sun (1000 nit) and shows:
+- speed and rpm
+- odometer and two trips
+- coolant temperature and battery voltage, with warnings
+- warning lights: neutral, high beam, separate left and right turn signals
 
-È economico (≈ 190–240 €), **reversibile** (l'impianto della moto non si taglia) ed **estensibile** ad altre moto tramite profili TOML.
+It is cheap (≈ 190–240 €), **reversible** (the bike's wiring is never cut) and **extensible** to other motorcycles through TOML profiles. The dashboard texts are in English or Italian, chosen in the profile.
 
-## Come è fatto
+## How it is built
 
 ```mermaid
 flowchart LR
-  MOTO["Impianto 12 V<br/>spie · bobina · sensore acqua"] --> IO["Ingressi protetti<br/>optoaccoppiatori"]
-  RUOTA["Sensore induttivo<br/>sui bulloni del disco"] --> IO
+  MOTO["12 V wiring<br/>warning lights · coil · coolant sender"] --> IO["Protected inputs<br/>optocouplers"]
+  RUOTA["Inductive sensor<br/>on the disc bolts"] --> IO
   IO --> MCU["Raspberry Pi Pico<br/>Rust · km in FRAM"]
-  MCU -- USB --> PI["Raspberry Pi Zero 2 W<br/>Linux Buildroot · UI Rust/Slint"]
-  PI -- DPI --> LCD["Display 7 pollici<br/>800×480 · 1000 nit"]
+  MCU -- USB --> PI["Raspberry Pi Zero 2 W<br/>Buildroot Linux · Rust/Slint UI"]
+  PI -- DPI --> LCD["7-inch display<br/>800×480 · 1000 nit"]
 ```
 
-| Parte | Tecnologia |
+| Part | Technology |
 |---|---|
-| Interfaccia | Rust + [Slint](https://slint.dev), renderer software su DRM/KMS |
-| Sistema operativo | Linux minimale compilato con [Buildroot](https://buildroot.org), rootfs in sola lettura, avvio < 4 s |
-| Microcontrollore | Rust + [embassy](https://embassy.dev) su RP2040 / RP2350 |
-| Hardware | Schema elettrico KiCad, cablaggi WireViz, contenitore stampato in 3D |
+| User interface | Rust + [Slint](https://slint.dev), software renderer on DRM/KMS |
+| Operating system | Minimal Linux built with [Buildroot](https://buildroot.org), read-only rootfs, boot < 4 s |
+| Microcontroller | Rust + [embassy](https://embassy.dev) on RP2040 / RP2350 |
+| Hardware | KiCad schematic, WireViz harnesses, 3D-printed enclosure |
 
-## Documentazione
+## Documentation
 
-- **[Manuale](docs/manual/README.md)**: progettazione, costruzione, installazione, calibrazione, uso, diagnostica
-- **[Ricerca sull'impianto originale](docs/research/original-wiring.md)**, con le fonti
-- **[Scheda dei rilievi sulla moto](docs/research/bike-measurements.md)**
-- **[Decisioni di architettura](docs/adr/README.md)**
+- **[Manual](docs/manual/README.md)**: design, build, installation, calibration, usage, troubleshooting
+- **[Research on the original wiring](docs/research/original-wiring.md)**, with sources
+- **[Measurement sheet for the bike](docs/research/bike-measurements.md)**
+- **[Architecture decision records](docs/adr/README.md)**
 
-## Struttura del repository
+## Repository layout
 
-| Cartella | Contenuto |
+| Folder | Contents |
 |---|---|
-| [`crates/`](crates/) | tdm-proto (protocollo), tdm-core (misure, km), tdm-logic, tdm-link (`tdmctl`), tdm-dash (interfaccia) |
-| [`firmware/`](firmware/) | Firmware del Pico |
-| [`profiles/`](profiles/) | Profili moto (TOML) |
-| [`design/`](design/) | Proposta di design dell'interfaccia (HTML interattivo) |
-| [`os/`](os/) | Immagine Linux: Buildroot e albero esterno |
-| [`hardware/`](hardware/) | Schema KiCad, cablaggi WireViz, millefori, contenitore e staffa (OpenSCAD) |
-| [`docs/`](docs/) | Manuale, ricerca, ADR |
-| [`tools/`](tools/) | Controlli della documentazione e degli schemi, conversione UF2 |
+| [`crates/`](crates/) | tdm-proto (protocol), tdm-core (measurements, km), tdm-logic, tdm-link (`tdmctl`), tdm-dash (user interface) |
+| [`firmware/`](firmware/) | Pico firmware |
+| [`profiles/`](profiles/) | Bike profiles (TOML) |
+| [`design/`](design/) | Interactive design mock-up of the interface (HTML) |
+| [`os/`](os/) | Linux image: Buildroot and external tree |
+| [`hardware/`](hardware/) | KiCad schematic, WireViz harnesses, perfboard, enclosure and bracket (OpenSCAD) |
+| [`docs/`](docs/) | Manual, research, ADRs |
+| [`tools/`](tools/) | Documentation and schematic checks, UF2 conversion, banner |
 
-## Sviluppo
+## Development
 
-| Schermata Classic | Schermata Sport |
+| Classic layout | Sport layout |
 |---|---|
-| ![Classic](design/screenshots/03-classic-giorno.png) | ![Sport](design/screenshots/06-sport-notte.png) |
+| ![Classic](design/screenshots/03-classic-day.png) | ![Sport](design/screenshots/06-sport-night.png) |
 
 ```sh
-cargo run -p tdm-dash                                   # quadro sul PC con la moto simulata (tasti: capitolo 11)
-cargo run -p tdm-link --bin tdmctl -- sim mountain      # simulazione testuale
-cargo test --workspace                                  # test sul PC
-cargo run --release -p tdm-dash --no-default-features -- --screenshot out   # schermate di riferimento
-cargo run --release -p tdm-dash --no-default-features -- --bench 600         # tempo di disegno
-cargo build --release --target aarch64-unknown-linux-gnu -p tdm-dash --no-default-features --features kms   # binario per il Pi
-make -C os release                                      # immagine per la scheda SD (Buildroot, circa un'ora)
+cargo run -p tdm-dash -- --language en                  # the dashboard on a PC with a simulated bike (keys: chapter 11)
+cargo run -p tdm-dash                                   # the same with the TDM 850 profile as it is, Italian texts
+cargo run -p tdm-link --bin tdmctl -- sim mountain      # text-only simulation
+cargo test --workspace                                  # tests on the PC
+cargo run --release -p tdm-dash --no-default-features -- --screenshot out   # reference screens
+cargo run --release -p tdm-dash --no-default-features -- --bench 600         # drawing time
+cargo build --release --target aarch64-unknown-linux-gnu -p tdm-dash --no-default-features --features kms   # binary for the Pi
+make -C os release                                      # SD card image (Buildroot, about an hour)
 ```
 
-Nella CI (GitHub Actions) girano:
-- test Rust, firmware per RP2040 e RP2350, binario per il Pi
-- ERC dello schema e controllo incrociato con i pin del firmware
-- cablaggi, parti stampabili e controlli della documentazione
-- immagine completa, sui tag e una volta alla settimana
+The Rust toolchain (1.97.1, the same as Buildroot 2026.08) and the targets are installed automatically from `rust-toolchain.toml`.
 
-La toolchain Rust (1.97.1, la stessa di Buildroot 2026.08) e i target vengono installati automaticamente da `rust-toolchain.toml`.
+The CI (GitHub Actions) runs:
+- Rust tests, firmware for RP2040 and RP2350, binary for the Pi
+- schematic ERC and the cross-check against the firmware pins
+- harnesses, printable parts and documentation checks
+- the full image, on tags and once a week
 
 ## Roadmap
 
-| Milestone | Contenuto | Stato |
+| Milestone | Contents | Status |
 |---|---|---|
-| M0 | Scheletro del repo, ricerca, manuale (cap. 00–03) | Fatto |
-| M1 | Proposta di design interattiva a 800×480 | Fatto |
-| M2 | Workspace Rust, simulatore desktop | Fatto |
-| M3 / M3b | Firmware del Pico · schemi elettrici e dei collegamenti | Fatto, da provare sull'hardware |
-| M4 | Sistema operativo Buildroot | Fatto, da provare sull'hardware |
-| M5 | Contenitore, staffa, millefori, manuale di costruzione (cap. 06–08) | Progetto fatto; costruzione a cura del proprietario |
-| M6 | Calibrazione (`tdmctl calibrate`), manuale (cap. 10, 12, 13) | Strumenti fatti; rilievi, montaggio e 500 km di prova da fare |
+| M0 | Repository skeleton, research, manual (ch. 00–03) | Done |
+| M1 | Interactive 800×480 design mock-up | Done |
+| M2 | Rust workspace, desktop simulator | Done |
+| M3 / M3b | Pico firmware · schematics and wiring harnesses | Done, to be tried on the hardware |
+| M4 | Buildroot operating system | Done, to be tried on the hardware |
+| M5 | Enclosure, bracket, perfboard, build manual (ch. 06–08) | Design done; building is up to the owner |
+| M6 | Calibration (`tdmctl calibrate`), manual (ch. 10, 12, 13) | Tools done; bike measurements, fitting and the 500 km test still to do |
 
-Prossimi passi sulla moto:
-1. [rilievi](docs/research/bike-measurements.md)
-2. prova del display al banco con Raspberry Pi OS: tempi DPI e benchmark
-3. costruzione (capitoli 06–07)
-4. prova in parallelo (capitolo 08)
-5. calibrazione (capitolo 10)
+Next steps on the bike:
+1. [measurements](docs/research/bike-measurements.md)
+2. display test on the bench with Raspberry Pi OS: DPI timings and benchmark
+3. build (chapters 06–07)
+4. parallel test (chapter 08)
+5. calibration (chapter 10)
 
-## Licenze
+## Licenses
 
-Codice MIT o Apache-2.0, immagine del sistema GPLv3 (per via di Slint), hardware CERN-OHL-P-2.0, documentazione CC-BY-SA-4.0. Dettagli in [LICENSING.md](LICENSING.md).
+Code MIT or Apache-2.0, system image GPLv3 (because of Slint), hardware CERN-OHL-P-2.0, documentation CC-BY-SA-4.0. Details in [LICENSING.md](LICENSING.md).
 
-Yamaha e TDM sono marchi dei rispettivi proprietari. Questo progetto non è affiliato né approvato da Yamaha Motor Co., Ltd.
+Yamaha and TDM are trademarks of their respective owners. This project is not affiliated with or endorsed by Yamaha Motor Co., Ltd.
 
-> **Avvertenza:** progetto sperimentale e non certificato. Leggi il capitolo [Introduzione e sicurezza](docs/manual/00-introduction-and-safety.md) prima di montarlo su una moto.
+> **Warning:** experimental, uncertified project. Read the [Introduction and safety](docs/manual/00-introduction-and-safety.md) chapter before fitting it to a motorcycle.

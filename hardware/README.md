@@ -38,6 +38,6 @@ docker run --rm -u 0 -v "$PWD":/w -w /w openscad/openscad:2021.01 hardware/cad-e
 
 Opening the project in KiCad to look at it is perfectly fine. Changes made in the editor must however be carried over to `generate.py`, otherwise the next generation erases them.
 
-## Licence
+## License
 
 Hardware under CERN-OHL-P-2.0 (see [LICENSING.md](../LICENSING.md)).

@@ -9,7 +9,7 @@
 | Ch | Chocolate | P | Pink |
 | Dg | Dark green | R | Red |
 | G | Green | Sb | Sky blue |
-| Gy | Grey | W | White |
+| Gy | Gray | W | White |
 | Lg | Light green | Y | Yellow |
 
 Two codes separated by `/` give the wire color and the stripe color: `L/W` is blue with a white stripe.

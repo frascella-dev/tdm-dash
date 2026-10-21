@@ -71,7 +71,7 @@ jobs:
           readelf=$(ls $out/host/bin/*-readelf | head -1)
           $readelf -d $out/target/usr/bin/tdm-dash | tee needed.txt
           ! grep NEEDED needed.txt | grep -vE 'libc\.so|libm\.so|libgcc_s\.so|ld-linux'
-      - name: Compress the image and collect the licences
+      - name: Compress the image and collect the licenses
         run: |
           mkdir -p dist
           img=os/output/${{ matrix.image }}/images

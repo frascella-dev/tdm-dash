@@ -21,7 +21,7 @@ panel_h = 104.0;
 panel_t = 6.0;        // module thickness [TO VERIFY]
 aa_w = 154.2;         // active area (datasheet)
 aa_h = 85.6;
-aa_dx = 0.0;          // active area centre offset from the outline centre [TO VERIFY]
+aa_dx = 0.0;          // active area center offset from the outline center [TO VERIFY]
 aa_dy = 0.0;
 
 /* [Enclosure] */
