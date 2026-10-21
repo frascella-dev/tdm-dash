@@ -1,0 +1,46 @@
+name: Hardware
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  kicad:
+    name: Schematic (generate, ERC, pin check, export)
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:9.0.9
+      options: --user root
+    steps:
+      - run: apt-get update && apt-get install -y --no-install-recommends git
+      - uses: actions/checkout@v4
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Schematic matches generate.py
+        run: |
+          python3 hardware/kicad/generate.py --symbols /usr/share/kicad/symbols
+          git diff --exit-code -- hardware/kicad
+      - name: ERC, firmware cross-check, PDF and SVG
+        run: hardware/kicad/export.sh
+      - name: Committed SVG exports are up to date
+        run: git diff --exit-code -- 'hardware/exports/kicad/*.svg'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: schematic
+          path: hardware/exports/kicad/
+
+  harness:
+    name: Wiring harnesses (WireViz)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y graphviz fonts-dejavu-core
+      - run: pip install wireviz==0.4.1
+      - name: Render every harness
+        run: |
+          mkdir -p out
+          for f in hardware/harness/*.yml; do wireviz -f st -o out "$f"; done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: harness
+          path: out/

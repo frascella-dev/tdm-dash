@@ -10,8 +10,8 @@ Il manuale cresce insieme al progetto: ogni milestone aggiunge o aggiorna i capi
 | 01 | [L'impianto originale della TDM 850](01-impianto-originale.md) | Prima stesura, da confermare con i rilievi |
 | 02 | [Architettura del sistema](02-architettura.md) | Prima stesura |
 | 03 | [Distinta componenti](03-distinta-componenti.md) | Prima stesura, prezzi ottobre 2026 |
-| 04 | Schemi elettrici | Milestone M3b |
-| 05 | Schemi dei collegamenti | Milestone M3b |
+| 04 | [Schemi elettrici](04-schemi-elettrici.md) | Prima stesura, da rivedere dopo i rilievi |
+| 05 | [Schemi dei collegamenti](05-schemi-collegamenti.md) | Prima stesura, colori della moto da rilevare |
 | 06 | Costruzione dell'elettronica | Milestone M5 |
 | 07 | Contenitore e staffa | Milestone M5 |
 | 08 | Installazione sulla moto | Milestone M5/M6 |

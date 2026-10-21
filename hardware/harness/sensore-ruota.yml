@@ -1,0 +1,63 @@
+# Wheel sensor: LJ12A3-4-Z/BX on the front brake disc -> DTM -> board J401.
+#
+# The sensor's own lead colours (brown +V, blue 0 V, black output) come from
+# its datasheet; the extension cable is a shielded 3-core, shield grounded at
+# the board end only.
+
+metadata:
+  title: Sensore ruota LJ12A3 → tdm-dash
+  description: Sensore induttivo NPN NA sui bulloni del disco anteriore
+
+options:
+  fontname: DejaVu Sans
+  bgcolor: WH
+  bgcolor_node: WH
+  bgcolor_connector: WH
+  bgcolor_cable: WH
+
+connectors:
+  S1:
+    type: LJ12A3-4-Z/BX
+    subtype: induttivo NPN NA, 6–36 V
+    pinlabels: [+V, OUT, 0V]
+  X1:
+    type: Deutsch DTM
+    subtype: 3 poli maschio (DTM04-3P)
+    notes: Vicino alla piastra forcella, fissato con fascetta
+    pinlabels: [+12V, SIG, GND]
+  X2:
+    type: Deutsch DTM
+    subtype: 3 poli femmina (DTM06-3S + W3S)
+    pinlabels: [+12V, SIG, GND]
+  X3:
+    type: Morsetto J401 sul millefori
+    subtype: 3 poli
+    pinlabels: [+12V_P, WHEEL_SIG, GND]
+
+cables:
+  W1:
+    type: Cavo del sensore
+    gauge: 0.34 mm2
+    length: 1.0
+    colors: [BN, BK, BU]
+    notes: Accorciare lasciando il gioco per tutta l'escursione della forcella e lo sterzo
+  W2:
+    type: Cavo schermato 3 poli
+    gauge: 0.34 mm2
+    length: 1.2
+    colors: [RD, WH, BK]
+    shield: true
+    notes: Schermo a massa solo dal lato del quadro
+
+connections:
+  -
+    - S1: [1, 2, 3]
+    - W1: [1, 2, 3]
+    - X1: [1, 2, 3]
+  -
+    - X2: [1, 2, 3]
+    - W2: [1, 2, 3]
+    - X3: [1, 2, 3]
+  -
+    - W2: [s]
+    - X3: [3]
