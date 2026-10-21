@@ -1,0 +1,17 @@
+[package]
+name = "tdm-logic"
+description = "Dashboard logic: profile, conversions, filters, warnings and UI state machine"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde = { version = "1.0.229", features = ["derive"] }
+tdm-proto = { workspace = true, features = ["std"] }
+toml = "1.1.8"
+
+[lints]
+workspace = true

@@ -1,0 +1,37 @@
+[package]
+name = "tdm-dash"
+description = "tdm-dash instrument cluster UI (Slint, software renderer)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+# Own code is MIT/Apache; a binary linked with Slint is distributed under
+# GPL-3.0 (see LICENSING.md and docs/adr/0007).
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[features]
+default = ["desktop"]
+# Window on a PC (winit), same software renderer as on the bike.
+desktop = ["slint/backend-winit", "slint/renderer-winit-software"]
+# Direct DRM/KMS output on the Raspberry Pi (no X11, Wayland, udev or libinput).
+kms = ["dep:drm"]
+
+[dependencies]
+drm = { version = "0.15.0", optional = true }
+png = "0.18.1"
+slint = { version = "1.18", default-features = false, features = ["std", "compat-1-18", "renderer-software", "software-renderer-path"] }
+tdm-link = { workspace = true }
+tdm-logic = { workspace = true }
+tdm-proto = { workspace = true, features = ["std"] }
+# Slint's text stack can query system fonts through fontconfig; load it with
+# dlopen instead of linking it, since the Pi image has no fontconfig and the
+# UI only uses its embedded glyphs. Pinned to the Slint version above.
+i-slint-common = { version = "=1.18.1", features = ["fontconfig-dlopen"] }
+tiny-skia = { version = "0.12.0", default-features = false, features = ["std", "simd"] }
+
+[build-dependencies]
+slint-build = "1.18"
+
+[lints]
+workspace = true

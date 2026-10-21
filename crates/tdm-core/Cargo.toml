@@ -9,6 +9,8 @@ repository.workspace = true
 authors.workspace = true
 
 [dependencies]
+crc = "3.4.0"
+tdm-proto = { workspace = true }
 
 [lints]
 workspace = true

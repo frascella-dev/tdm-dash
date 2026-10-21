@@ -1,0 +1,18 @@
+[package]
+name = "tdm-link"
+description = "Links to the co-processor: USB serial, simulator and replay; tdmctl tool"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+serialport = { version = "4.10.1", default-features = false }
+tdm-core = { workspace = true }
+tdm-logic = { workspace = true }
+tdm-proto = { workspace = true, features = ["std"] }
+
+[lints]
+workspace = true

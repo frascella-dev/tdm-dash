@@ -1,0 +1,510 @@
+// tdm-dash instrument cluster, 800×480. Mirrors design/index.html.
+// Rules for the software renderer: no rotations or blur; dial faces are
+// images generated at start-up; needles and arc segments are Paths whose
+// commands are computed in Rust.
+
+import "../fonts/SairaSemiCondensed-Medium.ttf";
+import "../fonts/SairaSemiCondensed-SemiBold.ttf";
+import "../fonts/SairaSemiCondensed-Bold.ttf";
+
+export struct Label {
+    x: length,
+    y: length,
+    text: string,
+    red: bool,
+}
+
+export struct Seg {
+    cmd: string,
+    at: float,
+    red: bool,
+    x: float,
+    y: float,
+    w: float,
+    h: float,
+}
+
+export struct NeedleGeom {
+    cmd: string,
+    x: float,
+    y: float,
+    w: float,
+    h: float,
+}
+
+export struct Row {
+    label: string,
+    value: string,
+}
+
+export global Palette {
+    in-out property <color> bg: #eceae4;
+    in-out property <color> panel: #dcd9d1;
+    in-out property <color> ink: #0f1113;
+    in-out property <color> dim: #575b5d;
+    in-out property <color> faint: #bdb9b0;
+    in-out property <color> ghost: #0f11131c;
+    in-out property <color> needle: #d9410b;
+    in-out property <color> red: #cc1f1a;
+    in-out property <color> red-dim: #cc1f1a4d;
+    in-out property <color> amber: #b86e00;
+    in-out property <color> amber-bg: #f2a516;
+    in-out property <color> green: #0b9a3b;
+    in-out property <color> blue: #1849e6;
+    in-out property <color> crit-bg: #c41c17;
+    in-out property <color> crit-ink: #ffffff;
+    in-out property <color> caution-ink: #1b1300;
+}
+
+global F {
+    out property <string> medium: "Saira SemiCondensed Medium";
+    out property <string> semi: "Saira SemiCondensed SemiBold";
+    out property <string> bold: "Saira SemiCondensed SemiCond";
+}
+
+// ------------------------------------------------------------------ icons
+
+component Icon inherits Path {
+    in property <color> color;
+    fill: color;
+    viewbox-width: 40;
+    viewbox-height: 32;
+    width: 40px;
+    height: 32px;
+}
+
+component TurnIcon inherits Icon {
+    in property <bool> right;
+    commands: right ? "M 39 16 L 22 1 L 22 10 L 2 10 L 2 22 L 22 22 L 22 31 Z" : "M 1 16 L 18 1 L 18 10 L 38 10 L 38 22 L 18 22 L 18 31 Z";
+}
+
+component HighBeamIcon inherits Icon {
+    commands: "M 20 4 C 39 4 39 28 20 28 Z M 2 4.5 L 15 4.5 L 15 7.5 L 2 7.5 Z M 2 9.9 L 15 9.9 L 15 12.9 L 2 12.9 Z M 2 15.3 L 15 15.3 L 15 18.3 L 2 18.3 Z M 2 20.7 L 15 20.7 L 15 23.7 L 2 23.7 Z M 2 26.1 L 15 26.1 L 15 29.1 L 2 29.1 Z";
+}
+
+component CoolantIcon inherits Icon {
+    commands: "M 18.7 2 L 21.3 2 L 21.3 19 A 4.6 4.6 0 1 1 18.7 19 Z M 23 5 L 29 5 L 29 7.4 L 23 7.4 Z M 23 11 L 29 11 L 29 13.4 L 23 13.4 Z M 7 27 L 33 27 L 33 29.4 L 7 29.4 Z";
+}
+
+component BatteryIcon inherits Icon {
+    commands: "M 6 9 L 34 9 L 34 27 L 6 27 Z M 8.6 11.6 L 8.6 24.4 L 31.4 24.4 L 31.4 11.6 Z M 9 5 L 15 5 L 15 9 L 9 9 Z M 25 5 L 31 5 L 31 9 L 25 9 Z M 11 17 L 17 17 L 17 19 L 11 19 Z M 13 15 L 15 15 L 15 21 L 13 21 Z M 23 17 L 29 17 L 29 19 L 23 19 Z";
+}
+
+component FuelIcon inherits Icon {
+    commands: "M 9 4 L 24 4 L 24 29 L 9 29 Z M 12 7 L 12 13 L 21 13 L 21 7 Z M 24 9 L 30 13 L 30 23 L 32 23 L 32 12 L 33.8 12 L 33.8 24.8 L 28.2 24.8 L 28.2 14 L 24 11.5 Z";
+}
+
+component LinkIcon inherits Icon {
+    commands: "M 6 11 L 28 11 L 28 7 L 34 12.5 L 28 18 L 28 14 L 6 14 Z M 34 21 L 12 21 L 12 25 L 6 19.5 L 12 14 L 12 18 L 34 18 Z M 7 30 L 33 2 L 35 4 L 9 32 Z";
+}
+
+// ------------------------------------------------------------------ pieces
+
+component T inherits Text {
+    in property <int> weight: 600;
+    font-family: weight >= 700 ? F.bold : weight >= 600 ? F.semi : F.medium;
+    font-weight: weight;
+    color: Palette.ink;
+    vertical-alignment: center;
+}
+
+// Characters in fixed-width cells, so changing digits never shift.
+component Cells inherits Rectangle {
+    in property <[string]> chars;
+    in property <length> cell;
+    in property <length> size;
+    in property <color> ink: Palette.ink;
+    in property <int> weight: 600;
+    width: chars.length * cell;
+    for ch[i] in chars: T {
+        x: i * cell;
+        y: 0;
+        width: cell;
+        height: parent.height;
+        text: ch;
+        font-size: size;
+        weight: weight;
+        color: ink;
+        horizontal-alignment: center;
+    }
+}
+
+component Telltales inherits Rectangle {
+    in property <bool> left;
+    in property <bool> right;
+    in property <bool> neutral;
+    in property <bool> high-beam;
+    in property <int> coolant;   // 0 off, 2 caution, 3 critical
+    in property <int> battery;
+    in property <bool> link;
+    in property <bool> fuel;
+    height: 58px;
+    TurnIcon { x: 24px; y: 14px; color: left ? Palette.green : Palette.ghost; }
+    TurnIcon { x: 736px; y: 14px; right: true; color: right ? Palette.green : Palette.ghost; }
+    T {
+        x: 334px; y: 8px; width: 36px; height: 44px;
+        text: "N"; font-size: 34px; weight: 700;
+        horizontal-alignment: center;
+        color: neutral ? Palette.green : Palette.ghost;
+    }
+    HighBeamIcon { x: 425px; y: 14px; color: high-beam ? Palette.blue : Palette.ghost; }
+    if link: LinkIcon { x: 242px; y: 14px; color: Palette.red; }
+    if fuel: FuelIcon { x: 184px; y: 14px; color: Palette.amber; }
+    if coolant > 0: CoolantIcon { x: 518px; y: 14px; color: coolant >= 3 ? Palette.red : Palette.amber; }
+    if battery > 0: BatteryIcon { x: 576px; y: 14px; color: battery >= 3 ? Palette.red : Palette.amber; }
+}
+
+component BottomStrip inherits Rectangle {
+    in property <string> odo;
+    in property <string> trip-a;
+    in property <string> trip-b;
+    in property <string> vbat;
+    in property <int> vbat-level;
+    in property <string> info;
+    in property <int> info-icon;   // 0 none, 1 fuel, 2 turn
+    y: 432px;
+    height: 48px;
+    width: 800px;
+    background: Palette.panel;
+    T { x: 22px; y: 0; height: 48px; text: "ODO"; font-size: 13px; color: Palette.dim; }
+    T { x: 60px; y: 0; height: 48px; text: odo; font-size: 24px; }
+    T { x: 166px; y: 0; height: 48px; text: "A"; font-size: 13px; color: Palette.dim; }
+    T { x: 182px; y: 0; height: 48px; text: trip-a; font-size: 24px; }
+    T { x: 282px; y: 0; height: 48px; text: "PIENO"; font-size: 13px; color: Palette.dim; }
+    T { x: 330px; y: 0; height: 48px; text: trip-b; font-size: 24px; }
+    if info-icon == 1: FuelIcon { x: 500px; y: 8px; color: Palette.amber; }
+    if info-icon == 2: TurnIcon { x: 500px; y: 8px; color: Palette.amber; }
+    if info-icon > 0: T { x: 544px; y: 0; height: 48px; text: info; font-size: 18px; color: Palette.amber; }
+    BatteryIcon {
+        x: 652px; y: 8px;
+        color: vbat-level >= 3 ? Palette.red : vbat-level == 2 ? Palette.amber : Palette.dim;
+    }
+    T {
+        x: 690px; y: 0; width: 66px; height: 48px;
+        text: vbat; font-size: 24px; horizontal-alignment: right;
+        color: vbat-level >= 3 ? Palette.red : vbat-level == 2 ? Palette.amber : Palette.ink;
+    }
+    T { x: 762px; y: 0; height: 48px; text: "V"; font-size: 16px; color: Palette.dim; }
+}
+
+component SegBar inherits Rectangle {
+    // horizontal segmented bar, lit up to `frac`
+    in property <int> count;
+    in property <float> frac;
+    in property <float> red-from: 2;
+    in property <bool> flash;
+    in property <length> gap: 3px;
+    for i in count: Rectangle {
+        property <float> at: (i + 1) / count;
+        property <bool> lit: (i + 0.5) / count <= frac;
+        x: i * (parent.width + gap) / count;
+        width: (parent.width + gap) / count - gap;
+        height: parent.height;
+        background: lit && flash ? Palette.needle : at > red-from ? (lit ? Palette.red : Palette.red-dim) : (lit ? Palette.ink : Palette.faint);
+    }
+}
+
+component VBar inherits Rectangle {
+    // vertical segmented bar for the coolant gauge, filling from the bottom
+    in property <int> count;
+    in property <float> frac;
+    in property <float> red-from;
+    in property <length> gap: 4px;
+    for i in count: Rectangle {
+        property <float> at: (i + 1) / count;
+        property <bool> lit: i < Math.round(frac * count);
+        y: parent.height - (i + 1) * (parent.height + gap) / count + gap;
+        height: (parent.height + gap) / count - gap;
+        width: parent.width;
+        background: at > red-from ? (lit ? Palette.red : Palette.red-dim) : (lit ? Palette.ink : Palette.faint);
+    }
+}
+
+component Dial inherits Rectangle {
+    in property <image> face;
+    in property <[Label]> labels;
+    in property <NeedleGeom> needle;
+    in property <string> unit;
+    width: 340px;
+    height: 340px;
+    Image { source: face; width: 340px; height: 340px; }
+    for l in labels: T {
+        x: l.x - 20px; y: l.y - 14px; width: 40px; height: 28px;
+        text: l.text; font-size: 22px; horizontal-alignment: center;
+        color: l.red ? Palette.red : Palette.ink;
+    }
+    T { x: 0; y: 104px; width: 340px; height: 18px; text: unit; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+    Path {
+        x: needle.x * 1px; y: needle.y * 1px; width: needle.w * 1px; height: needle.h * 1px;
+        viewbox-x: needle.x; viewbox-y: needle.y; viewbox-width: needle.w; viewbox-height: needle.h;
+        commands: needle.cmd;
+        fill: Palette.needle;
+    }
+    Rectangle {
+        x: 155px; y: 155px; width: 30px; height: 30px;
+        border-radius: 15px; background: Palette.panel;
+        border-width: 2.5px; border-color: Palette.needle;
+    }
+}
+
+// ------------------------------------------------------------------ window
+
+export component AppWindow inherits Window {
+    width: 800px;
+    height: 480px;
+    title: "tdm-dash";
+    background: Palette.bg;
+    default-font-family: "Saira SemiCondensed SemiBold";
+
+    in property <int> ui-state;      // 0 splash, 1 self-test, 2 ride, 3 settings, 4 off
+    in property <int> screen;        // 0 main, 1 trip, 2 diag
+    in property <int> layout;        // 0 classic, 1 sport, 2 touring
+    in property <float> phase;
+    in property <bool> stale;
+    in property <[string]> speed-chars;
+    in property <string> rpm-text;
+    in property <float> rpm-frac;
+    in property <float> redline-frac;
+    in property <bool> shift;
+    in property <bool> tt-left;
+    in property <bool> tt-right;
+    in property <bool> tt-neutral;
+    in property <bool> tt-high-beam;
+    in property <int> icon-coolant;
+    in property <int> icon-battery;
+    in property <bool> icon-link;
+    in property <bool> icon-fuel;
+    in property <string> coolant-text;
+    in property <float> coolant-frac;
+    in property <float> coolant-warn-frac;
+    in property <int> coolant-level;
+    in property <string> vbat-text;
+    in property <int> vbat-level;
+    in property <string> odo-text;
+    in property <string> trip-a-text;
+    in property <string> trip-b-text;
+    in property <string> range-text;
+    in property <bool> range-low;
+    in property <string> ride-time-text;
+    in property <string> avg-text;
+    in property <string> max-text;
+    in property <string> fuel-used-text;
+    in property <string> consumption-text;
+    in property <int> warning-severity;  // 0 none, 2 caution, 3 critical
+    in property <int> warning-icon;      // 1 link, 2 coolant, 3 battery, 4 system
+    in property <string> warning-title;
+    in property <string> warning-detail;
+    in property <string> info-text;
+    in property <int> info-icon;
+    in property <string> toast;
+    in property <[Row]> settings;
+    in property <int> settings-sel;
+    in property <int> trip-sel;
+    in property <[Row]> diag;
+    in property <string> diag-note;
+    in property <string> splash-subtitle;
+
+    in property <image> speed-face;
+    in property <image> rpm-face;
+    in property <[Label]> speed-labels;
+    in property <[Label]> rpm-labels;
+    in property <NeedleGeom> speed-needle;
+    in property <NeedleGeom> rpm-needle;
+    in property <[Seg]> arc-segs;
+    in property <[Label]> arc-labels;
+
+    callback key(string, bool);
+
+    property <bool> main-visible: (ui-state == 1 || ui-state == 2) && screen == 0;
+    property <color> digit-color: stale ? Palette.dim : Palette.ink;
+
+    // Characters that only appear in strings built in Rust: listing them
+    // here makes the compiler embed their glyphs for the software renderer.
+    Text {
+        visible: false;
+        text: "àèéìòùÀÈÉÌÒÙ°·×−→Ω~±’«»…—–";
+    }
+
+    forward-focus: keys;
+    keys := FocusScope {
+        key-pressed(e) => { root.key(e.text, true); accept }
+        key-released(e) => { root.key(e.text, false); accept }
+    }
+
+    // ---------------- classic
+    if main-visible && layout == 0: Rectangle {
+        Dial { x: 30px; y: 58px; face: speed-face; labels: speed-labels; needle: speed-needle; unit: "km/h"; }
+        Dial { x: 430px; y: 58px; face: rpm-face; labels: rpm-labels; needle: rpm-needle; unit: "×1000 giri/min"; }
+        Cells { x: 200px - self.width / 2; y: 268px; height: 64px; chars: speed-chars; cell: 36px; size: 64px; ink: digit-color; }
+        T { x: 150px; y: 334px; width: 100px; height: 18px; text: "km/h"; font-size: 14px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+        T { x: 520px; y: 268px; width: 160px; height: 44px; text: rpm-text; font-size: 34px; color: digit-color; horizontal-alignment: center; }
+        T { x: 550px; y: 312px; width: 100px; height: 18px; text: "giri/min"; font-size: 14px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+        if shift: Rectangle { x: 593px; y: 113px; width: 14px; height: 14px; border-radius: 7px; background: Palette.needle; }
+        T {
+            x: 372px; y: 104px; width: 56px; height: 30px;
+            text: coolant-text; font-size: 24px; horizontal-alignment: center;
+            color: coolant-level >= 2 ? Palette.red : Palette.ink;
+        }
+        T { x: 372px; y: 132px; width: 56px; height: 16px; text: "°C"; font-size: 12px; color: Palette.dim; horizontal-alignment: center; }
+        VBar { x: 387px; y: 150px; width: 26px; height: 202px; count: 12; frac: coolant-frac; red-from: coolant-warn-frac; }
+        CoolantIcon { x: 380px; y: 362px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
+    }
+
+    // ---------------- sport
+    if main-visible && layout == 1: Rectangle {
+        for s in arc-segs: Path {
+            x: s.x * 1px; y: s.y * 1px; width: s.w * 1px; height: s.h * 1px;
+            viewbox-x: s.x; viewbox-y: s.y; viewbox-width: s.w; viewbox-height: s.h;
+            commands: s.cmd;
+            property <bool> lit: s.at - 0.5 / arc-segs.length <= rpm-frac;
+            fill: lit && shift ? Palette.needle : s.red ? (lit ? Palette.red : Palette.red-dim) : (lit ? Palette.ink : Palette.faint);
+        }
+        for l in arc-labels: T {
+            x: l.x - 16px; y: l.y - 12px; width: 32px; height: 24px;
+            text: l.text; font-size: 20px; horizontal-alignment: center;
+            color: l.red ? Palette.red : Palette.dim;
+        }
+        T { x: 300px; y: 150px; width: 200px; height: 40px; text: rpm-text; font-size: 30px; color: digit-color; horizontal-alignment: center; }
+        T { x: 300px; y: 188px; width: 200px; height: 18px; text: "giri/min"; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+        Cells { x: 400px - self.width / 2; y: 228px; height: 190px; chars: speed-chars; cell: 112px; size: 200px; weight: 700; ink: digit-color; }
+        T { x: 350px; y: 412px; width: 100px; height: 18px; text: "km/h"; font-size: 16px; color: Palette.dim; horizontal-alignment: center; }
+        CoolantIcon { x: 24px; y: 284px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
+        T { x: 70px; y: 288px; height: 36px; text: coolant-text + "°"; font-size: 28px; color: coolant-level >= 2 ? Palette.red : Palette.ink; }
+        SegBar { x: 30px; y: 330px; width: 130px; height: 12px; count: 8; frac: coolant-frac; red-from: coolant-warn-frac; }
+        T { x: 30px; y: 346px; height: 16px; text: "40"; font-size: 12px; weight: 500; color: Palette.dim; }
+        T { x: 130px; y: 346px; width: 30px; height: 16px; text: "120"; font-size: 12px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
+        FuelIcon { x: 640px; y: 284px; color: Palette.dim; }
+        T { x: 600px; y: 288px; width: 142px; height: 36px; text: range-text; font-size: 28px; horizontal-alignment: right; color: range-low ? Palette.amber : Palette.ink; }
+        T { x: 746px; y: 292px; height: 30px; text: "km"; font-size: 14px; color: Palette.dim; }
+        T { x: 600px; y: 326px; width: 170px; height: 16px; text: "autonomia stimata"; font-size: 12px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
+    }
+
+    // ---------------- touring
+    if main-visible && layout == 2: Rectangle {
+        Cells { x: 236px - self.width / 2; y: 116px; height: 150px; chars: speed-chars; cell: 80px; size: 152px; weight: 700; ink: digit-color; }
+        T { x: 186px; y: 258px; width: 100px; height: 20px; text: "km/h"; font-size: 16px; color: Palette.dim; horizontal-alignment: center; }
+        SegBar { x: 34px; y: 300px; width: 404px; height: 26px; count: 40; frac: rpm-frac; red-from: redline-frac; flash: shift; }
+        for k in 6: T {
+            x: 34px + 404px * k * 2 / 10 - 16px; y: 332px; width: 32px; height: 20px;
+            text: k * 2; font-size: 15px; horizontal-alignment: center;
+            color: k * 2 / 10 >= redline-frac ? Palette.red : Palette.dim;
+        }
+        T { x: 34px; y: 372px; height: 26px; text: "giri/min"; font-size: 14px; weight: 500; color: Palette.dim; }
+        T { x: 238px; y: 368px; width: 200px; height: 34px; text: rpm-text; font-size: 26px; horizontal-alignment: right; color: digit-color; }
+        Rectangle { x: 478px; y: 70px; width: 2px; height: 340px; background: Palette.faint; }
+        for r[i] in [
+            { label: "PARZIALE A", value: trip-a-text, unit: "km" },
+            { label: "MEDIA", value: avg-text, unit: "" },
+            { label: "IN SELLA", value: ride-time-text, unit: "" },
+            { label: "AUTONOMIA", value: range-text, unit: "km" },
+        ]: Rectangle {
+            x: 506px; y: 74px + i * 66px; width: 270px; height: 60px;
+            T { x: 0; y: 0; height: 16px; text: r.label; font-size: 13px; color: Palette.dim; }
+            T {
+                x: 0; y: 18px; width: 196px; height: 40px; text: r.value; font-size: 30px; horizontal-alignment: right;
+                color: i == 3 && range-low ? Palette.amber : Palette.ink;
+            }
+            T { x: 204px; y: 26px; height: 30px; text: r.unit; font-size: 15px; color: Palette.dim; }
+        }
+        CoolantIcon { x: 494px; y: 368px; color: coolant-level >= 2 ? Palette.red : Palette.dim; }
+        SegBar { x: 540px; y: 376px; width: 160px; height: 14px; count: 10; frac: coolant-frac; red-from: coolant-warn-frac; }
+        T { x: 700px; y: 368px; width: 74px; height: 30px; text: coolant-text + "°C"; font-size: 22px; horizontal-alignment: right; color: coolant-level >= 2 ? Palette.red : Palette.ink; }
+    }
+
+    // ---------------- trip
+    if ui-state == 2 && screen == 1: Rectangle {
+        T { x: 40px; y: 76px; height: 20px; text: "VIAGGIO"; font-size: 15px; color: Palette.dim; }
+        for c[i] in [
+            { title: "PARZIALE A", value: trip-a-text, k1: "In sella", v1: ride-time-text, k2: "Media", v2: avg-text, k3: "Massima", v3: max-text },
+            { title: "DAL PIENO", value: trip-b-text, k1: "Consumo stimato", v1: consumption-text, k2: "Benzina usata", v2: fuel-used-text, k3: "Autonomia", v3: range-text + " km" },
+        ]: Rectangle {
+            x: 24px + i * 380px; y: 110px; width: 352px; height: 300px;
+            background: trip-sel == i ? Palette.panel : transparent;
+            if trip-sel == i: Rectangle { x: 0; y: 0; width: 4px; height: 300px; background: Palette.needle; }
+            T { x: 16px; y: 22px; height: 24px; text: c.title; font-size: 16px; color: trip-sel == i ? Palette.ink : Palette.dim; }
+            T { x: 16px; y: 54px; height: 80px; text: c.value; font-size: 72px; }
+            T { x: 300px; y: 90px; width: 30px; height: 30px; text: "km"; font-size: 18px; color: Palette.dim; }
+            for kv[j] in [{ k: c.k1, v: c.v1 }, { k: c.k2, v: c.v2 }, { k: c.k3, v: c.v3 }]: Rectangle {
+                x: 16px; y: 150px + j * 40px; width: 316px; height: 30px;
+                T { x: 0; y: 0; height: 30px; text: kv.k; font-size: 17px; weight: 500; color: Palette.dim; }
+                T { x: 0; y: 0; width: 316px; height: 30px; text: kv.v; font-size: 21px; horizontal-alignment: right; }
+            }
+        }
+        T { x: 0; y: 438px; width: 800px; height: 24px; text: "SET: scegli · SET lungo: azzera · MODE: schermata successiva"; font-size: 15px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+    }
+
+    // ---------------- diagnostics
+    if ui-state == 2 && screen == 2: Rectangle {
+        T { x: 40px; y: 76px; height: 20px; text: "DIAGNOSTICA"; font-size: 15px; color: Palette.dim; }
+        for d[i] in diag: Rectangle {
+            x: 40px; y: 108px + i * 32px; width: 740px; height: 28px;
+            T { x: 0; y: 0; height: 28px; text: d.label; font-size: 17px; weight: 500; color: Palette.dim; }
+            T { x: 160px; y: 0; width: 580px; height: 28px; text: d.value; font-size: 17px; overflow: elide; }
+        }
+        T { x: 0; y: 438px; width: 800px; height: 24px; text: diag-note; font-size: 15px; weight: 500; color: Palette.amber; horizontal-alignment: center; }
+    }
+
+    // ---------------- settings
+    if ui-state == 3: Rectangle {
+        T { x: 40px; y: 76px; height: 20px; text: "IMPOSTAZIONI"; font-size: 15px; color: Palette.dim; }
+        T { x: 560px; y: 76px; width: 200px; height: 20px; text: "solo da fermi"; font-size: 13px; weight: 500; color: Palette.dim; horizontal-alignment: right; }
+        for s[i] in settings: Rectangle {
+            x: 24px; y: 112px + i * 42px; width: 752px; height: 38px;
+            background: i == settings-sel ? Palette.panel : transparent;
+            if i == settings-sel: Rectangle { x: 0; y: 0; width: 4px; height: 38px; background: Palette.needle; }
+            T { x: 20px; y: 0; height: 38px; text: s.label; font-size: 20px; weight: i == settings-sel ? 600 : 500; color: i == settings-sel ? Palette.ink : Palette.dim; }
+            T { x: 300px; y: 0; width: 432px; height: 38px; text: s.value; font-size: 19px; weight: 500; horizontal-alignment: right; color: i == settings-sel ? Palette.ink : Palette.dim; }
+        }
+        T { x: 0; y: 438px; width: 800px; height: 24px; text: "MODE: voce successiva · SET: cambia · SET lungo: esci"; font-size: 15px; weight: 500; color: Palette.dim; horizontal-alignment: center; }
+    }
+
+    if ui-state >= 1 && ui-state <= 3: Telltales {
+        x: 0; y: 0; width: 800px;
+        left: tt-left; right: tt-right; neutral: tt-neutral; high-beam: tt-high-beam;
+        coolant: icon-coolant; battery: icon-battery; link: icon-link; fuel: icon-fuel;
+    }
+    if main-visible: BottomStrip {
+        odo: odo-text; trip-a: trip-a-text; trip-b: trip-b-text;
+        vbat: vbat-text; vbat-level: vbat-level; info: info-text; info-icon: info-icon;
+    }
+
+    // ---------------- warnings
+    if ui-state == 2 && warning-severity == 3: Rectangle {
+        x: 0; y: 58px; width: 800px; height: 70px;
+        background: Palette.crit-bg;
+        if warning-icon == 1: LinkIcon { x: 24px; y: 19px; color: Palette.crit-ink; }
+        if warning-icon == 2: CoolantIcon { x: 24px; y: 19px; color: Palette.crit-ink; }
+        if warning-icon == 3: BatteryIcon { x: 24px; y: 19px; color: Palette.crit-ink; }
+        T { x: 84px; y: 8px; height: 32px; text: warning-title; font-size: 26px; weight: 700; color: Palette.crit-ink; }
+        T { x: 84px; y: 40px; height: 22px; text: warning-detail; font-size: 16px; weight: 500; color: Palette.crit-ink; }
+    }
+    if (ui-state == 2) && warning-severity == 2: Rectangle {
+        x: 0; y: 58px; width: 800px; height: 48px;
+        background: Palette.amber-bg;
+        if warning-icon == 2: CoolantIcon { x: 18px; y: 8px; color: Palette.caution-ink; }
+        if warning-icon == 3: BatteryIcon { x: 18px; y: 8px; color: Palette.caution-ink; }
+        if warning-icon == 4: LinkIcon { x: 18px; y: 8px; color: Palette.caution-ink; }
+        T { x: 66px; y: 0; height: 48px; text: warning-title; font-size: 22px; weight: 700; color: Palette.caution-ink; }
+        T { x: 380px; y: 0; width: 392px; height: 48px; text: warning-detail; font-size: 15px; weight: 500; color: Palette.caution-ink; horizontal-alignment: right; }
+    }
+
+    if toast != "": Rectangle {
+        x: (800px - self.width) / 2; y: 372px; height: 40px;
+        width: toast-text.preferred-width + 36px;
+        background: Palette.ink;
+        toast-text := T { x: 18px; y: 0; height: 40px; text: toast; font-size: 18px; color: Palette.bg; }
+    }
+
+    // ---------------- splash
+    if ui-state == 0: Rectangle {
+        background: #050607;
+        T { x: 0; y: 180px; width: 800px; height: 80px; text: "tdm·dash"; font-size: 64px; color: #e8e2d6; horizontal-alignment: center; }
+        Rectangle {
+            x: 400px - self.width / 2; y: 267px; height: 3px;
+            width: 520px * Math.min(1, phase * 1.6);
+            background: #ff6a1a;
+        }
+        T { x: 0; y: 290px; width: 800px; height: 24px; text: splash-subtitle; font-size: 16px; weight: 500; color: #8b877e; horizontal-alignment: center; }
+    }
+    if ui-state == 4: Rectangle { background: #000000; }
+}

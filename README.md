@@ -3,7 +3,7 @@
 **Quadro strumenti digitale open-source per Yamaha TDM 850 prima serie (3VD, 1991–1995).**
 *Open-source digital instrument cluster for the first-generation Yamaha TDM 850. Documentation is in Italian; code and comments are in English.*
 
-> **Stato:** progetto in sviluppo (milestone M0: documentazione e scheletro). **Non** ancora utilizzabile su strada.
+> **Stato:** progetto in sviluppo. Software del quadro e simulatore funzionanti sul PC (milestone M2); hardware non ancora costruito. **Non** utilizzabile su strada.
 
 tdm-dash sostituisce il quadro originale con un display da 7" leggibile al sole (1000 nit) e mostra:
 - velocità e giri
@@ -52,9 +52,17 @@ docs/        manuale, ricerca, ADR
 
 ## Sviluppo
 
+| Schermata Classic | Schermata Sport |
+|---|---|
+| ![Classic](design/screenshots/03-classic-giorno.png) | ![Sport](design/screenshots/06-sport-notte.png) |
+
 ```sh
+cargo run -p tdm-dash                                   # quadro sul PC con la moto simulata (tasti: capitolo 11)
+cargo run -p tdm-link --bin tdmctl -- sim mountain      # simulazione testuale
 cargo test --workspace                                  # test sul PC
-cargo build -p tdm-core --target thumbv6m-none-eabi     # verifica no_std per il Pico
+cargo run --release -p tdm-dash --no-default-features -- --screenshot out   # schermate di riferimento
+cargo run --release -p tdm-dash --no-default-features -- --bench 600         # tempo di disegno
+cargo build --release --target aarch64-unknown-linux-gnu -p tdm-dash --no-default-features --features kms   # binario per il Pi
 ```
 
 La toolchain Rust (1.97.1, la stessa di Buildroot 2026.08) e i target vengono installati automaticamente da `rust-toolchain.toml`.
@@ -63,9 +71,9 @@ La toolchain Rust (1.97.1, la stessa di Buildroot 2026.08) e i target vengono in
 
 | Milestone | Contenuto |
 |---|---|
-| **M0** | Scheletro del repo, ricerca, manuale (cap. 00–03) |
+| M0 | Scheletro del repo, ricerca, manuale (cap. 00–03) |
 | M1 | Proposta di design interattiva a 800×480 |
-| M2 | Workspace Rust, simulatore desktop |
+| **M2** | Workspace Rust, simulatore desktop |
 | M3 / M3b | Firmware del Pico · schemi elettrici e dei collegamenti |
 | M4 | Sistema operativo Buildroot |
 | M5 | Costruzione dell'hardware, contenitore, staffa |
