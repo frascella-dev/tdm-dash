@@ -2,7 +2,7 @@
 
 Manuale di progettazione, costruzione, installazione e uso del quadro digitale **tdm-dash** per la Yamaha TDM 850 prima serie (3VD, 1991–1995).
 
-Il manuale cresce insieme al progetto: ogni milestone aggiunge o aggiorna i capitoli che la riguardano. I capitoli senza link non sono ancora scritti.
+Il manuale cresce insieme al progetto: ogni milestone aggiunge o aggiorna i capitoli che la riguardano. Tutti i capitoli hanno una prima stesura; le parti che dipendono dai rilievi sulla moto e dalle prove al banco sono marcate [DA VERIFICARE] e vanno riviste con le misure reali.
 
 | # | Capitolo | Stato |
 |---|---|---|
@@ -16,10 +16,10 @@ Il manuale cresce insieme al progetto: ogni milestone aggiunge o aggiorna i capi
 | 07 | [Contenitore e staffa](07-contenitore-e-staffa.md) | Prima stesura, misure da verificare sui pezzi |
 | 08 | [Installazione sulla moto](08-installazione.md) | Prima stesura, da completare con i rilievi |
 | 09 | [Software: firmware, immagine e profilo](09-software.md) | Prima stesura; immagine da provare sull'hardware |
-| 10 | Calibrazione | Milestone M6 |
+| 10 | [Calibrazione](10-calibrazione.md) | Prima stesura, strumenti in `tdmctl calibrate` |
 | 11 | [Uso](11-uso.md) | Prima stesura, schermate dal software vero |
-| 12 | Diagnostica e risoluzione dei problemi | Milestone M6 |
-| 13 | Manutenzione | Milestone M6 |
+| 12 | [Diagnostica e risoluzione dei problemi](12-diagnostica.md) | Prima stesura |
+| 13 | [Manutenzione](13-manutenzione.md) | Prima stesura |
 | A | [Appendici](A-appendici.md) | Codice colori, glossario, scheda rilievi |
 
 ## Convenzioni

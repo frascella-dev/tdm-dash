@@ -100,4 +100,4 @@ Poi, su strada, per almeno 100 km:
 2. **Cablaggio a Y:** sostituiscilo con il connettore diretto dell'adattatore.
 3. **Rilievi:** riporta nella [scheda dei rilievi](../ricerca/rilievi-sulla-moto.md) tutto quello che hai misurato (colori, pin, impulsi per giro). Poi aggiorna i marcatori [DA VERIFICARE] in [`impianto-originale.md`](../ricerca/impianto-originale.md) e i capitoli 04 e 05.
 
-Prima dell'uso normale servono la calibrazione del capitolo 10 e 500 km senza difetti: pioggia, notte, gallerie, occhiali polarizzati, caldo.
+Prima dell'uso normale servono la [calibrazione](10-calibrazione.md) e 500 km senza difetti: pioggia, notte, gallerie, occhiali polarizzati, caldo.
